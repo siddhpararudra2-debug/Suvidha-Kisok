@@ -22,12 +22,31 @@ import {
     Info,
 } from '@mui/icons-material';
 
+import { useNavigate } from 'react-router-dom';
+
 const GasPage = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     const services = [
         { icon: <Receipt />, title: t('gas.pngBill'), color: '#1a73e8' },
-        { icon: <Payment />, title: t('services.payBill'), color: '#34a853' },
+        { icon: <Receipt />, title: t('gas.pngBill'), color: '#1a73e8' },
+        {
+            icon: <Payment />,
+            title: t('services.payBill'),
+            color: '#34a853',
+            action: () => navigate('/payment', {
+                state: {
+                    billId: 'BILL-GAS-001',
+                    billNumber: 'GAS-2026-001',
+                    amount: 850,
+                    type: 'gas',
+                    consumerId: '5566778899',
+                    dueDate: '2026-02-10'
+                }
+            })
+        },
+        { icon: <Speed />, title: t('gas.meterReading'), color: '#fbbc04' },
         { icon: <Speed />, title: t('gas.meterReading'), color: '#fbbc04' },
         { icon: <AddCircle />, title: t('services.newConnection'), color: '#673ab7' },
         { icon: <LocalGasStation />, title: t('gas.cngLocator'), color: '#00bcd4' },
@@ -120,7 +139,10 @@ const GasPage = () => {
                                 '&:hover': { transform: 'translateY(-2px)', boxShadow: 3 },
                             }}
                         >
-                            <CardActionArea sx={{ p: 3, textAlign: 'center' }}>
+                            <CardActionArea
+                                sx={{ p: 3, textAlign: 'center' }}
+                                onClick={() => service.action && service.action()}
+                            >
                                 <Box
                                     sx={{
                                         width: 64,

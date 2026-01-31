@@ -155,6 +155,16 @@ const ElectricityPage = () => {
                             variant="contained"
                             size="large"
                             startIcon={<Payment />}
+                            onClick={() => navigate('/payment', {
+                                state: {
+                                    billId: 'BILL-ELEC-001',
+                                    billNumber: currentBill.consumerId,
+                                    amount: currentBill.amount,
+                                    type: 'electricity',
+                                    consumerId: currentBill.consumerId,
+                                    dueDate: currentBill.dueDate
+                                }
+                            })}
                             sx={{ flex: 1, minHeight: 48 }}
                         >
                             {t('services.payBill')}

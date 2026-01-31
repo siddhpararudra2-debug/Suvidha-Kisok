@@ -69,7 +69,7 @@ const PaymentPage = () => {
         dueDate: '2026-02-05',
     };
 
-    const [paymentMethod, setPaymentMethod] = useState('upi');
+    const [paymentMethod, setPaymentMethod] = useState('qr');
     const [upiId, setUpiId] = useState('');
     const [cardNumber, setCardNumber] = useState('');
     const [cardExpiry, setCardExpiry] = useState('');
@@ -504,6 +504,24 @@ Thank you for using SUVIDHA!
                                         <Typography variant="h5" sx={{ fontWeight: 700, mt: 2, color: 'primary.main' }}>
                                             ₹{billData.amount.toLocaleString('en-IN')}
                                         </Typography>
+
+                                        <Alert severity="info" sx={{ mt: 2, textAlign: 'left' }}>
+                                            <Typography variant="caption">
+                                                Complete the payment on your phone. The system will verify automatically.
+                                            </Typography>
+                                        </Alert>
+
+                                        <Button
+                                            variant="contained"
+                                            color="success"
+                                            fullWidth
+                                            size="large"
+                                            onClick={handlePayment}
+                                            disabled={processing}
+                                            sx={{ mt: 2, minHeight: 48 }}
+                                        >
+                                            {processing ? "Verifying..." : "I Have Paid"}
+                                        </Button>
                                     </Box>
                                 )}
 

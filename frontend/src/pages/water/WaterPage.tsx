@@ -19,12 +19,31 @@ import {
     Recycling,
 } from '@mui/icons-material';
 
+import { useNavigate } from 'react-router-dom';
+
 const WaterPage = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     const services = [
         { icon: <Receipt />, title: t('water.waterBill'), color: '#1a73e8' },
-        { icon: <Payment />, title: t('water.propertyTax'), color: '#34a853' },
+        { icon: <Receipt />, title: t('water.waterBill'), color: '#1a73e8' },
+        {
+            icon: <Payment />,
+            title: t('water.propertyTax'),
+            color: '#34a853',
+            action: () => navigate('/payment', {
+                state: {
+                    billId: 'BILL-WATER-001',
+                    billNumber: 'WAT-2026-001',
+                    amount: 450,
+                    type: 'water',
+                    consumerId: '9988776655',
+                    dueDate: '2026-02-15'
+                }
+            })
+        },
+        { icon: <LocalShipping />, title: t('water.tankerRequest'), color: '#00bcd4' },
         { icon: <LocalShipping />, title: t('water.tankerRequest'), color: '#00bcd4' },
         { icon: <ReportProblem />, title: t('water.reportLeakage'), color: '#ea4335' },
         { icon: <Delete />, title: t('water.wasteManagement'), color: '#ff9800' },
@@ -91,7 +110,10 @@ const WaterPage = () => {
                                 '&:hover': { transform: 'translateY(-2px)', boxShadow: 3 },
                             }}
                         >
-                            <CardActionArea sx={{ p: 2, textAlign: 'center' }}>
+                            <CardActionArea
+                                sx={{ p: 2, textAlign: 'center' }}
+                                onClick={() => service.action && service.action()}
+                            >
                                 <Box
                                     sx={{
                                         width: 56,
