@@ -19,6 +19,7 @@ const SchemesPage = lazy(() => import('./pages/schemes/SchemesPage'));
 const DirectoryPage = lazy(() => import('./pages/directory/DirectoryPage'));
 const PaymentPage = lazy(() => import('./pages/payment/PaymentPage'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+const ComingSoonPage = lazy(() => import('./pages/ComingSoonPage'));
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -134,6 +135,17 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <PaymentPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/coming-soon"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout>
+                                <ComingSoonPage />
+                            </MainLayout>
                         </ProtectedRoute>
                     }
                 />

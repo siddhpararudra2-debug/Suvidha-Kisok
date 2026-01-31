@@ -29,8 +29,7 @@ const GasPage = () => {
     const navigate = useNavigate();
 
     const services = [
-        { icon: <Receipt />, title: t('gas.pngBill'), color: '#1a73e8' },
-        { icon: <Receipt />, title: t('gas.pngBill'), color: '#1a73e8' },
+        { icon: <Receipt />, title: t('gas.pngBill'), action: () => navigate('/payment'), color: '#1a73e8' },
         {
             icon: <Payment />,
             title: t('services.payBill'),
@@ -46,11 +45,10 @@ const GasPage = () => {
                 }
             })
         },
-        { icon: <Speed />, title: t('gas.meterReading'), color: '#fbbc04' },
-        { icon: <Speed />, title: t('gas.meterReading'), color: '#fbbc04' },
-        { icon: <AddCircle />, title: t('services.newConnection'), color: '#673ab7' },
-        { icon: <LocalGasStation />, title: t('gas.cngLocator'), color: '#00bcd4' },
-        { icon: <Security />, title: t('gas.safetyInfo'), color: '#ff9800' },
+        { icon: <Speed />, title: t('gas.meterReading'), path: '/coming-soon', color: '#fbbc04' },
+        { icon: <AddCircle />, title: t('services.newConnection'), path: '/coming-soon', color: '#673ab7' },
+        { icon: <LocalGasStation />, title: t('gas.cngLocator'), path: '/coming-soon', color: '#00bcd4' },
+        { icon: <Security />, title: t('gas.safetyInfo'), path: '/coming-soon', color: '#ff9800' },
     ];
 
     return (
@@ -141,7 +139,13 @@ const GasPage = () => {
                         >
                             <CardActionArea
                                 sx={{ p: 3, textAlign: 'center' }}
-                                onClick={() => service.action && service.action()}
+                                onClick={() => {
+                                    if ((service as any).action) {
+                                        (service as any).action();
+                                    } else if ((service as any).path) {
+                                        navigate((service as any).path);
+                                    }
+                                }}
                             >
                                 <Box
                                     sx={{

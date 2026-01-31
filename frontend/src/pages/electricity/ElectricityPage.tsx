@@ -29,14 +29,28 @@ const ElectricityPage = () => {
     const navigate = useNavigate();
 
     const services = [
-        { icon: <Receipt />, title: t('services.viewBill'), path: '/electricity/bill', color: '#1a73e8' },
-        { icon: <Payment />, title: t('services.payBill'), path: '/electricity/pay', color: '#34a853' },
-        { icon: <TrendingUp />, title: t('services.consumption'), path: '/electricity/consumption', color: '#fbbc04' },
-        { icon: <AddCircle />, title: t('services.newConnection'), path: '/electricity/new-connection', color: '#673ab7' },
-        { icon: <Settings />, title: t('electricity.loadChange'), path: '/electricity/load-change', color: '#00bcd4' },
-        { icon: <WbSunny />, title: t('electricity.solarNetMetering'), path: '/electricity/solar', color: '#ff9800' },
-        { icon: <ReportProblem />, title: t('electricity.reportOutage'), path: '/electricity/outage', color: '#ea4335' },
-        { icon: <Schedule />, title: t('electricity.plannedOutages'), path: '/electricity/planned', color: '#9c27b0' },
+        { icon: <Receipt />, title: t('services.viewBill'), action: () => navigate('/payment'), color: '#1a73e8' },
+        {
+            icon: <Payment />,
+            title: t('services.payBill'),
+            action: () => navigate('/payment', {
+                state: {
+                    billId: 'BILL-ELEC-001',
+                    billNumber: currentBill.consumerId,
+                    amount: currentBill.amount,
+                    type: 'electricity',
+                    consumerId: currentBill.consumerId,
+                    dueDate: currentBill.dueDate
+                }
+            }),
+            color: '#34a853'
+        },
+        { icon: <TrendingUp />, title: t('services.consumption'), path: '/coming-soon', color: '#fbbc04' },
+        { icon: <AddCircle />, title: t('services.newConnection'), path: '/coming-soon', color: '#673ab7' },
+        { icon: <Settings />, title: t('electricity.loadChange'), path: '/coming-soon', color: '#00bcd4' },
+        { icon: <WbSunny />, title: t('electricity.solarNetMetering'), path: '/coming-soon', color: '#ff9800' },
+        { icon: <ReportProblem />, title: t('electricity.reportOutage'), path: '/complaints', color: '#ea4335' },
+        { icon: <Schedule />, title: t('electricity.plannedOutages'), path: '/coming-soon', color: '#9c27b0' },
     ];
 
     // Mock current bill data
@@ -195,7 +209,16 @@ const ElectricityPage = () => {
                                 '&:hover': { transform: 'translateY(-2px)', boxShadow: 3 },
                             }}
                         >
-                            <CardActionArea sx={{ p: 2, textAlign: 'center' }}>
+                            <CardActionArea
+                                sx={{ p: 2, textAlign: 'center' }}
+                                onClick={() => {
+                                    if ((service as any).action) {
+                                        (service as any).action();
+                                    } else if ((service as any).path) {
+                                        navigate((service as any).path);
+                                    }
+                                }}
+                            >
                                 <Box
                                     sx={{
                                         width: 56,

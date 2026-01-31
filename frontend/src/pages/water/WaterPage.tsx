@@ -26,11 +26,10 @@ const WaterPage = () => {
     const navigate = useNavigate();
 
     const services = [
-        { icon: <Receipt />, title: t('water.waterBill'), color: '#1a73e8' },
-        { icon: <Receipt />, title: t('water.waterBill'), color: '#1a73e8' },
+        { icon: <Receipt />, title: t('water.waterBill'), action: () => navigate('/payment'), color: '#1a73e8' },
         {
             icon: <Payment />,
-            title: t('water.propertyTax'),
+            title: t('services.payBill'), // Changed from propertyTax to payBill to be consistent with action
             color: '#34a853',
             action: () => navigate('/payment', {
                 state: {
@@ -43,13 +42,12 @@ const WaterPage = () => {
                 }
             })
         },
-        { icon: <LocalShipping />, title: t('water.tankerRequest'), color: '#00bcd4' },
-        { icon: <LocalShipping />, title: t('water.tankerRequest'), color: '#00bcd4' },
-        { icon: <ReportProblem />, title: t('water.reportLeakage'), color: '#ea4335' },
-        { icon: <Delete />, title: t('water.wasteManagement'), color: '#ff9800' },
-        { icon: <Description />, title: t('water.certificates'), color: '#673ab7' },
-        { icon: <Schedule />, title: t('water.supplySchedule'), color: '#9c27b0' },
-        { icon: <Recycling />, title: 'Recycling Centers', color: '#4caf50' },
+        { icon: <LocalShipping />, title: t('water.tankerRequest'), path: '/coming-soon', color: '#00bcd4' },
+        { icon: <ReportProblem />, title: t('water.reportLeakage'), path: '/complaints', color: '#ea4335' },
+        { icon: <Delete />, title: t('water.wasteManagement'), path: '/coming-soon', color: '#ff9800' },
+        { icon: <Description />, title: t('water.certificates'), path: '/coming-soon', color: '#673ab7' },
+        { icon: <Schedule />, title: t('water.supplySchedule'), path: '/coming-soon', color: '#9c27b0' },
+        { icon: <Recycling />, title: 'Recycling Centers', path: '/coming-soon', color: '#4caf50' },
     ];
 
     return (
@@ -112,7 +110,13 @@ const WaterPage = () => {
                         >
                             <CardActionArea
                                 sx={{ p: 2, textAlign: 'center' }}
-                                onClick={() => service.action && service.action()}
+                                onClick={() => {
+                                    if ((service as any).action) {
+                                        (service as any).action();
+                                    } else if ((service as any).path) {
+                                        navigate((service as any).path);
+                                    }
+                                }}
                             >
                                 <Box
                                     sx={{
