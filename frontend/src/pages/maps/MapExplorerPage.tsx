@@ -225,9 +225,21 @@ const MapExplorerPage = () => {
                 </Typography>
             </Paper>
 
-            <Box sx={{ display: 'flex', gap: 3, height: 'calc(100vh - 280px)', minHeight: 500 }}>
+            <Box sx={{
+                display: 'flex',
+                gap: 3,
+                flexDirection: { xs: 'column-reverse', md: 'row' },
+                height: { xs: 'auto', md: 'calc(100vh - 280px)' },
+                minHeight: 500
+            }}>
                 {/* Sidebar Controls */}
-                <Card sx={{ width: 320, flexShrink: 0, borderRadius: 2, overflow: 'auto' }}>
+                <Card sx={{
+                    width: { xs: '100%', md: 320 },
+                    flexShrink: 0,
+                    borderRadius: 2,
+                    overflow: 'auto',
+                    maxHeight: { xs: 'none', md: '100%' }
+                }}>
                     <CardContent>
                         {/* Search */}
                         <TextField
@@ -380,7 +392,12 @@ const MapExplorerPage = () => {
                 </Card>
 
                 {/* Map Container */}
-                <Card sx={{ flex: 1, borderRadius: 2, overflow: 'hidden' }}>
+                <Card sx={{
+                    flex: 1,
+                    borderRadius: 2,
+                    overflow: 'hidden',
+                    minHeight: { xs: 400, md: 'auto' }
+                }}>
                     <MapContainer
                         center={mapCenter}
                         zoom={mapZoom}
