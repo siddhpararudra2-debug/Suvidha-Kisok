@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Grid2 from '@mui/material/Grid2';
 import {
     Box,
     Typography,
-    Grid,
     Card,
     CardContent,
     Paper,
@@ -203,8 +203,8 @@ const AdminDashboard = () => {
             </Box>
 
             {/* Stats Cards */}
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <Grid2 container spacing={3} sx={{ mb: 4 }}>
+                <Grid2 size={{ xs: 12, sm: 6, md: 2 }}>
                     <Card sx={{ borderRadius: 2 }}>
                         <CardContent>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
@@ -220,8 +220,8 @@ const AdminDashboard = () => {
                             </Box>
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+                </Grid2>
+                <Grid2 size={{ xs: 12, sm: 6, md: 2 }}>
                     <Card sx={{ borderRadius: 2 }}>
                         <CardContent>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
@@ -234,8 +234,8 @@ const AdminDashboard = () => {
                             <Typography variant="caption" color="text.secondary">5 offline</Typography>
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+                </Grid2>
+                <Grid2 size={{ xs: 12, sm: 6, md: 2 }}>
                     <Card sx={{ borderRadius: 2 }}>
                         <CardContent>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
@@ -248,8 +248,8 @@ const AdminDashboard = () => {
                             <Typography variant="caption" color="text.secondary">{stats.resolvedToday} resolved today</Typography>
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+                </Grid2>
+                <Grid2 size={{ xs: 12, sm: 6, md: 2 }}>
                     <Card sx={{ borderRadius: 2 }}>
                         <CardContent>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
@@ -261,8 +261,8 @@ const AdminDashboard = () => {
                             <Typography variant="caption" color="text.secondary">Across all utilities</Typography>
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+                </Grid2>
+                <Grid2 size={{ xs: 12, sm: 6, md: 2 }}>
                     <Card sx={{ borderRadius: 2 }}>
                         <CardContent>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
@@ -277,8 +277,8 @@ const AdminDashboard = () => {
                             </Box>
                         </CardContent>
                     </Card>
-                </Grid>
-            </Grid>
+                </Grid2>
+            </Grid2>
 
             {/* Tabs */}
             <Paper sx={{ borderRadius: 2 }}>
@@ -394,9 +394,9 @@ const AdminDashboard = () => {
                 {/* Kiosk Status Tab */}
                 <TabPanel value={tabValue} index={1}>
                     <Box sx={{ p: 2 }}>
-                        <Grid container spacing={3}>
+                        <Grid2 container spacing={3}>
                             {kiosks.map((kiosk) => (
-                                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={kiosk.id}>
+                                <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={kiosk.id}>
                                     <Card
                                         sx={{
                                             borderRadius: 2,
@@ -418,21 +418,21 @@ const AdminDashboard = () => {
                                                 Last ping: {kiosk.lastPing}
                                             </Typography>
                                             <Divider sx={{ my: 2 }} />
-                                            <Grid container spacing={2}>
-                                                <Grid size={{ xs: 6 }}>
+                                            <Grid2 container spacing={2}>
+                                                <Grid2 size={{ xs: 6 }}>
                                                     <Typography variant="caption" color="text.secondary">Today's Txns</Typography>
                                                     <Typography variant="h6">{kiosk.transactions}</Typography>
-                                                </Grid>
-                                                <Grid size={{ xs: 6 }}>
+                                                </Grid2>
+                                                <Grid2 size={{ xs: 6 }}>
                                                     <Typography variant="caption" color="text.secondary">Uptime</Typography>
                                                     <Typography variant="h6">{kiosk.uptime}%</Typography>
-                                                </Grid>
-                                            </Grid>
+                                                </Grid2>
+                                            </Grid2>
                                         </CardContent>
                                     </Card>
-                                </Grid>
+                                </Grid2>
                             ))}
-                        </Grid>
+                        </Grid2>
                     </Box>
                 </TabPanel>
 
@@ -449,32 +449,32 @@ const AdminDashboard = () => {
                 </DialogTitle>
                 <DialogContent>
                     {selectedComplaint && (
-                        <Grid container spacing={3} sx={{ mt: 1 }}>
-                            <Grid size={{ xs: 6 }}>
+                        <Grid2 container spacing={3} sx={{ mt: 1 }}>
+                            <Grid2 size={{ xs: 6 }}>
                                 <Typography variant="caption" color="text.secondary">Citizen</Typography>
                                 <Typography variant="body1">{selectedComplaint.citizen}</Typography>
-                            </Grid>
-                            <Grid size={{ xs: 6 }}>
+                            </Grid2>
+                            <Grid2 size={{ xs: 6 }}>
                                 <Typography variant="caption" color="text.secondary">Mobile</Typography>
                                 <Typography variant="body1">{selectedComplaint.mobile}</Typography>
-                            </Grid>
-                            <Grid size={{ xs: 6 }}>
+                            </Grid2>
+                            <Grid2 size={{ xs: 6 }}>
                                 <Typography variant="caption" color="text.secondary">Category</Typography>
                                 <Typography variant="body1">{selectedComplaint.subcategory}</Typography>
-                            </Grid>
-                            <Grid size={{ xs: 6 }}>
+                            </Grid2>
+                            <Grid2 size={{ xs: 6 }}>
                                 <Typography variant="caption" color="text.secondary">Location</Typography>
                                 <Typography variant="body1">{selectedComplaint.location}</Typography>
-                            </Grid>
-                            <Grid size={{ xs: 6 }}>
+                            </Grid2>
+                            <Grid2 size={{ xs: 6 }}>
                                 <Typography variant="caption" color="text.secondary">Priority</Typography>
                                 <Chip label={selectedComplaint.priority} color={getPriorityColor(selectedComplaint.priority) as any} />
-                            </Grid>
-                            <Grid size={{ xs: 6 }}>
+                            </Grid2>
+                            <Grid2 size={{ xs: 6 }}>
                                 <Typography variant="caption" color="text.secondary">Status</Typography>
                                 <Chip label={selectedComplaint.status} color={getStatusColor(selectedComplaint.status) as any} />
-                            </Grid>
-                        </Grid>
+                            </Grid2>
+                        </Grid2>
                     )}
                 </DialogContent>
                 <DialogActions>
