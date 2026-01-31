@@ -6,6 +6,15 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import en from './locales/en.json';
 import hi from './locales/hi.json';
 import gu from './locales/gu.json';
+import mr from './locales/mr.json';
+import ta from './locales/ta.json';
+import kn from './locales/kn.json';
+import ml from './locales/ml.json';
+import pa from './locales/pa.json';
+import bn from './locales/bn.json';
+import te from './locales/te.json';
+import or from './locales/or.json';
+import ur from './locales/ur.json';
 
 // Language configuration
 export const languages = [
@@ -33,7 +42,15 @@ i18n
             en: { translation: en },
             hi: { translation: hi },
             gu: { translation: gu },
-            // Other languages will fall back to English
+            mr: { translation: mr },
+            ta: { translation: ta },
+            kn: { translation: kn },
+            ml: { translation: ml },
+            pa: { translation: pa },
+            bn: { translation: bn },
+            te: { translation: te },
+            or: { translation: or },
+            ur: { translation: ur },
         },
         fallbackLng: 'en',
         debug: process.env.NODE_ENV === 'development',
@@ -47,3 +64,4 @@ i18n
     });
 
 export default i18n;
+
