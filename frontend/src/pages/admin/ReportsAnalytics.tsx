@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import Grid2 from '@mui/material/Grid2';
 import {
     Box,
     Typography,
-    Grid,
     Card,
     CardContent,
     Paper,
@@ -88,7 +88,7 @@ const ReportsAnalytics = () => {
     }, [period]);
 
     const formatCurrency = (amount: number) =>
-        `₹${(amount / 100000).toFixed(1)}L`;
+        `â‚¹${(amount / 100000).toFixed(1)}L`;
 
     const formatNumber = (num: number) =>
         num.toLocaleString('en-IN');
@@ -124,8 +124,8 @@ const ReportsAnalytics = () => {
             {loading && <LinearProgress sx={{ mb: 2 }} />}
 
             {/* Overview Cards */}
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Grid2 container spacing={3} sx={{ mb: 4 }}>
+                <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                     <Card sx={{ borderRadius: 2 }}>
                         <CardContent>
                             <Typography variant="body2" color="text.secondary">Total Transactions</Typography>
@@ -147,8 +147,8 @@ const ReportsAnalytics = () => {
                             </Box>
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                </Grid2>
+                <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                     <Card sx={{ borderRadius: 2 }}>
                         <CardContent>
                             <Typography variant="body2" color="text.secondary">Total Revenue</Typography>
@@ -163,8 +163,8 @@ const ReportsAnalytics = () => {
                             </Box>
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                </Grid2>
+                <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                     <Card sx={{ borderRadius: 2 }}>
                         <CardContent>
                             <Typography variant="body2" color="text.secondary">Active Users</Typography>
@@ -179,8 +179,8 @@ const ReportsAnalytics = () => {
                             </Box>
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                </Grid2>
+                <Grid2 size={{ xs: 12, sm: 6, md: 3 }}>
                     <Card sx={{ borderRadius: 2 }}>
                         <CardContent>
                             <Typography variant="body2" color="text.secondary">Complaints Resolved</Typography>
@@ -194,12 +194,12 @@ const ReportsAnalytics = () => {
                             </Box>
                         </CardContent>
                     </Card>
-                </Grid>
-            </Grid>
+                </Grid2>
+            </Grid2>
 
-            <Grid container spacing={3}>
+            <Grid2 container spacing={3}>
                 {/* Service Distribution */}
-                <Grid size={{ xs: 12, md: 6 }}>
+                <Grid2 size={{ xs: 12, md: 6 }}>
                     <Card sx={{ borderRadius: 2, height: '100%' }}>
                         <CardContent>
                             <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 3 }}>
@@ -213,8 +213,8 @@ const ReportsAnalytics = () => {
                                         {service.service === 'Water' && <WaterDrop sx={{ color: '#1a73e8' }} />}
                                         <Typography variant="body2" sx={{ fontWeight: 500 }}>{service.service}</Typography>
                                     </Box>
-                                    <Grid container spacing={2}>
-                                        <Grid size={{ xs: 4 }}>
+                                    <Grid2 container spacing={2}>
+                                        <Grid2 size={{ xs: 4 }}>
                                             <Typography variant="caption" color="text.secondary">Transactions</Typography>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                 <LinearProgress
@@ -224,8 +224,8 @@ const ReportsAnalytics = () => {
                                                 />
                                                 <Typography variant="body2">{service.transactions}%</Typography>
                                             </Box>
-                                        </Grid>
-                                        <Grid size={{ xs: 4 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 4 }}>
                                             <Typography variant="caption" color="text.secondary">Revenue</Typography>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                 <LinearProgress
@@ -236,8 +236,8 @@ const ReportsAnalytics = () => {
                                                 />
                                                 <Typography variant="body2">{service.revenue}%</Typography>
                                             </Box>
-                                        </Grid>
-                                        <Grid size={{ xs: 4 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 4 }}>
                                             <Typography variant="caption" color="text.secondary">Complaints</Typography>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                 <LinearProgress
@@ -248,16 +248,16 @@ const ReportsAnalytics = () => {
                                                 />
                                                 <Typography variant="body2">{service.complaints}%</Typography>
                                             </Box>
-                                        </Grid>
-                                    </Grid>
+                                        </Grid2>
+                                    </Grid2>
                                 </Box>
                             ))}
                         </CardContent>
                     </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Resolution by Priority */}
-                <Grid size={{ xs: 12, md: 6 }}>
+                <Grid2 size={{ xs: 12, md: 6 }}>
                     <Card sx={{ borderRadius: 2, height: '100%' }}>
                         <CardContent>
                             <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
@@ -302,10 +302,10 @@ const ReportsAnalytics = () => {
                             </Table>
                         </CardContent>
                     </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Top Complaint Locations */}
-                <Grid size={{ xs: 12, md: 6 }}>
+                <Grid2 size={{ xs: 12, md: 6 }}>
                     <Card sx={{ borderRadius: 2 }}>
                         <CardContent>
                             <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
@@ -344,10 +344,10 @@ const ReportsAnalytics = () => {
                             </Table>
                         </CardContent>
                     </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Daily Trend */}
-                <Grid size={{ xs: 12, md: 6 }}>
+                <Grid2 size={{ xs: 12, md: 6 }}>
                     <Card sx={{ borderRadius: 2 }}>
                         <CardContent>
                             <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
@@ -387,10 +387,11 @@ const ReportsAnalytics = () => {
                             </Box>
                         </CardContent>
                     </Card>
-                </Grid>
-            </Grid>
+                </Grid2>
+            </Grid2>
         </Box>
     );
 };
 
 export default ReportsAnalytics;
+
