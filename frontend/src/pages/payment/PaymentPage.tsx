@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,6 @@ import {
     Card,
     CardContent,
     Button,
-    Grid,
     Divider,
     TextField,
     InputAdornment,
@@ -17,27 +16,21 @@ import {
     FormControlLabel,
     Radio,
     CircularProgress,
-    Alert,
     Chip,
     Paper,
     IconButton,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
+    Alert,
 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
     ArrowBack,
     CreditCard,
     AccountBalance,
     PhoneAndroid,
     QrCode2,
-    Check,
-    Download,
-    Print,
-    Share,
-    Receipt,
     CheckCircle,
+    Download,
+    Share,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { showNotification } from '../../store/slices/uiSlice';
@@ -78,7 +71,6 @@ const PaymentPage = () => {
     const [processing, setProcessing] = useState(false);
     const [paymentComplete, setPaymentComplete] = useState(false);
     const [receipt, setReceipt] = useState<any>(null);
-    const [showQrDialog, setShowQrDialog] = useState(false);
 
     const paymentMethods = [
         { id: 'upi', label: t('payment.upi'), icon: <PhoneAndroid />, description: 'Pay via UPI apps' },
@@ -220,35 +212,35 @@ Thank you for using SUVIDHA!
                                 </Typography>
 
                                 <Paper variant="outlined" sx={{ p: 3, borderRadius: 2, mb: 3 }}>
-                                    <Grid container spacing={2}>
-                                        <Grid size={{ xs: 6 }}>
+                                    <Grid2 container spacing={2}>
+                                        <Grid2 size={{ xs: 6 }}>
                                             <Typography variant="caption" color="text.secondary">Amount Paid</Typography>
                                             <Typography variant="h5" sx={{ fontWeight: 700, color: 'success.main' }}>
                                                 ₹{receipt.totalPaid.toLocaleString('en-IN')}
                                             </Typography>
-                                        </Grid>
-                                        <Grid size={{ xs: 6 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 6 }}>
                                             <Typography variant="caption" color="text.secondary">Transaction ID</Typography>
                                             <Typography variant="body2" sx={{ fontWeight: 600 }}>
                                                 {receipt.transactionId}
                                             </Typography>
-                                        </Grid>
-                                        <Grid size={{ xs: 12 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12 }}>
                                             <Divider sx={{ my: 1 }} />
-                                        </Grid>
-                                        <Grid size={{ xs: 6 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 6 }}>
                                             <Typography variant="caption" color="text.secondary">Bill Number</Typography>
                                             <Typography variant="body2">{receipt.billNumber}</Typography>
-                                        </Grid>
-                                        <Grid size={{ xs: 6 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 6 }}>
                                             <Typography variant="caption" color="text.secondary">Payment Method</Typography>
                                             <Typography variant="body2">{receipt.paymentMethod}</Typography>
-                                        </Grid>
-                                        <Grid size={{ xs: 12 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12 }}>
                                             <Typography variant="caption" color="text.secondary">Date & Time</Typography>
                                             <Typography variant="body2">{receipt.paidAt}</Typography>
-                                        </Grid>
-                                    </Grid>
+                                        </Grid2>
+                                    </Grid2>
                                 </Paper>
 
                                 <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
@@ -297,9 +289,9 @@ Thank you for using SUVIDHA!
                     {t('payment.title')}
                 </Typography>
 
-                <Grid container spacing={3}>
+                <Grid2 container spacing={3}>
                     {/* Bill Summary */}
-                    <Grid size={{ xs: 12, md: 5 }}>
+                    <Grid2 size={{ xs: 12, md: 5 }}>
                         <Card sx={{ borderRadius: 2, position: 'sticky', top: 100 }}>
                             <CardContent>
                                 <Typography variant="subtitle2" color="text.secondary" gutterBottom>
@@ -337,10 +329,10 @@ Thank you for using SUVIDHA!
                                 </Box>
                             </CardContent>
                         </Card>
-                    </Grid>
+                    </Grid2>
 
                     {/* Payment Methods */}
-                    <Grid size={{ xs: 12, md: 7 }}>
+                    <Grid2 size={{ xs: 12, md: 7 }}>
                         <Card sx={{ borderRadius: 2 }}>
                             <CardContent>
                                 <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 3 }}>
@@ -408,8 +400,8 @@ Thank you for using SUVIDHA!
 
                                 {/* Card Inputs */}
                                 {paymentMethod === 'card' && (
-                                    <Grid container spacing={2}>
-                                        <Grid size={{ xs: 12 }}>
+                                    <Grid2 container spacing={2}>
+                                        <Grid2 size={{ xs: 12 }}>
                                             <TextField
                                                 fullWidth
                                                 label="Card Number"
@@ -424,8 +416,8 @@ Thank you for using SUVIDHA!
                                                     ),
                                                 }}
                                             />
-                                        </Grid>
-                                        <Grid size={{ xs: 6 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 6 }}>
                                             <TextField
                                                 fullWidth
                                                 label="Expiry"
@@ -433,8 +425,8 @@ Thank you for using SUVIDHA!
                                                 onChange={(e) => setCardExpiry(e.target.value)}
                                                 placeholder="MM/YY"
                                             />
-                                        </Grid>
-                                        <Grid size={{ xs: 6 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 6 }}>
                                             <TextField
                                                 fullWidth
                                                 label="CVV"
@@ -443,17 +435,17 @@ Thank you for using SUVIDHA!
                                                 onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, '').slice(0, 3))}
                                                 placeholder="***"
                                             />
-                                        </Grid>
-                                    </Grid>
+                                        </Grid2>
+                                    </Grid2>
                                 )}
 
                                 {/* Net Banking */}
                                 {paymentMethod === 'netbanking' && (
                                     <Box>
                                         <Typography variant="body2" sx={{ mb: 2 }}>Select Your Bank</Typography>
-                                        <Grid container spacing={1}>
+                                        <Grid2 container spacing={1}>
                                             {banks.map((bankName) => (
-                                                <Grid size={{ xs: 6 }} key={bankName}>
+                                                <Grid2 size={{ xs: 6 }} key={bankName}>
                                                     <Button
                                                         variant={bank === bankName ? 'contained' : 'outlined'}
                                                         fullWidth
@@ -462,9 +454,9 @@ Thank you for using SUVIDHA!
                                                     >
                                                         {bankName}
                                                     </Button>
-                                                </Grid>
+                                                </Grid2>
                                             ))}
-                                        </Grid>
+                                        </Grid2>
                                     </Box>
                                 )}
 
@@ -548,8 +540,8 @@ Thank you for using SUVIDHA!
                                 </Typography>
                             </CardContent>
                         </Card>
-                    </Grid>
-                </Grid>
+                    </Grid2>
+                </Grid2>
             </Container>
         </Box>
     );

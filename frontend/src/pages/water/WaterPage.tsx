@@ -2,12 +2,12 @@ import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
-    Grid,
     Card,
     CardContent,
     CardActionArea,
     Paper,
 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
     Receipt,
     Payment,
@@ -100,9 +100,9 @@ const WaterPage = () => {
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                 All Services
             </Typography>
-            <Grid container spacing={2}>
+            <Grid2 container spacing={2}>
                 {services.map((service) => (
-                    <Grid size={{ xs: 6, sm: 4, md: 3 }} key={service.title}>
+                    <Grid2 size={{ xs: 6, sm: 4, md: 3 }} key={service.title}>
                         <Card
                             sx={{
                                 borderRadius: 2,
@@ -135,9 +135,9 @@ const WaterPage = () => {
                                 </Typography>
                             </CardActionArea>
                         </Card>
-                    </Grid>
+                    </Grid2>
                 ))}
-            </Grid>
+            </Grid2>
         </Box>
     );
 };

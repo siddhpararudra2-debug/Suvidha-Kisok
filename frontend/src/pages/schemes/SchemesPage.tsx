@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
-    Grid,
     Card,
     CardContent,
     CardActionArea,
@@ -25,6 +24,7 @@ import {
     Divider,
     LinearProgress,
 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
     WbSunny,
     ElderlyWoman,
@@ -446,9 +446,9 @@ const SchemesPage = () => {
                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                         Available Schemes
                     </Typography>
-                    <Grid container spacing={3}>
+                    <Grid2 container spacing={3}>
                         {schemes.map((scheme) => (
-                            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={scheme.id}>
+                            <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={scheme.id}>
                                 <Card
                                     sx={{
                                         height: '100%',
@@ -497,9 +497,9 @@ const SchemesPage = () => {
                                         </Box>
                                     </CardActionArea>
                                 </Card>
-                            </Grid>
+                            </Grid2>
                         ))}
-                    </Grid>
+                    </Grid2>
                 </>
             )}
         </Box>

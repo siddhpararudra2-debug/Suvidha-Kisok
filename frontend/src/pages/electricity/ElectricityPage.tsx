@@ -1,9 +1,8 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
-    Grid,
     Card,
     CardContent,
     CardActionArea,
@@ -12,6 +11,7 @@ import {
     Paper,
     Divider,
 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
     Receipt,
     Payment,
@@ -96,40 +96,40 @@ const ElectricityPage = () => {
                         />
                     </Box>
 
-                    <Grid container spacing={3}>
-                        <Grid size={{ xs: 6, sm: 3 }}>
+                    <Grid2 container spacing={3}>
+                        <Grid2 size={{ xs: 6, sm: 3 }}>
                             <Typography variant="caption" color="text.secondary">
                                 {t('electricity.billDate')}
                             </Typography>
                             <Typography variant="body1" sx={{ fontWeight: 500 }}>
                                 {currentBill.billDate}
                             </Typography>
-                        </Grid>
-                        <Grid size={{ xs: 6, sm: 3 }}>
+                        </Grid2>
+                        <Grid2 size={{ xs: 6, sm: 3 }}>
                             <Typography variant="caption" color="text.secondary">
                                 {t('electricity.dueDate')}
                             </Typography>
                             <Typography variant="body1" sx={{ fontWeight: 500, color: 'warning.main' }}>
                                 {currentBill.dueDate}
                             </Typography>
-                        </Grid>
-                        <Grid size={{ xs: 6, sm: 3 }}>
+                        </Grid2>
+                        <Grid2 size={{ xs: 6, sm: 3 }}>
                             <Typography variant="caption" color="text.secondary">
                                 {t('electricity.unitsConsumed')}
                             </Typography>
                             <Typography variant="body1" sx={{ fontWeight: 500 }}>
                                 {currentBill.unitsConsumed} kWh
                             </Typography>
-                        </Grid>
-                        <Grid size={{ xs: 6, sm: 3 }}>
+                        </Grid2>
+                        <Grid2 size={{ xs: 6, sm: 3 }}>
                             <Typography variant="caption" color="text.secondary">
                                 {t('electricity.amountDue')}
                             </Typography>
                             <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.main' }}>
                                 ₹{currentBill.amount.toLocaleString('en-IN')}
                             </Typography>
-                        </Grid>
-                    </Grid>
+                        </Grid2>
+                    </Grid2>
 
                     <Divider sx={{ my: 3 }} />
 
@@ -185,9 +185,9 @@ const ElectricityPage = () => {
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                 All Services
             </Typography>
-            <Grid container spacing={2}>
+            <Grid2 container spacing={2}>
                 {services.map((service) => (
-                    <Grid size={{ xs: 6, sm: 4, md: 3 }} key={service.title}>
+                    <Grid2 size={{ xs: 6, sm: 4, md: 3 }} key={service.title}>
                         <Card
                             sx={{
                                 borderRadius: 2,
@@ -217,9 +217,9 @@ const ElectricityPage = () => {
                                 </Typography>
                             </CardActionArea>
                         </Card>
-                    </Grid>
+                    </Grid2>
                 ))}
-            </Grid>
+            </Grid2>
         </Box>
     );
 };

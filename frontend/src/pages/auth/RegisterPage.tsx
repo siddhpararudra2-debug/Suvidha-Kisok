@@ -21,10 +21,10 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    Grid,
     Chip,
     IconButton,
 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
     Person,
     Phone,
@@ -218,8 +218,8 @@ const RegisterPage = () => {
                             {/* Step 1: Personal Details */}
                             {activeStep === 0 && (
                                 <Box>
-                                    <Grid container spacing={3}>
-                                        <Grid size={{ xs: 12 }}>
+                                    <Grid2 container spacing={3}>
+                                        <Grid2 size={{ xs: 12 }}>
                                             <TextField
                                                 fullWidth
                                                 label="Full Name"
@@ -233,8 +233,8 @@ const RegisterPage = () => {
                                                     ),
                                                 }}
                                             />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12, sm: 6 }}>
                                             <TextField
                                                 fullWidth
                                                 label="Mobile Number"
@@ -250,8 +250,8 @@ const RegisterPage = () => {
                                                     ),
                                                 }}
                                             />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12, sm: 6 }}>
                                             <TextField
                                                 fullWidth
                                                 label="Email (Optional)"
@@ -266,8 +266,8 @@ const RegisterPage = () => {
                                                     ),
                                                 }}
                                             />
-                                        </Grid>
-                                        <Grid size={{ xs: 12 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12 }}>
                                             <TextField
                                                 fullWidth
                                                 label="Aadhaar Number (Optional but recommended)"
@@ -283,8 +283,8 @@ const RegisterPage = () => {
                                                 }}
                                                 helperText="Link Aadhaar for faster verification"
                                             />
-                                        </Grid>
-                                        <Grid size={{ xs: 12 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12 }}>
                                             <TextField
                                                 fullWidth
                                                 label="Address"
@@ -300,8 +300,8 @@ const RegisterPage = () => {
                                                     ),
                                                 }}
                                             />
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12, sm: 6 }}>
                                             <FormControl fullWidth>
                                                 <InputLabel>City</InputLabel>
                                                 <Select
@@ -318,8 +318,8 @@ const RegisterPage = () => {
                                                     <MenuItem value="Ahmedabad">Ahmedabad</MenuItem>
                                                 </Select>
                                             </FormControl>
-                                        </Grid>
-                                        <Grid size={{ xs: 12, sm: 6 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12, sm: 6 }}>
                                             <TextField
                                                 fullWidth
                                                 label="Pincode"
@@ -327,8 +327,8 @@ const RegisterPage = () => {
                                                 onChange={handleChange('pincode')}
                                                 placeholder="6-digit pincode"
                                             />
-                                        </Grid>
-                                    </Grid>
+                                        </Grid2>
+                                    </Grid2>
 
                                     <Button
                                         fullWidth
@@ -423,8 +423,8 @@ const RegisterPage = () => {
                                         You can add these later from your dashboard
                                     </Typography>
 
-                                    <Grid container spacing={3}>
-                                        <Grid size={{ xs: 12 }}>
+                                    <Grid2 container spacing={3}>
+                                        <Grid2 size={{ xs: 12 }}>
                                             <TextField
                                                 fullWidth
                                                 label="Electricity Consumer ID"
@@ -439,8 +439,8 @@ const RegisterPage = () => {
                                                 }}
                                                 placeholder="Found on your electricity bill"
                                             />
-                                        </Grid>
-                                        <Grid size={{ xs: 12 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12 }}>
                                             <TextField
                                                 fullWidth
                                                 label="Gas BP Number"
@@ -455,8 +455,8 @@ const RegisterPage = () => {
                                                 }}
                                                 placeholder="Found on your gas bill"
                                             />
-                                        </Grid>
-                                        <Grid size={{ xs: 12 }}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12 }}>
                                             <TextField
                                                 fullWidth
                                                 label="Water Connection ID"
@@ -471,8 +471,8 @@ const RegisterPage = () => {
                                                 }}
                                                 placeholder="Found on your water bill"
                                             />
-                                        </Grid>
-                                    </Grid>
+                                        </Grid2>
+                                    </Grid2>
 
                                     <Box sx={{ display: 'flex', gap: 2, mt: 4 }}>
                                         <Button
@@ -498,7 +498,7 @@ const RegisterPage = () => {
                     </Card>
                 </motion.div>
             </Container>
-        </Box>
+        </Box >
     );
 };
 

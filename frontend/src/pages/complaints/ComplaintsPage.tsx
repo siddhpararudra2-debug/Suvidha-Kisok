@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import {
     Box,
     Typography,
-    Grid,
     Card,
     CardContent,
     Button,
@@ -31,6 +30,7 @@ import {
     Alert,
     CircularProgress,
 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
     ElectricBolt,
     LocalGasStation,
@@ -308,9 +308,9 @@ const ComplaintsPage = () => {
                 </Typography>
             </Paper>
 
-            <Grid container spacing={4}>
+            <Grid2 container spacing={4}>
                 {/* New Complaint Form */}
-                <Grid size={{ xs: 12, md: 7 }}>
+                <Grid2 size={{ xs: 12, md: 7 }}>
                     <Card sx={{ borderRadius: 3 }}>
                         <CardContent>
                             <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
@@ -331,9 +331,9 @@ const ComplaintsPage = () => {
                                     <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
                                         Select Service Type
                                     </Typography>
-                                    <Grid container spacing={2} sx={{ mb: 3 }}>
+                                    <Grid2 container spacing={2} sx={{ mb: 3 }}>
                                         {categories.map((cat) => (
-                                            <Grid size={{ xs: 4 }} key={cat.id}>
+                                            <Grid2 size={{ xs: 4 }} key={cat.id}>
                                                 <Card
                                                     variant={category === cat.id ? 'elevation' : 'outlined'}
                                                     sx={{
@@ -355,9 +355,9 @@ const ComplaintsPage = () => {
                                                         </Typography>
                                                     </CardContent>
                                                 </Card>
-                                            </Grid>
+                                            </Grid2>
                                         ))}
-                                    </Grid>
+                                    </Grid2>
 
                                     {category && (
                                         <>
@@ -526,36 +526,36 @@ const ComplaintsPage = () => {
                             {activeStep === 3 && (
                                 <Box>
                                     <Paper variant="outlined" sx={{ p: 2, mb: 3, borderRadius: 2 }}>
-                                        <Grid container spacing={2}>
-                                            <Grid size={{ xs: 6 }}>
+                                        <Grid2 container spacing={2}>
+                                            <Grid2 size={{ xs: 6 }}>
                                                 <Typography variant="caption" color="text.secondary">Category</Typography>
                                                 <Typography variant="body1" sx={{ fontWeight: 500 }}>{category}</Typography>
-                                            </Grid>
-                                            <Grid size={{ xs: 6 }}>
+                                            </Grid2>
+                                            <Grid2 size={{ xs: 6 }}>
                                                 <Typography variant="caption" color="text.secondary">Issue Type</Typography>
                                                 <Typography variant="body1" sx={{ fontWeight: 500 }}>{subcategory}</Typography>
-                                            </Grid>
-                                            <Grid size={{ xs: 6 }}>
+                                            </Grid2>
+                                            <Grid2 size={{ xs: 6 }}>
                                                 <Typography variant="caption" color="text.secondary">Priority</Typography>
                                                 <Chip
                                                     label={priority}
                                                     size="small"
                                                     color={priority === 'high' || priority === 'emergency' ? 'error' : priority === 'medium' ? 'warning' : 'default'}
                                                 />
-                                            </Grid>
-                                            <Grid size={{ xs: 6 }}>
+                                            </Grid2>
+                                            <Grid2 size={{ xs: 6 }}>
                                                 <Typography variant="caption" color="text.secondary">Attachments</Typography>
                                                 <Typography variant="body1">{attachments.length} files</Typography>
-                                            </Grid>
-                                            <Grid size={{ xs: 12 }}>
+                                            </Grid2>
+                                            <Grid2 size={{ xs: 12 }}>
                                                 <Typography variant="caption" color="text.secondary">Location</Typography>
                                                 <Typography variant="body2">{address || 'Not provided'}</Typography>
-                                            </Grid>
-                                            <Grid size={{ xs: 12 }}>
+                                            </Grid2>
+                                            <Grid2 size={{ xs: 12 }}>
                                                 <Typography variant="caption" color="text.secondary">Description</Typography>
                                                 <Typography variant="body2">{description}</Typography>
-                                            </Grid>
-                                        </Grid>
+                                            </Grid2>
+                                        </Grid2>
                                     </Paper>
 
                                     <Alert severity="info">
@@ -601,10 +601,10 @@ const ComplaintsPage = () => {
                             </Box>
                         </CardContent>
                     </Card>
-                </Grid>
+                </Grid2>
 
                 {/* Existing Complaints */}
-                <Grid size={{ xs: 12, md: 5 }}>
+                <Grid2 size={{ xs: 12, md: 5 }}>
                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                         Your Complaints
                     </Typography>
@@ -655,8 +655,8 @@ const ComplaintsPage = () => {
                             </CardContent>
                         </Card>
                     ))}
-                </Grid>
-            </Grid>
+                </Grid2>
+            </Grid2>
         </Box>
     );
 };

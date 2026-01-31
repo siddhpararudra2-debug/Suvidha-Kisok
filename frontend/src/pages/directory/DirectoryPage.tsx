@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
-    Grid,
     Card,
     CardContent,
     TextField,
@@ -17,6 +16,7 @@ import {
     MenuItem,
     Button,
 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
     Search,
     Phone,
@@ -116,8 +116,8 @@ const DirectoryPage = () => {
             </Paper>
 
             {/* Search and Filter */}
-            <Grid container spacing={2} sx={{ mb: 4 }}>
-                <Grid size={{ xs: 12, sm: 8 }}>
+            <Grid2 container spacing={2} sx={{ mb: 4 }}>
+                <Grid2 size={{ xs: 12, sm: 8 }}>
                     <TextField
                         fullWidth
                         placeholder="Search by name, designation, or area..."
@@ -131,8 +131,8 @@ const DirectoryPage = () => {
                             ),
                         }}
                     />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 4 }}>
+                </Grid2>
+                <Grid2 size={{ xs: 12, sm: 4 }}>
                     <FormControl fullWidth>
                         <InputLabel>Department</InputLabel>
                         <Select
@@ -146,13 +146,13 @@ const DirectoryPage = () => {
                             <MenuItem value="water">Water</MenuItem>
                         </Select>
                     </FormControl>
-                </Grid>
-            </Grid>
+                </Grid2>
+            </Grid2>
 
             {/* Officials Grid */}
-            <Grid container spacing={3}>
+            <Grid2 container spacing={3}>
                 {filteredOfficials.map((official) => (
-                    <Grid size={{ xs: 12, sm: 6 }} key={official.id}>
+                    <Grid2 size={{ xs: 12, sm: 6 }} key={official.id}>
                         <Card sx={{ borderRadius: 2 }}>
                             <CardContent>
                                 <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
@@ -215,9 +215,9 @@ const DirectoryPage = () => {
                                 </Button>
                             </CardContent>
                         </Card>
-                    </Grid>
+                    </Grid2>
                 ))}
-            </Grid>
+            </Grid2>
         </Box>
     );
 };

@@ -78,6 +78,32 @@ const DashboardPage = () => {
 
     const totalDue = pendingBills.reduce((sum, bill) => sum + bill.amount, 0);
 
+    const handlePayBill = (bill: typeof pendingBills[0]) => {
+        navigate('/payment', {
+            state: {
+                billId: bill.id,
+                billNumber: bill.id,
+                amount: bill.amount,
+                type: bill.type,
+                consumerId: '123456789', // Mock ID
+                dueDate: new Date(Date.now() + bill.dueIn * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            },
+        });
+    };
+
+    const handlePayAll = () => {
+        navigate('/payment', {
+            state: {
+                billId: 'ALL-BILLS',
+                billNumber: 'CONSOLIDATED-' + new Date().getFullYear(),
+                amount: totalDue,
+                type: 'electricity', // Default to electricity or generic
+                consumerId: user?.id || '123456789',
+                dueDate: new Date().toISOString().split('T')[0],
+            },
+        });
+    };
+
     return (
         <Box>
             {/* Welcome Header */}
@@ -144,6 +170,7 @@ const DashboardPage = () => {
                                         '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' },
                                     }}
                                     endIcon={<ArrowForward />}
+                                    onClick={handlePayAll}
                                 >
                                     {t('dashboard.payAll')}
                                 </Button>
@@ -207,8 +234,8 @@ const DashboardPage = () => {
                                                         ? 'error'
                                                         : 'primary'
                                             }
-                                        >
-                                            {t('services.payBill')}
+                                            onClick={() => handlePayBill(bill)}
+                                        >    {t('services.payBill')}
                                         </Button>
                                     </Box>
                                 </CardContent>
@@ -391,7 +418,7 @@ const DashboardPage = () => {
                     </CardContent>
                 </Card>
             </motion.div>
-        </Box>
+        </Box >
     );
 };
 
