@@ -1,0 +1,97 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+    content: [
+        "./index.html",
+        "./src/**/*.{js,ts,jsx,tsx}",
+    ],
+    theme: {
+        extend: {
+            colors: {
+                primary: {
+                    50: '#e8f0fe',
+                    100: '#d2e3fc',
+                    200: '#aecbfa',
+                    300: '#8ab4f8',
+                    400: '#669df6',
+                    500: '#1a73e8',
+                    600: '#1967d2',
+                    700: '#185abc',
+                    800: '#174ea6',
+                    900: '#1a4589',
+                },
+                success: {
+                    50: '#e6f4ea',
+                    100: '#ceead6',
+                    200: '#a8dab5',
+                    300: '#81c995',
+                    400: '#5bb974',
+                    500: '#34a853',
+                    600: '#1e8e3e',
+                    700: '#188038',
+                    800: '#137333',
+                    900: '#0d652d',
+                },
+                warning: {
+                    50: '#fef7e0',
+                    100: '#feefc3',
+                    200: '#fde293',
+                    300: '#fdd663',
+                    400: '#fcc934',
+                    500: '#fbbc04',
+                    600: '#f9ab00',
+                    700: '#f29900',
+                    800: '#ea8600',
+                    900: '#e37400',
+                },
+                danger: {
+                    50: '#fce8e6',
+                    100: '#fad2cf',
+                    200: '#f6aea9',
+                    300: '#f28b82',
+                    400: '#ee675c',
+                    500: '#ea4335',
+                    600: '#d93025',
+                    700: '#c5221f',
+                    800: '#b31412',
+                    900: '#a50e0e',
+                },
+                neutral: {
+                    50: '#f8f9fa',
+                    100: '#f1f3f4',
+                    200: '#e8eaed',
+                    300: '#dadce0',
+                    400: '#bdc1c6',
+                    500: '#9aa0a6',
+                    600: '#80868b',
+                    700: '#5f6368',
+                    800: '#3c4043',
+                    900: '#202124',
+                },
+            },
+            fontFamily: {
+                sans: ['Noto Sans', 'system-ui', 'sans-serif'],
+            },
+            spacing: {
+                '18': '4.5rem',
+                '88': '22rem',
+                '128': '32rem',
+            },
+            minHeight: {
+                'touch': '48px',
+                'touch-lg': '100px',
+            },
+            minWidth: {
+                'touch': '48px',
+                'touch-lg': '100px',
+            },
+            borderRadius: {
+                'kiosk': '12px',
+            },
+            boxShadow: {
+                'card': '0 1px 2px 0 rgba(60,64,67,.3), 0 2px 6px 2px rgba(60,64,67,.15)',
+                'card-hover': '0 1px 3px 0 rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15)',
+            },
+        },
+    },
+    plugins: [],
+}

@@ -1,0 +1,458 @@
+openapi: 3.0.3
+info:
+  title: SUVIDHA API
+  description: |
+    API documentation for SUVIDHA (Smart Urban Virtual Interactive Digital Helpdesk Assistant) - 
+    A unified civic services kiosk application providing Electricity, Gas, and Water services.
+  version: 1.0.0
+  contact:
+    name: SUVIDHA Development Team
+    email: support@suvidha.gov.in
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:4000/api
+    description: Development server
+  - url: https://api.suvidha.gov.in/api
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Bills
+    description: Utility bill management and payments
+  - name: Complaints
+    description: Complaint registration and tracking
+  - name: Infrastructure
+    description: Infrastructure data and live status
+
+paths:
+  /auth/aadhaar/send-otp:
+    post:
+      tags: [Authentication]
+      summary: Send OTP to Aadhaar-linked mobile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [aadhaar]
+              properties:
+                aadhaar:
+                  type: string
+                  pattern: '^\d{12}$'
+                  example: "123456789012"
+      responses:
+        '200':
+          description: OTP sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /auth/aadhaar/verify-otp:
+    post:
+      tags: [Authentication]
+      summary: Verify OTP and authenticate user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [aadhaar, otp]
+              properties:
+                aadhaar: { type: string, pattern: '^\d{12}$' }
+                otp: { type: string, pattern: '^\d{6}$' }
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid or expired OTP
+
+  /auth/guest:
+    post:
+      tags: [Authentication]
+      summary: Login as guest with limited access
+      responses:
+        '200':
+          description: Guest login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+
+  /auth/refresh-token:
+    post:
+      tags: [Authentication]
+      summary: Refresh access token
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken: { type: string }
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  token: { type: string }
+                  expiresIn: { type: integer }
+
+  /bills:
+    get:
+      tags: [Bills]
+      summary: Get all bills for authenticated user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [electricity, gas, water]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [unpaid, paid, overdue]
+      responses:
+        '200':
+          description: Bills retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  bills:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Bill'
+                  totalPending: { type: number }
+
+  /bills/{id}:
+    get:
+      tags: [Bills]
+      summary: Get single bill details
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Bill details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  bill:
+                    $ref: '#/components/schemas/Bill'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /bills/{id}/pay:
+    post:
+      tags: [Bills]
+      summary: Pay a bill (BBPS integration)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [paymentMethod, amount]
+              properties:
+                paymentMethod:
+                  type: string
+                  enum: [upi, card, netbanking, qr]
+                upiId: { type: string }
+                amount: { type: number }
+      responses:
+        '200':
+          description: Payment successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentReceipt'
+
+  /complaints:
+    get:
+      tags: [Complaints]
+      summary: Get user's complaints
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [registered, assigned, in_progress, resolved, closed]
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [electricity, gas, water]
+      responses:
+        '200':
+          description: Complaints list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  complaints:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Complaint'
+    post:
+      tags: [Complaints]
+      summary: Register new complaint
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewComplaint'
+      responses:
+        '201':
+          description: Complaint registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  complaint:
+                    $ref: '#/components/schemas/Complaint'
+                  message: { type: string }
+
+  /complaints/{id}:
+    get:
+      tags: [Complaints]
+      summary: Get complaint details
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Complaint details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  complaint:
+                    $ref: '#/components/schemas/Complaint'
+
+  /infrastructure/layers:
+    get:
+      tags: [Infrastructure]
+      summary: Get all infrastructure layers (GeoJSON)
+      responses:
+        '200':
+          description: Infrastructure data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  layers:
+                    type: object
+
+  /infrastructure/status:
+    get:
+      tags: [Infrastructure]
+      summary: Get live status of all utilities
+      responses:
+        '200':
+          description: Live status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  status:
+                    $ref: '#/components/schemas/LiveStatus'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    AuthResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        user:
+          type: object
+          properties:
+            id: { type: string }
+            name: { type: string }
+            mobile: { type: string }
+            email: { type: string }
+            aadhaarMasked: { type: string }
+        token: { type: string }
+        refreshToken: { type: string }
+        expiresIn: { type: integer }
+
+    Bill:
+      type: object
+      properties:
+        id: { type: string }
+        type: { type: string, enum: [electricity, gas, water] }
+        consumerId: { type: string }
+        billNumber: { type: string }
+        billDate: { type: string, format: date }
+        dueDate: { type: string, format: date }
+        amount: { type: number }
+        unitsConsumed: { type: number }
+        status: { type: string, enum: [unpaid, paid, overdue] }
+
+    NewComplaint:
+      type: object
+      required: [category, subcategory, description, priority, location]
+      properties:
+        category: { type: string, enum: [electricity, gas, water] }
+        subcategory: { type: string }
+        description: { type: string, minLength: 10 }
+        priority: { type: string, enum: [low, medium, high, emergency] }
+        location:
+          type: object
+          required: [lat, lng, address]
+          properties:
+            lat: { type: number }
+            lng: { type: number }
+            address: { type: string }
+        attachments:
+          type: array
+          items: { type: string }
+
+    Complaint:
+      type: object
+      properties:
+        id: { type: string }
+        type: { type: string }
+        category: { type: string }
+        subcategory: { type: string }
+        description: { type: string }
+        priority: { type: string }
+        status: { type: string }
+        createdAt: { type: string, format: date-time }
+        estimatedResolution: { type: string, format: date-time }
+        updates:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp: { type: string }
+              status: { type: string }
+              message: { type: string }
+              by: { type: string }
+
+    PaymentReceipt:
+      type: object
+      properties:
+        success: { type: boolean }
+        receipt:
+          type: object
+          properties:
+            receiptNumber: { type: string }
+            transactionId: { type: string }
+            amount: { type: number }
+            paymentMethod: { type: string }
+            paidAt: { type: string, format: date-time }
+            status: { type: string }
+
+    LiveStatus:
+      type: object
+      properties:
+        electricity:
+          type: object
+          properties:
+            gridStatus: { type: string }
+            gridLoad: { type: number }
+            lastUpdated: { type: string }
+        gas:
+          type: object
+          properties:
+            pngPrice: { type: number }
+            cngPrice: { type: number }
+        water:
+          type: object
+          properties:
+            supplyStatus: { type: string }
+            reservoirLevel: { type: number }
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: { type: string }
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: { type: string }
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: { type: string }

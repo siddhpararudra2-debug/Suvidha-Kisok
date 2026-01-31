@@ -1,0 +1,26 @@
+{
+  "name": "suvidha-kiosk",
+  "version": "1.0.0",
+  "description": "Smart Urban Virtual Interactive Digital Helpdesk Assistant - Unified Civic Services Kiosk",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:backend": "npm run dev --workspace=backend",
+    "build": "npm run build --workspace=frontend && npm run build --workspace=backend",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "author": "SUVIDHA Team",
+  "license": "MIT"
+}
