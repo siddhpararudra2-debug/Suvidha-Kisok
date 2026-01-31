@@ -3,9 +3,6 @@ import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
-    Slider,
-    Switch,
-    FormControlLabel,
     Button,
     Divider,
     ToggleButtonGroup,
@@ -14,7 +11,6 @@ import {
 import {
     TextFields,
     Contrast,
-    VolumeUp,
     Refresh,
     DarkMode,
     LightMode,
@@ -23,8 +19,6 @@ import { RootState, AppDispatch } from '../../store';
 import {
     setTextSize,
     setContrastMode,
-    toggleVoice,
-    setVoiceSpeed,
     resetAccessibility,
     TextSize,
     ContrastMode,
@@ -33,7 +27,7 @@ import {
 const AccessibilityPanel = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch<AppDispatch>();
-    const { textSize, contrastMode, voiceEnabled, voiceSpeed } = useSelector(
+    const { textSize, contrastMode } = useSelector(
         (state: RootState) => state.ui
     );
 
@@ -129,49 +123,6 @@ const AccessibilityPanel = () => {
                         </ToggleButton>
                     ))}
                 </ToggleButtonGroup>
-            </Box>
-
-            <Divider />
-
-            {/* Voice Assistance */}
-            <Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                    <VolumeUp color="primary" />
-                    <Typography variant="subtitle1" fontWeight={600}>
-                        {t('accessibility.voiceAssistance')}
-                    </Typography>
-                </Box>
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={voiceEnabled}
-                            onChange={() => dispatch(toggleVoice())}
-                            color="primary"
-                        />
-                    }
-                    label={voiceEnabled ? 'On' : 'Off'}
-                    sx={{ mb: 2 }}
-                />
-                {voiceEnabled && (
-                    <Box sx={{ px: 2 }}>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
-                            Voice Speed: {voiceSpeed.toFixed(1)}x
-                        </Typography>
-                        <Slider
-                            value={voiceSpeed}
-                            onChange={(_, value) => dispatch(setVoiceSpeed(value as number))}
-                            min={0.5}
-                            max={2}
-                            step={0.1}
-                            marks={[
-                                { value: 0.5, label: '0.5x' },
-                                { value: 1, label: '1x' },
-                                { value: 2, label: '2x' },
-                            ]}
-                            valueLabelDisplay="auto"
-                        />
-                    </Box>
-                )}
             </Box>
 
             <Divider />

@@ -12,8 +12,6 @@ export interface UiState {
     language: Language;
     textSize: TextSize;
     contrastMode: ContrastMode;
-    voiceEnabled: boolean;
-    voiceSpeed: number; // 0.5 to 2.0
     screenReaderMode: boolean;
     sidebarOpen: boolean;
     showAccessibilityPanel: boolean;
@@ -39,8 +37,6 @@ const initialState: UiState = {
     language: 'en',
     textSize: 'normal',
     contrastMode: 'normal',
-    voiceEnabled: false,
-    voiceSpeed: 1.0,
     screenReaderMode: false,
     sidebarOpen: true,
     showAccessibilityPanel: false,
@@ -70,12 +66,6 @@ const uiSlice = createSlice({
         },
         setContrastMode(state, action: PayloadAction<ContrastMode>) {
             state.contrastMode = action.payload;
-        },
-        toggleVoice(state) {
-            state.voiceEnabled = !state.voiceEnabled;
-        },
-        setVoiceSpeed(state, action: PayloadAction<number>) {
-            state.voiceSpeed = Math.max(0.5, Math.min(2.0, action.payload));
         },
         toggleScreenReaderMode(state) {
             state.screenReaderMode = !state.screenReaderMode;
@@ -136,8 +126,6 @@ const uiSlice = createSlice({
         resetAccessibility(state) {
             state.textSize = 'normal';
             state.contrastMode = 'normal';
-            state.voiceEnabled = false;
-            state.voiceSpeed = 1.0;
             state.screenReaderMode = false;
         },
     },
@@ -147,8 +135,6 @@ export const {
     setLanguage,
     setTextSize,
     setContrastMode,
-    toggleVoice,
-    setVoiceSpeed,
     toggleScreenReaderMode,
     toggleSidebar,
     setSidebarOpen,
