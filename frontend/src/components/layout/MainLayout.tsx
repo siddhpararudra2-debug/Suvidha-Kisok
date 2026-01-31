@@ -22,6 +22,8 @@ import {
     DialogContent,
     DialogActions,
     Button,
+    useTheme,
+    useMediaQuery,
 } from '@mui/material';
 import {
     Menu as MenuIcon,
@@ -63,6 +65,8 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     const { t } = useTranslation();
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const { user, lastActivityTime, isGuest } = useSelector((state: RootState) => state.auth);
     const {
@@ -217,17 +221,20 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
             {/* Sidebar Drawer */}
             <Drawer
-                variant="persistent"
+                variant={isMobile ? 'temporary' : 'persistent'}
                 open={sidebarOpen}
+                onClose={() => dispatch(toggleSidebar())}
                 sx={{
                     width: sidebarOpen ? DRAWER_WIDTH : 0,
                     flexShrink: 0,
                     '& .MuiDrawer-paper': {
                         width: DRAWER_WIDTH,
                         boxSizing: 'border-box',
-                        top: emergencyAlert ? 120 : 80,
+                        top: isMobile ? 0 : (emergencyAlert ? 120 : 80),
+                        height: isMobile ? '100%' : `calc(100% - ${emergencyAlert ? 120 : 80}px)`,
                         borderRight: '1px solid',
                         borderColor: 'divider',
+                        zIndex: (theme) => isMobile ? theme.zIndex.drawer + 2 : theme.zIndex.drawer,
                     },
                 }}
             >
@@ -240,7 +247,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                     {menuItems.map((item) => (
                         <ListItemButton
                             key={item.path}
-                            onClick={() => navigate(item.path)}
+                            onClick={() => {
+                                navigate(item.path);
+                                if (isMobile) dispatch(toggleSidebar());
+                            }}
                             sx={{
                                 mx: 1,
                                 borderRadius: 2,
@@ -276,10 +286,11 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                     flexGrow: 1,
                     p: 3,
                     mt: emergencyAlert ? '120px' : '80px',
-                    ml: sidebarOpen ? 0 : `-${DRAWER_WIDTH}px`,
+                    ml: isMobile ? 0 : (sidebarOpen ? 0 : `-${DRAWER_WIDTH}px`),
                     transition: 'margin 0.3s',
                     backgroundColor: 'background.default',
                     minHeight: 'calc(100vh - 80px)',
+                    width: isMobile ? '100%' : `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : 0}px)`,
                 }}
             >
                 {children}
