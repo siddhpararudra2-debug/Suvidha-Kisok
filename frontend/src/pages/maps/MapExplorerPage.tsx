@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -63,29 +63,30 @@ const createIcon = (color: string) => new L.DivIcon({
 const electricityIcon = createIcon('#fbbc04');
 const gasIcon = createIcon('#ea4335');
 const waterIcon = createIcon('#1a73e8');
-const outageIcon = createIcon('#d93025');
 
 // Mock infrastructure data
 const infrastructureData = {
     substations: [
-        { id: 'SUB001', name: 'Borivali 33/11 kV Substation', lat: 19.2288, lng: 72.8541, capacity: '2×15 MVA', load: 85, status: 'operational' },
-        { id: 'SUB002', name: 'Andheri 132/33 kV Substation', lat: 19.1136, lng: 72.8697, capacity: '3×50 MVA', load: 72, status: 'operational' },
-        { id: 'SUB003', name: 'Bandra 33/11 kV Substation', lat: 19.0596, lng: 72.8295, capacity: '2×20 MVA', load: 68, status: 'operational' },
-        { id: 'SUB004', name: 'Powai 220/33 kV Grid', lat: 19.1176, lng: 72.9060, capacity: '2×100 MVA', load: 78, status: 'operational' },
+        { id: 'SUB001', name: 'Varachha 66kV Substation', lat: 21.2096, lng: 72.8576, capacity: '2×15 MVA', load: 85, status: 'operational' },
+        { id: 'SUB002', name: 'Adajan 220kV Grid', lat: 21.1959, lng: 72.7933, capacity: '3×50 MVA', load: 72, status: 'operational' },
+        { id: 'SUB003', name: 'Vesu 66kV Substation', lat: 21.1517, lng: 72.7758, capacity: '2×20 MVA', load: 68, status: 'operational' },
+        { id: 'SUB004', name: 'Katargam GIDC Grid', lat: 21.2227, lng: 72.8252, capacity: '2×100 MVA', load: 78, status: 'operational' },
+        { id: 'SUB005', name: 'Udhana 66kV Substation', lat: 21.1663, lng: 72.8428, capacity: '2×25 MVA', load: 65, status: 'operational' },
     ],
     cngStations: [
-        { id: 'CNG001', name: 'MGL Santacruz', lat: 19.0803, lng: 72.8423, operator: 'Mahanagar Gas', price: 76.59, hours: '24/7' },
-        { id: 'CNG002', name: 'MGL Andheri East', lat: 19.1197, lng: 72.8684, operator: 'Mahanagar Gas', price: 76.59, hours: '6AM-10PM' },
-        { id: 'CNG003', name: 'MGL Borivali', lat: 19.2307, lng: 72.8567, operator: 'Mahanagar Gas', price: 76.59, hours: '24/7' },
+        { id: 'CNG001', name: 'Gujarat Gas Adajan', lat: 21.1900, lng: 72.7900, operator: 'Gujarat Gas', price: 76.59, hours: '24/7' },
+        { id: 'CNG002', name: 'Gujarat Gas Piplod', lat: 21.1611, lng: 72.7725, operator: 'Gujarat Gas', price: 76.59, hours: '6AM-10PM' },
+        { id: 'CNG003', name: 'Gujarat Gas Varachha', lat: 21.2100, lng: 72.8600, operator: 'Gujarat Gas', price: 76.59, hours: '24/7' },
     ],
     waterTanks: [
-        { id: 'WT001', name: 'Powai ESR', lat: 19.1241, lng: 72.8994, capacity: '5 ML', level: 78, status: 'operational' },
-        { id: 'WT002', name: 'Bhandup WTP', lat: 19.1482, lng: 72.9352, capacity: '1350 MLD', level: 85, status: 'operational' },
-        { id: 'WT003', name: 'Malad ESR', lat: 19.1873, lng: 72.8489, capacity: '8 ML', level: 62, status: 'operational' },
+        { id: 'WT001', name: 'Sarthana Water Works', lat: 21.2300, lng: 72.8900, capacity: '5 ML', level: 78, status: 'operational' },
+        { id: 'WT002', name: 'Rander Water Tank', lat: 21.2000, lng: 72.7800, capacity: '1350 MLD', level: 85, status: 'operational' },
+        { id: 'WT003', name: 'Dindoli ESR', lat: 21.1400, lng: 72.8700, capacity: '8 ML', level: 62, status: 'operational' },
     ],
     outages: [
-        { id: 'OUT001', lat: 19.1050, lng: 72.8370, radius: 500, type: 'electricity', reason: 'Cable fault', eta: '2 hours' },
-        { id: 'OUT002', lat: 19.2150, lng: 72.8650, radius: 300, type: 'water', reason: 'Pipeline repair', eta: '4 hours' },
+        { id: 'OUT001', lat: 21.1800, lng: 72.8100, radius: 500, type: 'electricity', reason: 'Cable fault', eta: '2 hours' },
+        { id: 'OUT002', lat: 21.1600, lng: 72.8300, radius: 300, type: 'water', reason: 'Pipeline repair', eta: '4 hours' },
+        { id: 'OUT003', lat: 21.2200, lng: 72.8400, radius: 200, type: 'gas', reason: 'Maintenance', eta: '3 hours' },
     ],
 };
 
@@ -110,7 +111,7 @@ const MapExplorerPage = () => {
         outages: true,
     });
     const [searchQuery, setSearchQuery] = useState('');
-    const [mapCenter, setMapCenter] = useState<[number, number]>([19.0760, 72.8777]); // Mumbai
+    const [mapCenter, setMapCenter] = useState<[number, number]>([21.1702, 72.8311]); // Surat Center
     const [mapZoom, setMapZoom] = useState(12);
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [detailsOpen, setDetailsOpen] = useState(false);
@@ -133,6 +134,7 @@ const MapExplorerPage = () => {
                     setLocating(false);
                 },
                 (error) => {
+                    console.warn('Geolocation error:', error);
                     dispatch(showNotification({ message: 'Could not get location. Using default.', severity: 'warning' }));
                     setLocating(false);
                 },
@@ -144,29 +146,56 @@ const MapExplorerPage = () => {
         }
     };
 
-    const handleSearch = () => {
+    const handleSearch = async () => {
         if (!searchQuery.trim()) return;
 
-        // Mock location search - in production, use geocoding API
+        // Mock location search as priority/cache
         const locations: Record<string, [number, number]> = {
-            'andheri': [19.1136, 72.8697],
-            'bandra': [19.0596, 72.8295],
-            'borivali': [19.2288, 72.8541],
-            'powai': [19.1176, 72.9060],
-            'mumbai': [19.0760, 72.8777],
-            'juhu': [19.0883, 72.8263],
-            'malad': [19.1873, 72.8489],
+            'surat': [21.1702, 72.8311],
+            'adajan': [21.1959, 72.7933],
+            'vesu': [21.1517, 72.7758],
+            'varachha': [21.2096, 72.8576],
+            'piplod': [21.1611, 72.7725],
+            'katargam': [21.2227, 72.8252],
+            'udhana': [21.1663, 72.8428],
+            'sarthana': [21.2300, 72.8900],
+            'rander': [21.2000, 72.7800],
+            'dindoli': [21.1400, 72.8700],
         };
 
         const query = searchQuery.toLowerCase();
+        // Check mock locations first
         const match = Object.entries(locations).find(([key]) => key.includes(query) || query.includes(key));
 
         if (match) {
             setMapCenter(match[1]);
             setMapZoom(14);
             dispatch(showNotification({ message: `Found: ${match[0].charAt(0).toUpperCase() + match[0].slice(1)}`, severity: 'success' }));
-        } else {
-            dispatch(showNotification({ message: 'Location not found', severity: 'warning' }));
+            return;
+        }
+
+        // If not found in mock, use OpenStreetMap Nominatim API
+        try {
+            setLocating(true); // Reuse locating spinner or create a new loading state
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}`);
+            const data = await response.json();
+
+            if (data && data.length > 0) {
+                const { lat, lon, display_name } = data[0];
+                const newLat = parseFloat(lat);
+                const newLng = parseFloat(lon);
+
+                setMapCenter([newLat, newLng]);
+                setMapZoom(14);
+                dispatch(showNotification({ message: `Found: ${display_name.split(',')[0]}`, severity: 'success' }));
+            } else {
+                dispatch(showNotification({ message: 'Location not found', severity: 'warning' }));
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+            dispatch(showNotification({ message: 'Error searching location', severity: 'error' }));
+        } finally {
+            setLocating(false);
         }
     };
 
@@ -233,9 +262,10 @@ const MapExplorerPage = () => {
                             variant="contained"
                             fullWidth
                             onClick={handleSearch}
+                            disabled={locating}
                             sx={{ mb: 3, minHeight: 44 }}
                         >
-                            Search Location
+                            {locating ? <CircularProgress size={24} color="inherit" /> : 'Search Location'}
                         </Button>
 
                         {/* Layers */}
