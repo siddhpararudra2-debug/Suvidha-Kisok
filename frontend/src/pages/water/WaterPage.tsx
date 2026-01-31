@@ -2,12 +2,12 @@ import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
+    Grid,
     Card,
     CardContent,
     CardActionArea,
     Paper,
 } from '@mui/material';
-import Grid2 from '@mui/material/Grid2';
 import {
     Receipt,
     Payment,
@@ -39,14 +39,14 @@ const WaterPage = () => {
             <Paper
                 elevation={0}
                 sx={{
-                    p: { xs: 2, md: 3 },
+                    p: 3,
                     mb: 4,
                     background: 'linear-gradient(135deg, #1a73e8 0%, #00bcd4 100%)',
                     borderRadius: 3,
                     color: 'white',
                 }}
             >
-                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
+                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
                     {t('water.title')}
                 </Typography>
                 <Typography variant="body1" sx={{ opacity: 0.9 }}>
@@ -81,9 +81,9 @@ const WaterPage = () => {
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                 All Services
             </Typography>
-            <Grid2 container spacing={2}>
+            <Grid container spacing={2}>
                 {services.map((service) => (
-                    <Grid2 size={{ xs: 12, sm: 4, md: 3 }} key={service.title}>
+                    <Grid size={{ xs: 6, sm: 4, md: 3 }} key={service.title}>
                         <Card
                             sx={{
                                 borderRadius: 2,
@@ -113,9 +113,9 @@ const WaterPage = () => {
                                 </Typography>
                             </CardActionArea>
                         </Card>
-                    </Grid2>
+                    </Grid>
                 ))}
-            </Grid2>
+            </Grid>
         </Box>
     );
 };

@@ -2,14 +2,15 @@ import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
+    Grid,
     Card,
     CardContent,
     CardActionArea,
     Button,
+    Chip,
     Paper,
     Alert,
 } from '@mui/material';
-import Grid2 from '@mui/material/Grid2';
 import {
     Receipt,
     Payment,
@@ -18,6 +19,7 @@ import {
     Warning,
     LocalGasStation,
     Security,
+    Info,
 } from '@mui/icons-material';
 
 const GasPage = () => {
@@ -38,14 +40,14 @@ const GasPage = () => {
             <Paper
                 elevation={0}
                 sx={{
-                    p: { xs: 2, md: 3 },
+                    p: 3,
                     mb: 4,
                     background: 'linear-gradient(135deg, #ea4335 0%, #ff5722 100%)',
                     borderRadius: 3,
                     color: 'white',
                 }}
             >
-                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '1.75rem', md: '2.125rem' } }}>
+                <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
                     {t('gas.title')}
                 </Typography>
                 <Typography variant="body1" sx={{ opacity: 0.9 }}>
@@ -71,8 +73,8 @@ const GasPage = () => {
             </Alert>
 
             {/* Current Prices */}
-            <Grid2 container spacing={2} sx={{ mb: 4 }}>
-                <Grid2 size={{ xs: 12, sm: 6 }}>
+            <Grid container spacing={2} sx={{ mb: 4 }}>
+                <Grid size={{ xs: 6 }}>
                     <Card sx={{ borderRadius: 2, bgcolor: 'primary.50' }}>
                         <CardContent sx={{ textAlign: 'center' }}>
                             <Typography variant="overline" color="text.secondary">
@@ -86,8 +88,8 @@ const GasPage = () => {
                             </Typography>
                         </CardContent>
                     </Card>
-                </Grid2>
-                <Grid2 size={{ xs: 12, sm: 6 }}>
+                </Grid>
+                <Grid size={{ xs: 6 }}>
                     <Card sx={{ borderRadius: 2, bgcolor: 'success.50' }}>
                         <CardContent sx={{ textAlign: 'center' }}>
                             <Typography variant="overline" color="text.secondary">
@@ -101,16 +103,16 @@ const GasPage = () => {
                             </Typography>
                         </CardContent>
                     </Card>
-                </Grid2>
-            </Grid2>
+                </Grid>
+            </Grid>
 
             {/* Services Grid */}
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                 All Services
             </Typography>
-            <Grid2 container spacing={2}>
+            <Grid container spacing={2}>
                 {services.map((service) => (
-                    <Grid2 size={{ xs: 12, sm: 4 }} key={service.title}>
+                    <Grid size={{ xs: 6, sm: 4 }} key={service.title}>
                         <Card
                             sx={{
                                 borderRadius: 2,
@@ -140,9 +142,9 @@ const GasPage = () => {
                                 </Typography>
                             </CardActionArea>
                         </Card>
-                    </Grid2>
+                    </Grid>
                 ))}
-            </Grid2>
+            </Grid>
         </Box>
     );
 };
