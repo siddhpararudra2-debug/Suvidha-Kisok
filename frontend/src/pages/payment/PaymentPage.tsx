@@ -473,13 +473,13 @@ Thank you for using SUVIDHA!
                                     <Box sx={{ textAlign: 'center', py: 3 }}>
                                         <Box
                                             sx={{
-                                                width: 200,
-                                                height: 200,
+                                                width: 250,
+                                                height: 250,
                                                 mx: 'auto',
                                                 mb: 2,
-                                                p: 2,
+                                                p: 1,
                                                 border: '2px solid',
-                                                borderColor: 'divider',
+                                                borderColor: 'primary.main',
                                                 borderRadius: 2,
                                                 display: 'flex',
                                                 alignItems: 'center',
@@ -487,12 +487,21 @@ Thank you for using SUVIDHA!
                                                 bgcolor: 'white',
                                             }}
                                         >
-                                            <QrCode2 sx={{ fontSize: 150, color: 'text.primary' }} />
+                                            <img
+                                                src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
+                                                    `upi://pay?pa=jasanidhruv@okicici&pn=SuvidhaKiosk&am=${billData.amount}&cu=INR`
+                                                )}`}
+                                                alt="Payment QR Code"
+                                                style={{ width: '100%', height: '100%' }}
+                                            />
                                         </Box>
                                         <Typography variant="body2" color="text.secondary">
-                                            Scan with any UPI app to pay
+                                            Scan with any UPI app to pay <strong>{t('payment.upi')}</strong>
                                         </Typography>
-                                        <Typography variant="h5" sx={{ fontWeight: 700, mt: 1 }}>
+                                        <Typography variant="caption" display="block" color="text.secondary" sx={{ mt: 0.5 }}>
+                                            UPI ID: jasanidhruv@okicici
+                                        </Typography>
+                                        <Typography variant="h5" sx={{ fontWeight: 700, mt: 2, color: 'primary.main' }}>
                                             ₹{billData.amount.toLocaleString('en-IN')}
                                         </Typography>
                                     </Box>
