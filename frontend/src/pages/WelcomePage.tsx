@@ -7,13 +7,13 @@ import {
     Box,
     Container,
     Typography,
-    Grid,
     Card,
     CardActionArea,
     CardContent,
     Button,
     Chip,
 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
     ElectricBolt,
     LocalGasStation,
@@ -212,9 +212,9 @@ const WelcomePage = () => {
                                 {t('common.selectLanguage')}
                             </Typography>
 
-                            <Grid container spacing={2}>
+                            <Grid2 container spacing={2}>
                                 {languages.map((lang) => (
-                                    <Grid size={{ xs: 6, sm: 4, md: 3 }} key={lang.code}>
+                                    <Grid2 size={{ xs: 6, sm: 4, md: 3 }} key={lang.code}>
                                         <Card
                                             variant={selectedLang === lang.code ? 'elevation' : 'outlined'}
                                             sx={{
@@ -253,9 +253,9 @@ const WelcomePage = () => {
                                                 </Typography>
                                             </CardActionArea>
                                         </Card>
-                                    </Grid>
+                                    </Grid2>
                                 ))}
-                            </Grid>
+                            </Grid2>
 
                             <Box sx={{ mt: 4, textAlign: 'center' }}>
                                 <Button

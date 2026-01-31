@@ -28,7 +28,24 @@
         "logout": "Logout",
         "login": "Login",
         "register": "Register",
-        "guest": "Continue as Guest"
+        "guest": "Continue as Guest",
+        "days": "days",
+        "total": "Total",
+        "yes": "Yes",
+        "no": "No",
+        "ok": "OK",
+        "refresh": "Refresh",
+        "export": "Export",
+        "import": "Import"
+    },
+    "nav": {
+        "schemes": "Government Schemes",
+        "directory": "Service Directory",
+        "maps": "Infrastructure Map",
+        "home": "Home",
+        "dashboard": "Dashboard",
+        "settings": "Settings",
+        "profile": "Profile"
     },
     "emergency": {
         "title": "Emergency Contacts",
@@ -65,6 +82,7 @@
     "dashboard": {
         "title": "Dashboard",
         "welcome": "Welcome, {{name}}",
+        "subtitle": "Manage all your utility services in one place",
         "outstandingBills": "Outstanding Bills",
         "totalDue": "Total Due",
         "payAll": "Pay All",
@@ -72,7 +90,8 @@
         "viewAll": "View All",
         "quickActions": "Quick Actions",
         "recentActivity": "Recent Activity",
-        "linkedConnections": "Linked Connections"
+        "linkedConnections": "Linked Connections",
+        "bill": "Bill"
     },
     "services": {
         "electricity": "Electricity",
@@ -164,7 +183,15 @@
         "success": "Payment Successful",
         "failed": "Payment Failed",
         "receipt": "Download Receipt",
-        "transactionId": "Transaction ID"
+        "transactionId": "Transaction ID",
+        "billSummary": "Bill Summary",
+        "convenienceFee": "Convenience Fee",
+        "free": "FREE",
+        "paySecure": "Your payment is secured with end-to-end encryption",
+        "backToDashboard": "Back to Dashboard",
+        "share": "Share",
+        "amountPaid": "Amount Paid",
+        "dateTime": "Date & Time"
     },
     "maps": {
         "title": "Infrastructure Map",
@@ -204,5 +231,55 @@
         "limited": "Limited",
         "disrupted": "Disrupted",
         "lastUpdated": "Last Updated"
+    },
+    "admin": {
+        "title": "Admin Dashboard",
+        "subtitle": "SUVIDHA Kiosk Management System",
+        "exportReport": "Export Report",
+        "refreshData": "Refresh Data",
+        "totalUsers": "Total Users",
+        "activeKiosks": "Active Kiosks",
+        "openComplaints": "Open Complaints",
+        "resolvedToday": "resolved today",
+        "pendingPayments": "Pending Payments",
+        "acrossUtilities": "Across all utilities",
+        "avgResolution": "Avg Resolution",
+        "fromLastWeek": "from last week",
+        "thisMonth": "this month",
+        "offline": "offline",
+        "complaintsManagement": "Complaints Management",
+        "kioskStatus": "Kiosk Status",
+        "reports": "Reports",
+        "searchPlaceholder": "Search by ID, name, or location...",
+        "allStatus": "All Status",
+        "moreFilters": "More Filters",
+        "citizen": "Citizen",
+        "category": "Category",
+        "assignedTo": "Assigned To",
+        "sla": "SLA",
+        "actions": "Actions",
+        "complaintDetails": "Complaint Details",
+        "reassign": "Reassign",
+        "markResolved": "Mark Resolved",
+        "lastPing": "Last ping",
+        "todaysTxns": "Today's Txns",
+        "uptime": "Uptime",
+        "online": "Online",
+        "maintenance": "Maintenance"
+    },
+    "schemes": {
+        "title": "Government Schemes",
+        "eligibility": "Eligibility",
+        "benefits": "Benefits",
+        "apply": "Apply Now",
+        "learnMore": "Learn More"
+    },
+    "directory": {
+        "title": "Service Directory",
+        "searchServices": "Search Services",
+        "category": "Category",
+        "contact": "Contact",
+        "address": "Address",
+        "timings": "Timings"
     }
 }

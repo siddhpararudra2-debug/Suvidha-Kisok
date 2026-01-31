@@ -28,7 +28,24 @@
         "logout": "लॉग आउट",
         "login": "लॉग इन",
         "register": "पंजीकरण",
-        "guest": "अतिथि के रूप में जारी रखें"
+        "guest": "अतिथि के रूप में जारी रखें",
+        "days": "दिन",
+        "total": "कुल",
+        "yes": "हाँ",
+        "no": "नहीं",
+        "ok": "ठीक है",
+        "refresh": "रिफ्रेश करें",
+        "export": "निर्यात",
+        "import": "आयात"
+    },
+    "nav": {
+        "schemes": "सरकारी योजनाएं",
+        "directory": "सेवा निर्देशिका",
+        "maps": "इंफ्रास्ट्रक्चर मैप",
+        "home": "होम",
+        "dashboard": "डैशबोर्ड",
+        "settings": "सेटिंग्स",
+        "profile": "प्रोफाइल"
     },
     "emergency": {
         "title": "आपातकालीन संपर्क",
@@ -65,6 +82,7 @@
     "dashboard": {
         "title": "डैशबोर्ड",
         "welcome": "स्वागत है, {{name}}",
+        "subtitle": "अपनी सभी उपयोगिता सेवाओं को एक ही स्थान पर प्रबंधित करें",
         "outstandingBills": "बकाया बिल",
         "totalDue": "कुल बकाया",
         "payAll": "सभी भुगतान करें",
@@ -72,7 +90,8 @@
         "viewAll": "सभी देखें",
         "quickActions": "त्वरित क्रियाएं",
         "recentActivity": "हाल की गतिविधि",
-        "linkedConnections": "लिंक्ड कनेक्शन"
+        "linkedConnections": "लिंक्ड कनेक्शन",
+        "bill": "बिल"
     },
     "services": {
         "electricity": "बिजली",
@@ -164,7 +183,15 @@
         "success": "भुगतान सफल",
         "failed": "भुगतान विफल",
         "receipt": "रसीद डाउनलोड करें",
-        "transactionId": "लेनदेन आईडी"
+        "transactionId": "लेनदेन आईडी",
+        "billSummary": "बिल सारांश",
+        "convenienceFee": "सुविधा शुल्क",
+        "free": "मुफ्त",
+        "paySecure": "आपका भुगतान एंड-टू-एंड एन्क्रिप्शन से सुरक्षित है",
+        "backToDashboard": "डैशबोर्ड पर वापस जाएं",
+        "share": "साझा करें",
+        "amountPaid": "भुगतान राशि",
+        "dateTime": "दिनांक और समय"
     },
     "maps": {
         "title": "इंफ्रास्ट्रक्चर मैप",
@@ -204,5 +231,55 @@
         "limited": "सीमित",
         "disrupted": "बाधित",
         "lastUpdated": "अंतिम अपडेट"
+    },
+    "admin": {
+        "title": "व्यवस्थापक डैशबोर्ड",
+        "subtitle": "सुविधा कियोस्क प्रबंधन प्रणाली",
+        "exportReport": "रिपोर्ट निर्यात करें",
+        "refreshData": "डेटा रिफ्रेश करें",
+        "totalUsers": "कुल उपयोगकर्ता",
+        "activeKiosks": "सक्रिय कियोस्क",
+        "openComplaints": "खुली शिकायतें",
+        "resolvedToday": "आज हल की गई",
+        "pendingPayments": "लंबित भुगतान",
+        "acrossUtilities": "सभी उपयोगिताओं में",
+        "avgResolution": "औसत समाधान",
+        "fromLastWeek": "पिछले सप्ताह से",
+        "thisMonth": "इस महीने",
+        "offline": "ऑफलाइन",
+        "complaintsManagement": "शिकायत प्रबंधन",
+        "kioskStatus": "कियोस्क स्थिति",
+        "reports": "रिपोर्ट",
+        "searchPlaceholder": "आईडी, नाम या स्थान से खोजें...",
+        "allStatus": "सभी स्थिति",
+        "moreFilters": "अधिक फ़िल्टर",
+        "citizen": "नागरिक",
+        "category": "श्रेणी",
+        "assignedTo": "को सौंपा गया",
+        "sla": "एसएलए",
+        "actions": "क्रियाएं",
+        "complaintDetails": "शिकायत विवरण",
+        "reassign": "पुनः सौंपें",
+        "markResolved": "हल किया गया चिह्नित करें",
+        "lastPing": "अंतिम पिंग",
+        "todaysTxns": "आज के लेनदेन",
+        "uptime": "अपटाइम",
+        "online": "ऑनलाइन",
+        "maintenance": "रखरखाव"
+    },
+    "schemes": {
+        "title": "सरकारी योजनाएं",
+        "eligibility": "पात्रता",
+        "benefits": "लाभ",
+        "apply": "अभी आवेदन करें",
+        "learnMore": "और जानें"
+    },
+    "directory": {
+        "title": "सेवा निर्देशिका",
+        "searchServices": "सेवाएं खोजें",
+        "category": "श्रेणी",
+        "contact": "संपर्क",
+        "address": "पता",
+        "timings": "समय"
     }
 }

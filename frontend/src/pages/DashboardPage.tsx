@@ -5,17 +5,15 @@ import { motion } from 'framer-motion';
 import {
     Box,
     Typography,
-    Grid,
     Card,
     CardContent,
     CardActionArea,
     Button,
     Avatar,
     Chip,
-    LinearProgress,
-    Divider,
     Paper,
 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
     ElectricBolt,
     LocalGasStation,
@@ -24,10 +22,6 @@ import {
     Map,
     AccountBalance,
     People,
-    Receipt,
-    TrendingUp,
-    Warning,
-    CheckCircle,
     Schedule,
     ArrowForward,
 } from '@mui/icons-material';
@@ -37,9 +31,6 @@ const DashboardPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { user } = useSelector((state: RootState) => state.auth);
-    const { pendingAmount, activeComplaints, liveStatus } = useSelector(
-        (state: RootState) => state.services
-    );
 
     const serviceCards = [
         {
@@ -74,8 +65,8 @@ const DashboardPage = () => {
 
     const quickActions = [
         { icon: <Map />, label: t('maps.title'), path: '/maps' },
-        { icon: <AccountBalance />, label: 'Schemes', path: '/schemes' },
-        { icon: <People />, label: 'Directory', path: '/directory' },
+        { icon: <AccountBalance />, label: t('nav.schemes'), path: '/schemes' },
+        { icon: <People />, label: t('nav.directory'), path: '/directory' },
     ];
 
     // Mock bills for demo
@@ -105,8 +96,8 @@ const DashboardPage = () => {
                         color: 'white',
                     }}
                 >
-                    <Grid container alignItems="center" spacing={3}>
-                        <Grid size={{ xs: 12, md: 8 }}>
+                    <Grid2 container alignItems="center" spacing={3}>
+                        <Grid2 size={{ xs: 12, md: 8 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                                 <Avatar
                                     sx={{
@@ -124,12 +115,12 @@ const DashboardPage = () => {
                                         {t('dashboard.welcome', { name: user?.name })}
                                     </Typography>
                                     <Typography variant="body1" sx={{ opacity: 0.9 }}>
-                                        Manage all your utility services in one place
+                                        {t('dashboard.subtitle')}
                                     </Typography>
                                 </Box>
                             </Box>
-                        </Grid>
-                        <Grid size={{ xs: 12, md: 4 }}>
+                        </Grid2>
+                        <Grid2 size={{ xs: 12, md: 4 }}>
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -157,8 +148,8 @@ const DashboardPage = () => {
                                     {t('dashboard.payAll')}
                                 </Button>
                             </Box>
-                        </Grid>
-                    </Grid>
+                        </Grid2>
+                    </Grid2>
                 </Paper>
             </motion.div>
 
@@ -171,9 +162,9 @@ const DashboardPage = () => {
                 <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                     {t('dashboard.outstandingBills')}
                 </Typography>
-                <Grid container spacing={2} sx={{ mb: 4 }}>
+                <Grid2 container spacing={2} sx={{ mb: 4 }}>
                     {pendingBills.map((bill) => (
-                        <Grid size={{ xs: 12, sm: 6, md: 4 }} key={bill.id}>
+                        <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={bill.id}>
                             <Card
                                 sx={{
                                     borderRadius: 2,
@@ -189,12 +180,12 @@ const DashboardPage = () => {
                                 <CardContent>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                                         <Typography variant="subtitle2" color="text.secondary">
-                                            {bill.type.charAt(0).toUpperCase() + bill.type.slice(1)} Bill
+                                            {t(`services.${bill.type}`)} {t('dashboard.bill')}
                                         </Typography>
                                         <Chip
                                             size="small"
                                             icon={<Schedule sx={{ fontSize: 14 }} />}
-                                            label={`${bill.dueIn} days`}
+                                            label={`${bill.dueIn} ${t('common.days')}`}
                                             color={bill.dueIn <= 5 ? 'error' : 'default'}
                                         />
                                     </Box>
@@ -222,9 +213,9 @@ const DashboardPage = () => {
                                     </Box>
                                 </CardContent>
                             </Card>
-                        </Grid>
+                        </Grid2>
                     ))}
-                </Grid>
+                </Grid2>
             </motion.div>
 
             {/* Service Cards */}
@@ -236,9 +227,9 @@ const DashboardPage = () => {
                 <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                     {t('dashboard.quickActions')}
                 </Typography>
-                <Grid container spacing={3} sx={{ mb: 4 }}>
+                <Grid2 container spacing={3} sx={{ mb: 4 }}>
                     {serviceCards.map((service) => (
-                        <Grid size={{ xs: 12, sm: 6, md: 3 }} key={service.title}>
+                        <Grid2 size={{ xs: 12, sm: 6, md: 3 }} key={service.title}>
                             <Card
                                 sx={{
                                     height: '100%',
@@ -285,9 +276,9 @@ const DashboardPage = () => {
                                     </Box>
                                 </CardActionArea>
                             </Card>
-                        </Grid>
+                        </Grid2>
                     ))}
-                </Grid>
+                </Grid2>
             </motion.div>
 
             {/* Quick Actions Row */}
@@ -296,9 +287,9 @@ const DashboardPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
             >
-                <Grid container spacing={2} sx={{ mb: 4 }}>
+                <Grid2 container spacing={2} sx={{ mb: 4 }}>
                     {quickActions.map((action) => (
-                        <Grid size={{ xs: 12, sm: 4 }} key={action.label}>
+                        <Grid2 size={{ xs: 12, sm: 4 }} key={action.label}>
                             <Card
                                 sx={{
                                     borderRadius: 2,
@@ -330,9 +321,9 @@ const DashboardPage = () => {
                                     <ArrowForward sx={{ ml: 'auto', color: 'text.secondary' }} />
                                 </CardContent>
                             </Card>
-                        </Grid>
+                        </Grid2>
                     ))}
-                </Grid>
+                </Grid2>
             </motion.div>
 
             {/* Active Complaints Summary */}
@@ -355,48 +346,48 @@ const DashboardPage = () => {
                                 {t('dashboard.viewAll')}
                             </Button>
                         </Box>
-                        <Grid container spacing={2}>
-                            <Grid size={{ xs: 6, sm: 3 }}>
+                        <Grid2 container spacing={2}>
+                            <Grid2 size={{ xs: 6, sm: 3 }}>
                                 <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'warning.50', borderRadius: 2 }}>
                                     <Typography variant="h4" color="warning.main" sx={{ fontWeight: 700 }}>
                                         2
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        In Progress
+                                        {t('complaints.status.in_progress')}
                                     </Typography>
                                 </Box>
-                            </Grid>
-                            <Grid size={{ xs: 6, sm: 3 }}>
+                            </Grid2>
+                            <Grid2 size={{ xs: 6, sm: 3 }}>
                                 <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'info.50', borderRadius: 2 }}>
                                     <Typography variant="h4" color="info.main" sx={{ fontWeight: 700 }}>
                                         1
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        Assigned
+                                        {t('complaints.status.assigned')}
                                     </Typography>
                                 </Box>
-                            </Grid>
-                            <Grid size={{ xs: 6, sm: 3 }}>
+                            </Grid2>
+                            <Grid2 size={{ xs: 6, sm: 3 }}>
                                 <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'success.50', borderRadius: 2 }}>
                                     <Typography variant="h4" color="success.main" sx={{ fontWeight: 700 }}>
                                         5
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        Resolved
+                                        {t('complaints.status.resolved')}
                                     </Typography>
                                 </Box>
-                            </Grid>
-                            <Grid size={{ xs: 6, sm: 3 }}>
+                            </Grid2>
+                            <Grid2 size={{ xs: 6, sm: 3 }}>
                                 <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'neutral.100', borderRadius: 2 }}>
                                     <Typography variant="h4" color="text.primary" sx={{ fontWeight: 700 }}>
                                         8
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        Total
+                                        {t('common.total')}
                                     </Typography>
                                 </Box>
-                            </Grid>
-                        </Grid>
+                            </Grid2>
+                        </Grid2>
                     </CardContent>
                 </Card>
             </motion.div>

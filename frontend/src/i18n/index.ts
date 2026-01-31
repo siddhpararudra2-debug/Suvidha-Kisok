@@ -5,6 +5,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 // Import translation files
 import en from './locales/en.json';
 import hi from './locales/hi.json';
+import gu from './locales/gu.json';
 
 // Language configuration
 export const languages = [
@@ -31,6 +32,7 @@ i18n
         resources: {
             en: { translation: en },
             hi: { translation: hi },
+            gu: { translation: gu },
             // Other languages will fall back to English
         },
         fallbackLng: 'en',
