@@ -292,7 +292,7 @@ const AdminDashboard = () => {
                 <TabPanel value={tabValue} index={0}>
                     <Box sx={{ p: 2 }}>
                         {/* Filters */}
-                        <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+                        <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
                             <TextField
                                 placeholder="Search by ID, name, or location..."
                                 value={searchQuery}
@@ -300,9 +300,9 @@ const AdminDashboard = () => {
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start"><Search /></InputAdornment>,
                                 }}
-                                sx={{ flex: 1 }}
+                                sx={{ flex: 1, minWidth: { xs: '100%', sm: 300 } }}
                             />
-                            <FormControl sx={{ minWidth: 150 }}>
+                            <FormControl sx={{ minWidth: 150, flexGrow: { xs: 1, sm: 0 } }}>
                                 <InputLabel>Status</InputLabel>
                                 <Select value={statusFilter} label="Status" onChange={(e) => setStatusFilter(e.target.value)}>
                                     <MenuItem value="all">All Status</MenuItem>
@@ -312,82 +312,84 @@ const AdminDashboard = () => {
                                     <MenuItem value="resolved">Resolved</MenuItem>
                                 </Select>
                             </FormControl>
-                            <Button variant="outlined" startIcon={<FilterList />}>
+                            <Button variant="outlined" startIcon={<FilterList />} sx={{ flexGrow: { xs: 1, sm: 0 } }}>
                                 More Filters
                             </Button>
                         </Box>
 
                         {/* Complaints Table */}
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>ID</TableCell>
-                                    <TableCell>Citizen</TableCell>
-                                    <TableCell>Category</TableCell>
-                                    <TableCell>Location</TableCell>
-                                    <TableCell>Priority</TableCell>
-                                    <TableCell>Status</TableCell>
-                                    <TableCell>Assigned To</TableCell>
-                                    <TableCell>SLA</TableCell>
-                                    <TableCell>Actions</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {filteredComplaints.map((complaint) => (
-                                    <TableRow key={complaint.id} hover>
-                                        <TableCell>
-                                            <Typography variant="body2" sx={{ fontWeight: 600 }}>{complaint.id}</Typography>
-                                            <Typography variant="caption" color="text.secondary">{complaint.createdAt}</Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography variant="body2">{complaint.citizen}</Typography>
-                                            <Typography variant="caption" color="text.secondary">{complaint.mobile}</Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                {getCategoryIcon(complaint.category)}
-                                                <Typography variant="body2">{complaint.subcategory}</Typography>
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell>{complaint.location}</TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                label={complaint.priority}
-                                                size="small"
-                                                color={getPriorityColor(complaint.priority) as any}
-                                            />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                label={complaint.status.replace('_', ' ')}
-                                                size="small"
-                                                color={getStatusColor(complaint.status) as any}
-                                            />
-                                        </TableCell>
-                                        <TableCell>{complaint.assignedTo || '-'}</TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                label={complaint.slaStatus.replace('_', ' ')}
-                                                size="small"
-                                                color={complaint.slaStatus === 'breached' ? 'error' : 'success'}
-                                                variant="outlined"
-                                            />
-                                        </TableCell>
-                                        <TableCell>
-                                            <IconButton
-                                                size="small"
-                                                onClick={() => {
-                                                    setSelectedComplaint(complaint);
-                                                    setComplaintDialogOpen(true);
-                                                }}
-                                            >
-                                                <Visibility />
-                                            </IconButton>
-                                        </TableCell>
+                        <Box sx={{ overflowX: 'auto' }}>
+                            <Table sx={{ minWidth: 800 }}>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>ID</TableCell>
+                                        <TableCell>Citizen</TableCell>
+                                        <TableCell>Category</TableCell>
+                                        <TableCell>Location</TableCell>
+                                        <TableCell>Priority</TableCell>
+                                        <TableCell>Status</TableCell>
+                                        <TableCell>Assigned To</TableCell>
+                                        <TableCell>SLA</TableCell>
+                                        <TableCell>Actions</TableCell>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHead>
+                                <TableBody>
+                                    {filteredComplaints.map((complaint) => (
+                                        <TableRow key={complaint.id} hover>
+                                            <TableCell>
+                                                <Typography variant="body2" sx={{ fontWeight: 600 }}>{complaint.id}</Typography>
+                                                <Typography variant="caption" color="text.secondary">{complaint.createdAt}</Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography variant="body2">{complaint.citizen}</Typography>
+                                                <Typography variant="caption" color="text.secondary">{complaint.mobile}</Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                    {getCategoryIcon(complaint.category)}
+                                                    <Typography variant="body2">{complaint.subcategory}</Typography>
+                                                </Box>
+                                            </TableCell>
+                                            <TableCell>{complaint.location}</TableCell>
+                                            <TableCell>
+                                                <Chip
+                                                    label={complaint.priority}
+                                                    size="small"
+                                                    color={getPriorityColor(complaint.priority) as any}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Chip
+                                                    label={complaint.status.replace('_', ' ')}
+                                                    size="small"
+                                                    color={getStatusColor(complaint.status) as any}
+                                                />
+                                            </TableCell>
+                                            <TableCell>{complaint.assignedTo || '-'}</TableCell>
+                                            <TableCell>
+                                                <Chip
+                                                    label={complaint.slaStatus.replace('_', ' ')}
+                                                    size="small"
+                                                    color={complaint.slaStatus === 'breached' ? 'error' : 'success'}
+                                                    variant="outlined"
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() => {
+                                                        setSelectedComplaint(complaint);
+                                                        setComplaintDialogOpen(true);
+                                                    }}
+                                                >
+                                                    <Visibility />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </Box>
                     </Box>
                 </TabPanel>
 

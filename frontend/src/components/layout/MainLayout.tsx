@@ -22,6 +22,8 @@ import {
     DialogContent,
     DialogActions,
     Button,
+    useMediaQuery,
+    useTheme,
 } from '@mui/material';
 import {
     Menu as MenuIcon,
@@ -63,6 +65,8 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     const { t } = useTranslation();
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const { user, lastActivityTime, isGuest } = useSelector((state: RootState) => state.auth);
     const {
@@ -116,6 +120,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         dispatch(hideSessionTimeoutWarning());
     };
 
+    const handleDrawerToggle = () => {
+        dispatch(toggleSidebar());
+    };
+
     const menuItems = [
         { path: '/dashboard', icon: <Home />, label: t('common.home') },
         { path: '/electricity', icon: <ElectricBolt />, label: t('services.electricity') },
@@ -149,7 +157,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                         edge="start"
                         color="inherit"
                         aria-label="menu"
-                        onClick={() => dispatch(toggleSidebar())}
+                        onClick={handleDrawerToggle}
                         sx={{ mr: 2 }}
                     >
                         <MenuIcon />
@@ -171,7 +179,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                                 S
                             </Typography>
                         </Box>
-                        <Box>
+                        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                             <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
                                 SUVIDHA
                             </Typography>
@@ -183,7 +191,9 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
                     <Box sx={{ flexGrow: 1 }} />
 
-                    <LiveStatusBar />
+                    <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                        <LiveStatusBar />
+                    </Box>
 
                     <IconButton
                         color="inherit"
@@ -195,19 +205,19 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                     </IconButton>
 
                     {user && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: 2 }}>
-                            <Avatar sx={{ bgcolor: 'primary.main' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: 1 }}>
+                            <Avatar sx={{ bgcolor: 'primary.main', width: 32, height: 32 }}>
                                 {user.name.charAt(0).toUpperCase()}
                             </Avatar>
-                            <Box>
+                            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
                                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                                     {user.name}
                                 </Typography>
                                 {isGuest && (
-                                    <Chip label="Guest" size="small" color="warning" />
+                                    <Chip label="Guest" size="small" color="warning" sx={{ height: 20, fontSize: 10 }} />
                                 )}
                             </Box>
-                            <IconButton color="inherit" onClick={handleLogout}>
+                            <IconButton color="inherit" onClick={handleLogout} sx={{ ml: 1 }}>
                                 <Logout />
                             </IconButton>
                         </Box>
@@ -217,17 +227,20 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
             {/* Sidebar Drawer */}
             <Drawer
-                variant="persistent"
+                variant={isMobile ? 'temporary' : 'persistent'}
                 open={sidebarOpen}
+                onClose={() => isMobile && dispatch(toggleSidebar())}
                 sx={{
                     width: sidebarOpen ? DRAWER_WIDTH : 0,
                     flexShrink: 0,
                     '& .MuiDrawer-paper': {
                         width: DRAWER_WIDTH,
                         boxSizing: 'border-box',
-                        top: emergencyAlert ? 120 : 80,
+                        top: isMobile ? 0 : (emergencyAlert ? 120 : 80),
+                        pt: isMobile ? 10 : 0,
                         borderRight: '1px solid',
                         borderColor: 'divider',
+                        zIndex: isMobile ? (theme) => theme.zIndex.drawer : (theme) => theme.zIndex.drawer,
                     },
                 }}
             >
@@ -240,7 +253,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                     {menuItems.map((item) => (
                         <ListItemButton
                             key={item.path}
-                            onClick={() => navigate(item.path)}
+                            onClick={() => {
+                                navigate(item.path);
+                                if (isMobile) dispatch(toggleSidebar());
+                            }}
                             sx={{
                                 mx: 1,
                                 borderRadius: 2,
@@ -276,10 +292,12 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                     flexGrow: 1,
                     p: 3,
                     mt: emergencyAlert ? '120px' : '80px',
-                    ml: sidebarOpen ? 0 : `-${DRAWER_WIDTH}px`,
+                    ml: isMobile ? 0 : (sidebarOpen ? 0 : `-${DRAWER_WIDTH}px`),
                     transition: 'margin 0.3s',
                     backgroundColor: 'background.default',
                     minHeight: 'calc(100vh - 80px)',
+                    width: '100%',
+                    overflowX: 'hidden'
                 }}
             >
                 {children}
