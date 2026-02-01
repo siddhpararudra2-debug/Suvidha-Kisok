@@ -24,12 +24,19 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
-        // Check if it's a network error (backend down/unreachable)
-        if (!error.response || error.code === 'ERR_NETWORK') {
-            console.warn('[API] Backend unreachable. Switching to Mock Mode.');
+        // Check if it's a network error (backend down/unreachable/blocked)
+        // !error.response covers: Network Error, CORS, Mixed Content, connection refused
+        if (!error.response ||
+            error.code === 'ERR_NETWORK' ||
+            error.code === 'ECONNABORTED' ||
+            error.message === 'Network Error' ||
+            error.message?.includes('Failed to fetch')
+        ) {
+            console.warn('[API] Backend unreachable or blocked. Switching to Mock Mode.', error);
             try {
                 return await handleMockRequest(error.config);
             } catch (mockError) {
+                console.error('[API] Mock Adapter failed:', mockError);
                 return Promise.reject(mockError);
             }
         }
