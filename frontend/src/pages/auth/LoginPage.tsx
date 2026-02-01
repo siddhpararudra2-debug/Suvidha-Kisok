@@ -31,6 +31,7 @@ import {
 import { loginSuccess, loginStart, loginFailure } from '../../store/slices/authSlice';
 import { showNotification } from '../../store/slices/uiSlice';
 import { AppDispatch } from '../../store';
+import api from '../../utils/api';
 
 interface TabPanelProps {
     children?: React.ReactNode;
