@@ -35,19 +35,6 @@ jobs:
         run: npm run build
         working-directory: frontend
 
-      - name: Install Admin dependencies
-        run: npm install
-        working-directory: admin-frontend
-
-      - name: Build Admin Portal
-        run: npm run build
-        working-directory: admin-frontend
-
-      - name: Merge Deployments
-        run: |
-          mkdir -p frontend/dist/admin
-          cp -r admin-frontend/dist/* frontend/dist/admin/
-
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
