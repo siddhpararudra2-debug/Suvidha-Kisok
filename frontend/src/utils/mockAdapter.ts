@@ -240,7 +240,7 @@ export const handleMockRequest = async (config: AxiosRequestConfig): Promise<Axi
     let responseData: any = {};
 
     // --- AUTHENTICATION ---
-    if (url === '/auth/aadhaar/send-otp' && requestMethod === 'post') {
+    if (url?.endsWith('/auth/aadhaar/send-otp') && requestMethod === 'post') {
         const citizen = mockCitizens.find(c => c.aadhaar === body.aadhaar);
         if (citizen) {
             responseData = { success: true, message: 'OTP sent successfully' };
@@ -249,7 +249,7 @@ export const handleMockRequest = async (config: AxiosRequestConfig): Promise<Axi
             responseData = { error: 'Aadhaar not found' };
         }
     }
-    else if (url === '/auth/aadhaar/verify-otp' && requestMethod === 'post') {
+    else if (url?.endsWith('/auth/aadhaar/verify-otp') && requestMethod === 'post') {
         const citizen = mockCitizens.find(c => c.aadhaar === body.aadhaar);
         if (citizen) {
             // Accept any OTP or specifically '123456'
@@ -280,12 +280,12 @@ export const handleMockRequest = async (config: AxiosRequestConfig): Promise<Axi
         }
     }
     // --- CONSUMER COMPLAINTS ---
-    else if (url === '/complaints' && requestMethod === 'get') {
+    else if (url?.endsWith('/complaints') && requestMethod === 'get') {
         // Filter by logged in user (in a real app, we'd check the token)
         // For demo, we'll return all complaints since we can't easily decode the token here
         responseData = mockComplaints;
     }
-    else if (url === '/complaints' && requestMethod === 'post') {
+    else if (url?.endsWith('/complaints') && requestMethod === 'post') {
         const newComplaint = {
             id: `CMP-2026-${String(mockComplaints.length + 1).padStart(3, '0')}`,
             ...body,
