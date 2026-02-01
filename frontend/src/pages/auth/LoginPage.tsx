@@ -73,12 +73,17 @@ const LoginPage = () => {
         setLoading(true);
         setError('');
 
-        // Simulate OTP sending
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        setLoading(false);
-        setShowOtp(true);
-        dispatch(showNotification({ message: t('auth.otpSent'), severity: 'success' }));
+        try {
+            const cleanAadhaar = aadhaar.replace(/\s/g, '');
+            await api.post('/auth/aadhaar/send-otp', { aadhaar: cleanAadhaar });
+            setShowOtp(true);
+            dispatch(showNotification({ message: t('auth.otpSent'), severity: 'success' }));
+        } catch (err: any) {
+            setError(err.response?.data?.error || 'Failed to send OTP');
+            dispatch(showNotification({ message: err.response?.data?.error || 'Failed to send OTP', severity: 'error' }));
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleVerifyOtp = async () => {
@@ -91,17 +96,11 @@ const LoginPage = () => {
         dispatch(loginStart());
 
         try {
-            // Call actual backend API with aadhaar and OTP
-            const cleanAadhaar = aadhaar.replace(/\s/g, ''); // Remove spaces from aadhaar
-            const response = await fetch('http://localhost:4000/api/auth/aadhaar/verify-otp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ aadhaar: cleanAadhaar, otp }),
-            });
+            const cleanAadhaar = aadhaar.replace(/\s/g, '');
+            const response = await api.post('/auth/aadhaar/verify-otp', { aadhaar: cleanAadhaar, otp });
+            const data = response.data;
 
-            const data = await response.json();
-
-            if (!response.ok || !data.success) {
+            if (!data.success) {
                 throw new Error(data.error || 'Login failed');
             }
 
@@ -128,8 +127,9 @@ const LoginPage = () => {
             navigate('/dashboard');
         } catch (err: any) {
             setLoading(false);
-            setError(err.message || 'Login failed. Please try again.');
-            dispatch(loginFailure(err.message || 'Login failed'));
+            const errorMessage = err.response?.data?.error || err.message || 'Login failed. Please try again.';
+            setError(errorMessage);
+            dispatch(loginFailure(errorMessage));
         }
     };
 
