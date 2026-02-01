@@ -92,33 +92,47 @@ const LoginPage = () => {
         setLoading(true);
         dispatch(loginStart());
 
-        // Simulate login
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        try {
+            // Call actual backend API with aadhaar and OTP
+            const cleanAadhaar = aadhaar.replace(/\s/g, ''); // Remove spaces from aadhaar
+            const response = await fetch('http://localhost:4000/api/auth/aadhaar/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ aadhaar: cleanAadhaar, otp }),
+            });
 
-        // Mock successful login
-        dispatch(
-            loginSuccess({
-                user: {
-                    id: 'USR001',
-                    name: 'Priya Sharma',
-                    mobile: '+91-9876543210',
-                    email: 'priya@example.com',
-                    aadhaarMasked: 'XXXX-XXXX-1234',
-                    address: '14/A, MG Road, Mumbai - 400001',
-                    connections: {
-                        electricity: ['123456789'],
-                        gas: ['G987654'],
-                        water: ['W123456'],
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Login failed');
+            }
+
+            // Use actual user data from API response
+            dispatch(
+                loginSuccess({
+                    user: {
+                        id: data.user.id,
+                        name: data.user.name,
+                        mobile: data.user.mobile || '',
+                        email: data.user.email || '',
+                        aadhaarMasked: data.user.aadhaarMasked || `XXXX-XXXX-${cleanAadhaar.slice(-4)}`,
+                        address: data.user.address || '',
+                        connections: data.user.connections || {},
                     },
-                },
-                token: 'mock-jwt-token',
-                refreshToken: 'mock-refresh-token',
-                expiresIn: 900, // 15 minutes
-            })
-        );
+                    token: data.token,
+                    refreshToken: data.refreshToken,
+                    expiresIn: data.expiresIn || 900,
+                })
+            );
 
-        setLoading(false);
-        navigate('/dashboard');
+            setLoading(false);
+            dispatch(showNotification({ message: `Welcome, ${data.user.name}!`, severity: 'success' }));
+            navigate('/dashboard');
+        } catch (err: any) {
+            setLoading(false);
+            setError(err.message || 'Login failed. Please try again.');
+            dispatch(loginFailure(err.message || 'Login failed'));
+        }
     };
 
     const handleGuestLogin = async () => {
