@@ -12,11 +12,24 @@ const api = axios.create({
 import { handleMockRequest } from './mockAdapter';
 
 // Request interceptor to add token
-api.interceptors.request.use((config) => {
+// Request interceptor to add token and handle Mixed Content (HTTPS -> HTTP)
+api.interceptors.request.use(async (config) => {
     const token = localStorage.getItem('token');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // NUCLEAR FIX: Detect Mixed Content scenario (HTTPS frontend -> Localhost backend)
+    // Browsers block this immediately, often bypassing normal error interceptors.
+    // We preemptively swap the adapter to use Mock Data directly.
+    const isProdFrontend = window.location.protocol === 'https:';
+    const isLocalBackend = (config.baseURL?.includes('localhost') || config.url?.includes('localhost'));
+
+    if (isProdFrontend && isLocalBackend) {
+        console.warn('[API] Mixed Content detected (HTTPS -> Localhost). Forcing Mock Adapter.');
+        config.adapter = (cfg) => handleMockRequest(cfg);
+    }
+
     return config;
 });
 
