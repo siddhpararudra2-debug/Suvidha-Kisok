@@ -48,16 +48,21 @@ A unified civic services kiosk application for Indian citizens to access Electri
 
 ```bash
 # Clone and install
-git clone <repository>
+git clone https://github.com/siddhpararudra2-debug/Suvidha-Kisok.git
 cd hackathon
 npm install
 
 # Run development servers
 npm run dev
 
+# 🔗 Live Links (Local)
+- **Consumer Portal:** http://localhost:3000/Suvidha-Kisok/
+- **Admin Portal:** http://localhost:5173/
+- **Backend API:** http://localhost:4000/
+
 # Or run separately
-npm run dev:frontend  # http://localhost:3000
-npm run dev:backend   # http://localhost:4000
+npm run dev:frontend
+npm run dev:backend
 ```
 
 ## 🔧 Tech Stack
