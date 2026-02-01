@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { store } from '../redux/store';
 import { logout } from '../redux/slices/authSlice';
+import { handleMockRequest } from './mockAdapter';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
@@ -20,10 +21,20 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Response interceptor to handle 401
+// Response interceptor to handle 401 or network errors
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
+    async (error) => {
+        // Mock fallback for GitHub Pages (Network Error)
+        if (!error.response || error.code === 'ERR_NETWORK') {
+            console.warn('[API] Backend unreachable. Switching to Mock Mode.');
+            try {
+                return await handleMockRequest(error.config);
+            } catch (mockError) {
+                return Promise.reject(mockError);
+            }
+        }
+
         if (error.response?.status === 401) {
             store.dispatch(logout());
         }

@@ -55,12 +55,12 @@ npm install
 # Run development servers
 npm run dev
 
-# 🔗 Live Links (GitHub Pages - UI Only)
+# 🔗 Live Links (Demoware)
 - **Consumer Portal:** https://siddhpararudra2-debug.github.io/Suvidha-Kisok/
 - **Admin Portal:** https://siddhpararudra2-debug.github.io/Suvidha-Kisok/admin/
-> **Note:** Since the backend is not deployed to cloud (Render/AWS), the live site will show the UI but interactive features (Login, Sync) may not work. For full features, run locally.
+> **✨ Enhanced Demo:** These links run in **Offline Demo Mode**. Even without a backend, you can Login, Register Complaints, and View Stats using simulated data!
 
-# 🔗 Local Links (Full Features)
+# 🔗 Local Links (Real-time Sync)
 - **Consumer Portal:** http://localhost:3000/Suvidha-Kisok/
 - **Admin Portal:** http://localhost:5173/
 - **Backend API:** http://localhost:4000/
