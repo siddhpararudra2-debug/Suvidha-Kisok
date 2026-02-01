@@ -219,7 +219,18 @@ export const mockAdminUsers = [
 
 export const handleMockRequest = async (config: AxiosRequestConfig): Promise<AxiosResponse> => {
     const { url, method, data } = config;
-    const body = data ? JSON.parse(data) : {};
+    let body: any = {};
+    try {
+        if (typeof data === 'string') {
+            body = JSON.parse(data);
+        } else if (data) {
+            body = data;
+        }
+    } catch (e) {
+        console.warn('[MockAdapter] Failed to parse body', e);
+    }
+
+    const requestMethod = method?.toLowerCase();
 
     console.log(`[MockAdapter] INTERCEPT: ${method?.toUpperCase()} ${url}`, body);
 
@@ -229,7 +240,7 @@ export const handleMockRequest = async (config: AxiosRequestConfig): Promise<Axi
     let responseData: any = {};
 
     // --- AUTHENTICATION ---
-    if (url === '/auth/aadhaar/send-otp' && method === 'post') {
+    if (url === '/auth/aadhaar/send-otp' && requestMethod === 'post') {
         const citizen = mockCitizens.find(c => c.aadhaar === body.aadhaar);
         if (citizen) {
             responseData = { success: true, message: 'OTP sent successfully' };
@@ -238,7 +249,7 @@ export const handleMockRequest = async (config: AxiosRequestConfig): Promise<Axi
             responseData = { error: 'Aadhaar not found' };
         }
     }
-    else if (url === '/auth/aadhaar/verify-otp' && method === 'post') {
+    else if (url === '/auth/aadhaar/verify-otp' && requestMethod === 'post') {
         const citizen = mockCitizens.find(c => c.aadhaar === body.aadhaar);
         if (citizen) {
             // Accept any OTP or specifically '123456'
@@ -254,12 +265,14 @@ export const handleMockRequest = async (config: AxiosRequestConfig): Promise<Axi
         }
     }
     // --- ADMIN AUTH ---
-    else if (url?.includes('/admin/login') && method === 'post') {
-        if (body.employeeId === 'admin' && body.password === 'admin123') {
+    else if (url?.includes('/admin/login') && requestMethod === 'post') {
+        const adminUser = mockAdminUsers.find(u => u.employee_id === body.employeeId);
+
+        if (adminUser && body.password === 'admin123') {
             responseData = {
                 success: true,
                 token: 'mock-admin-token',
-                user: mockAdminUsers[1]
+                user: adminUser
             };
         } else {
             status = 401;
@@ -267,12 +280,12 @@ export const handleMockRequest = async (config: AxiosRequestConfig): Promise<Axi
         }
     }
     // --- CONSUMER COMPLAINTS ---
-    else if (url === '/complaints' && method === 'get') {
+    else if (url === '/complaints' && requestMethod === 'get') {
         // Filter by logged in user (in a real app, we'd check the token)
         // For demo, we'll return all complaints since we can't easily decode the token here
         responseData = mockComplaints;
     }
-    else if (url === '/complaints' && method === 'post') {
+    else if (url === '/complaints' && requestMethod === 'post') {
         const newComplaint = {
             id: `CMP-2026-${String(mockComplaints.length + 1).padStart(3, '0')}`,
             ...body,
@@ -296,7 +309,7 @@ export const handleMockRequest = async (config: AxiosRequestConfig): Promise<Axi
             sla: 87
         };
     }
-    else if (url?.includes('/admin/complaints') && method === 'get') {
+    else if (url?.includes('/admin/complaints') && requestMethod === 'get') {
         responseData = mockComplaints;
     }
     else if (url?.includes('/admin/citizens')) {
