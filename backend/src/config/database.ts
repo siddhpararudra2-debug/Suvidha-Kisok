@@ -1,5 +1,6 @@
 import pg from 'pg';
 import Redis from 'ioredis';
+import bcrypt from 'bcryptjs';
 import { logger } from '../utils/logger.js';
 
 const { Pool } = pg;
@@ -25,7 +26,7 @@ export const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379'
     maxRetriesPerRequest: 3,
     retryDelayOnFailover: 100,
     lazyConnect: true,
-});
+} as any);
 
 redis.on('connect', () => {
     logger.info('Connected to Redis');
@@ -183,7 +184,98 @@ export async function initializeDatabase(): Promise<void> {
       CREATE INDEX IF NOT EXISTS idx_complaints_user ON complaints(user_id);
       CREATE INDEX IF NOT EXISTS idx_complaints_status ON complaints(status);
       CREATE INDEX IF NOT EXISTS idx_payments_user ON payments(user_id);
+
+      -- Admin Tables
+      CREATE TABLE IF NOT EXISTS admin_users (
+        employee_id VARCHAR(50) PRIMARY KEY,
+        name VARCHAR(255),
+        designation VARCHAR(255),
+        department VARCHAR(100),
+        role VARCHAR(50),
+        email VARCHAR(255),
+        mobile VARCHAR(15),
+        password_hash VARCHAR(255),
+        permissions JSONB,
+        jurisdiction TEXT,
+        is_active BOOLEAN DEFAULT TRUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS admin_audit_logs (
+        log_id SERIAL PRIMARY KEY,
+        employee_id VARCHAR(50),
+        action VARCHAR(255),
+        entity_type VARCHAR(100),
+        entity_id VARCHAR(100),
+        changes JSONB,
+        ip_address VARCHAR(50),
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
     `);
+
+        // Seed Admin Users
+        const adminCountResult = await pool.query('SELECT COUNT(*) FROM admin_users');
+        if (parseInt(adminCountResult.rows[0].count) === 0) {
+            logger.info('Seeding admin users...');
+            const admins = [
+                {
+                    employeeId: "SUVIDHA-ADMIN-0001",
+                    name: "Rajesh Kumar Verma",
+                    designation: "Chief Administrator",
+                    department: "Administration",
+                    role: "SUPER_ADMIN",
+                    password: "Admin@2026#Secure",
+                    permissions: ["ALL"]
+                },
+                {
+                    employeeId: "SUVIDHA-ELEC-0001",
+                    name: "Priya Sharma",
+                    designation: "Executive Engineer",
+                    department: "Electricity",
+                    role: "DEPT_ADMIN",
+                    password: "Elec@2026#Dept",
+                    permissions: ["MANAGE_ELECTRICITY", "VIEW_REPORTS", "ASSIGN_TASKS"]
+                },
+                {
+                    employeeId: "SUVIDHA-GAS-0001",
+                    name: "Amit Patel",
+                    designation: "Manager",
+                    department: "Gas",
+                    role: "DEPT_ADMIN",
+                    password: "Gas@2026#Manager",
+                    permissions: ["MANAGE_GAS", "APPROVE_CONNECTIONS"]
+                },
+                {
+                    employeeId: "SUVIDHA-WATER-0001",
+                    name: "Sunita Desai",
+                    designation: "Assistant Engineer",
+                    department: "Water",
+                    role: "DEPT_ADMIN",
+                    password: "Water@2026#Supply",
+                    permissions: ["MANAGE_WATER", "APPROVE_TANKERS"]
+                },
+                {
+                    employeeId: "SUVIDHA-FIELD-0001",
+                    name: "Vikram Singh",
+                    designation: "Junior Engineer",
+                    department: "Electricity",
+                    role: "FIELD_OFFICER",
+                    password: "Field@2026#Work",
+                    permissions: ["UPDATE_ASSIGNED_COMPLAINTS", "UPLOAD_PHOTOS"]
+                }
+            ];
+
+            for (const admin of admins) {
+                const hash = await bcrypt.hash(admin.password, 10);
+                await pool.query(
+                    `INSERT INTO admin_users (employee_id, name, designation, department, role, password_hash, permissions, is_active)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, true)`,
+                    [admin.employeeId, admin.name, admin.designation, admin.department, admin.role, hash, JSON.stringify(admin.permissions)]
+                );
+            }
+            logger.info('Admin users seeded successfully');
+        }
+
         logger.info('Database tables initialized successfully');
     } catch (error) {
         logger.error('Failed to initialize database:', error);

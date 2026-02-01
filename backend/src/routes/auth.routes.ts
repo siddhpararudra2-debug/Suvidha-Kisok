@@ -2,6 +2,7 @@ import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
+import { getCitizenByAadhaar, mockCitizens, citizensByAadhaar } from '../data/mockData.js';
 
 const router = Router();
 
@@ -27,22 +28,7 @@ const consumerLoginSchema = z.object({
 // Mock OTP storage (in production, use Redis)
 const otpStore = new Map<string, { otp: string; expires: number }>();
 
-// Mock user database
-const users = new Map([
-    ['123456789012', {
-        id: 'USR001',
-        name: 'Priya Sharma',
-        mobile: '+91-9876543210',
-        email: 'priya@example.com',
-        aadhaarMasked: 'XXXX-XXXX-9012',
-        address: '14/A, MG Road, Mumbai - 400001',
-        connections: {
-            electricity: ['123456789'],
-            gas: ['G987654'],
-            water: ['W123456'],
-        },
-    }],
-]);
+// Use shared mock citizens instead of local users Map
 
 // Send Aadhaar OTP
 router.post('/aadhaar/send-otp', async (req, res) => {
@@ -90,25 +76,35 @@ router.post('/aadhaar/verify-otp', async (req, res) => {
         // Clear OTP
         otpStore.delete(aadhaar);
 
-        // Get or create user
-        let user = users.get(aadhaar);
+        // Get or create user from shared mock data
+        let user = getCitizenByAadhaar(aadhaar);
         if (!user) {
-            // Create new user
+            // Create new user and add to shared data
             user = {
                 id: `USR${uuidv4().slice(0, 8)}`,
+                aadhaar: aadhaar,
                 name: 'New User',
                 mobile: '',
                 email: '',
                 aadhaarMasked: `XXXX-XXXX-${aadhaar.slice(-4)}`,
                 address: '',
-                connections: {},
+                city: '',
+                pincode: '',
+                created_at: new Date().toISOString(),
+                connections: {
+                    electricity: [],
+                    gas: [],
+                    water: [],
+                },
             };
-            users.set(aadhaar, user);
+            // Add to shared map so admin can see new registrations
+            citizensByAadhaar.set(aadhaar, user);
+            mockCitizens.push(user);
         }
 
         // Generate tokens
-        const token = jwt.sign({ userId: user.id, aadhaar }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
-        const refreshToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: REFRESH_EXPIRES_IN });
+        const token = jwt.sign({ userId: user!.id, aadhaar }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+        const refreshToken = jwt.sign({ userId: user!.id }, JWT_SECRET, { expiresIn: REFRESH_EXPIRES_IN });
 
         res.json({
             success: true,

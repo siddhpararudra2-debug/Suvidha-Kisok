@@ -1,6 +1,7 @@
 import { useState, useRef, ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
+import api from '../../utils/api';
 import {
     Box,
     Typography,
@@ -195,37 +196,54 @@ const ComplaintsPage = () => {
     const handleSubmit = async () => {
         setUploading(true);
 
-        // Simulate upload and submission
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        try {
+            // POST complaint to backend API for real-time sync with admin portal
+            const complaintData = {
+                type: category,
+                category: subcategory,
+                subcategory,
+                description,
+                address: address || 'Surat, Gujarat',
+                latitude: location?.lat || 21.1702, // Default to Surat coordinates
+                longitude: location?.lng || 72.8311,
+                priority: priority === 'emergency' ? 'critical' : priority,
+            };
 
-        const newComplaintId = `CMP-2026-${String(Math.floor(Math.random() * 900) + 100)}`;
-        setComplaintNumber(newComplaintId);
+            const response = await api.post('/complaints', complaintData);
+            const newComplaintId = response.data.id || `CMP-2026-${String(Math.floor(Math.random() * 900) + 100)}`;
+            setComplaintNumber(newComplaintId);
 
-        dispatch(addComplaint({
-            id: newComplaintId,
-            type: category as 'electricity' | 'gas' | 'water',
-            category: subcategory,
-            subcategory,
-            description,
-            location: location ? { ...location, address } : { lat: 0, lng: 0, address },
-            priority: priority as 'low' | 'medium' | 'high' | 'emergency',
-            status: 'registered',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            attachments: attachments.map((a) => a.file.name),
-            updates: [
-                {
-                    timestamp: new Date().toISOString(),
-                    status: 'registered',
-                    message: 'Complaint registered successfully',
-                    by: 'System',
-                },
-            ],
-        }));
+            // Also update local Redux state
+            dispatch(addComplaint({
+                id: newComplaintId,
+                type: category as 'electricity' | 'gas' | 'water',
+                category: subcategory,
+                subcategory,
+                description,
+                location: location ? { ...location, address } : { lat: 21.1702, lng: 72.8311, address: 'Surat, Gujarat' },
+                priority: priority as 'low' | 'medium' | 'high' | 'emergency',
+                status: 'registered',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                attachments: attachments.map((a) => a.file.name),
+                updates: [
+                    {
+                        timestamp: new Date().toISOString(),
+                        status: 'registered',
+                        message: 'Complaint registered successfully',
+                        by: 'System',
+                    },
+                ],
+            }));
 
-        setUploading(false);
-        setSubmitted(true);
-        dispatch(showNotification({ message: 'Complaint submitted successfully!', severity: 'success' }));
+            setUploading(false);
+            setSubmitted(true);
+            dispatch(showNotification({ message: 'Complaint submitted successfully!', severity: 'success' }));
+        } catch (error) {
+            console.error('Failed to submit complaint:', error);
+            setUploading(false);
+            dispatch(showNotification({ message: 'Failed to submit complaint. Please try again.', severity: 'error' }));
+        }
     };
 
     const handleEscalate = (complaintId: string) => {

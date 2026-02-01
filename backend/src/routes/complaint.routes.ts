@@ -1,127 +1,58 @@
 import { Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
+import { getAllComplaints, addComplaint as addSharedComplaint, mockComplaints } from '../data/mockData.js';
 
 const router = Router();
 
-// Validation schema
+// Validation schema - flexible to accept both nested location and flat lat/lng
 const complaintSchema = z.object({
-    category: z.enum(['electricity', 'gas', 'water']),
-    subcategory: z.string().min(1),
-    description: z.string().min(10),
-    priority: z.enum(['low', 'medium', 'high', 'emergency']),
+    type: z.string().optional(), // Accept type directly
+    category: z.string().optional(), // electricity/gas/water OR subcategory
+    subcategory: z.string().optional(),
+    description: z.string().min(5),
+    priority: z.string().default('medium'),
+    // Accept either nested location or flat coordinates
     location: z.object({
         lat: z.number(),
         lng: z.number(),
-        address: z.string(),
-    }),
+        address: z.string().optional(),
+    }).optional(),
+    latitude: z.number().optional(),
+    longitude: z.number().optional(),
+    address: z.string().optional(),
     attachments: z.array(z.string()).optional(),
 });
 
-// Mock complaints database
-const complaints = [
-    {
-        id: 'CMP-2026-001',
-        category: 'electricity',
-        subcategory: 'Power Outage',
-        description: 'No power supply since 6 AM in our building',
-        priority: 'high',
-        location: {
-            lat: 19.0760,
-            lng: 72.8777,
-            address: '14/A, MG Road, Andheri West, Mumbai',
-        },
-        status: 'in_progress',
-        createdAt: '2026-01-25T06:30:00Z',
-        updatedAt: '2026-01-25T08:15:00Z',
-        assignedOfficer: {
-            name: 'Rajesh Kumar',
-            designation: 'Junior Engineer',
-            phone: '+91 22 1234 5678',
-        },
-        estimatedResolution: '2026-01-25T18:00:00Z',
-        attachments: [],
-        updates: [
-            {
-                timestamp: '2026-01-25T06:30:00Z',
-                status: 'registered',
-                message: 'Complaint registered successfully',
-                by: 'System',
-            },
-            {
-                timestamp: '2026-01-25T07:00:00Z',
-                status: 'assigned',
-                message: 'Assigned to field engineer',
-                by: 'Control Room',
-            },
-            {
-                timestamp: '2026-01-25T08:15:00Z',
-                status: 'in_progress',
-                message: 'Team dispatched to location',
-                by: 'Rajesh Kumar',
-            },
-        ],
-    },
-    {
-        id: 'CMP-2026-002',
-        category: 'water',
-        subcategory: 'Low Pressure',
-        description: 'Very low water pressure on 3rd floor',
-        priority: 'medium',
-        location: {
-            lat: 19.0820,
-            lng: 72.8890,
-            address: 'B-45, Lokhandwala Complex, Mumbai',
-        },
-        status: 'resolved',
-        createdAt: '2026-01-20T09:00:00Z',
-        updatedAt: '2026-01-23T11:30:00Z',
-        resolvedAt: '2026-01-23T11:30:00Z',
-        attachments: [],
-        updates: [
-            {
-                timestamp: '2026-01-20T09:00:00Z',
-                status: 'registered',
-                message: 'Complaint registered',
-                by: 'System',
-            },
-            {
-                timestamp: '2026-01-23T11:30:00Z',
-                status: 'resolved',
-                message: 'Pump pressure adjusted. Issue resolved.',
-                by: 'Water Board',
-            },
-        ],
-    },
-];
+// Use shared mockComplaints from mockData (same as admin portal)
 
 // Get all complaints for user
 router.get('/', async (req, res) => {
     const { status, category } = req.query;
 
-    let filtered = [...complaints];
+    let filtered = [...mockComplaints];
 
     if (status) {
-        filtered = filtered.filter(c => c.status === status);
+        filtered = filtered.filter((c: any) => c.status === status);
     }
     if (category) {
-        filtered = filtered.filter(c => c.category === category);
+        filtered = filtered.filter((c: any) => c.type === category);
     }
 
     res.json({
         success: true,
         complaints: filtered,
         summary: {
-            total: complaints.length,
-            active: complaints.filter(c => !['resolved', 'closed'].includes(c.status)).length,
-            resolved: complaints.filter(c => c.status === 'resolved').length,
+            total: mockComplaints.length,
+            active: mockComplaints.filter((c: any) => !['resolved', 'closed'].includes(c.status)).length,
+            resolved: mockComplaints.filter((c: any) => c.status === 'resolved').length,
         },
     });
 });
 
 // Get single complaint
 router.get('/:id', async (req, res) => {
-    const complaint = complaints.find(c => c.id === req.params.id);
+    const complaint = mockComplaints.find((c: any) => c.id === req.params.id);
 
     if (!complaint) {
         res.status(404).json({ error: 'Complaint not found' });
@@ -136,34 +67,46 @@ router.post('/', async (req, res) => {
     try {
         const data = complaintSchema.parse(req.body);
 
+        // Normalize - handle both location formats (nested or flat)
+        const lat = data.location?.lat ?? data.latitude ?? 21.1702; // Default to Surat
+        const lng = data.location?.lng ?? data.longitude ?? 72.8311;
+        const addr = data.location?.address ?? data.address ?? 'Surat, Gujarat';
+
+        // Determine type (electricity/gas/water) - could come from type or category field
+        const complaintType = data.type || data.category || 'electricity';
+        const categoryName = data.subcategory || data.category || 'General';
+
         const newComplaint = {
-            id: `CMP-${new Date().getFullYear()}-${String(complaints.length + 1).padStart(3, '0')}`,
-            ...data,
+            id: `CMP-${new Date().getFullYear()}-${String(mockComplaints.length + 1).padStart(3, '0')}`,
+            user_id: (req as any).user?.userId || 'GUEST',
+            type: complaintType,
+            category: categoryName,
+            subcategory: categoryName,
+            description: data.description,
+            priority: data.priority === 'emergency' ? 'critical' : data.priority,
             status: 'registered',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            estimatedResolution: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(), // 48 hours
-            attachments: data.attachments || [],
-            updates: [
-                {
-                    timestamp: new Date().toISOString(),
-                    status: 'registered',
-                    message: 'Complaint registered successfully. You will receive updates via SMS.',
-                    by: 'System',
-                },
-            ],
+            address: addr,
+            latitude: lat,
+            longitude: lng,
+            assigned_officer_id: null,
+            estimated_resolution: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            resolved_at: null,
         };
 
-        complaints.push(newComplaint as any);
+        mockComplaints.push(newComplaint as any);
+        console.log(`✅ New complaint registered: ${newComplaint.id} at (${lat}, ${lng})`);
 
         // Calculate SLA based on priority
-        const slaHours = data.priority === 'emergency' ? 4
+        const slaHours = data.priority === 'emergency' || data.priority === 'critical' ? 4
             : data.priority === 'high' ? 24
                 : data.priority === 'medium' ? 48
                     : 72;
 
         res.status(201).json({
             success: true,
+            id: newComplaint.id,
             complaint: newComplaint,
             message: `Complaint registered. Expected resolution within ${slaHours} hours.`,
         });
@@ -178,7 +121,7 @@ router.post('/', async (req, res) => {
 
 // Update complaint (add message/reopen)
 router.patch('/:id', async (req, res) => {
-    const complaint = complaints.find(c => c.id === req.params.id);
+    const complaint: any = mockComplaints.find((c: any) => c.id === req.params.id);
 
     if (!complaint) {
         res.status(404).json({ error: 'Complaint not found' });
@@ -189,24 +132,10 @@ router.patch('/:id', async (req, res) => {
 
     if (reopen && complaint.status === 'resolved') {
         complaint.status = 'registered';
-        complaint.updates.push({
-            timestamp: new Date().toISOString(),
-            status: 'registered',
-            message: 'Complaint reopened by citizen',
-            by: 'Citizen',
-        });
+        complaint.resolved_at = null;
     }
 
-    if (message) {
-        complaint.updates.push({
-            timestamp: new Date().toISOString(),
-            status: complaint.status,
-            message,
-            by: 'Citizen',
-        });
-    }
-
-    complaint.updatedAt = new Date().toISOString();
+    complaint.updated_at = new Date().toISOString();
 
     res.json({ success: true, complaint });
 });
