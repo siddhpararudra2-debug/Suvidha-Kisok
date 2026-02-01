@@ -109,11 +109,19 @@ app.use((req, res) => {
     res.status(404).json({ error: 'Not found' });
 });
 
+import { initializeDatabase } from './config/database.js';
+
 const PORT = process.env.PORT || 4000;
 
-httpServer.listen(PORT, () => {
-    logger.info(`SUVIDHA Backend running on port ${PORT}`);
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
+// Initialize Database then start server
+initializeDatabase().then(() => {
+    httpServer.listen(PORT, () => {
+        logger.info(`SUVIDHA Backend running on port ${PORT}`);
+        console.log(`🚀 Server running at http://localhost:${PORT}`);
+    });
+}).catch(err => {
+    logger.error('Failed to initialize database:', err);
+    process.exit(1);
 });
 
 export { app, io };

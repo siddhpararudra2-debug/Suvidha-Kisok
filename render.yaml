@@ -1,0 +1,46 @@
+services:
+  # ==========================================
+  # BACKEND SERVICE (Node.js API)
+  # ==========================================
+  - type: web
+    name: suvidha-backend
+    env: node
+    region: singapore # Closest to India for low latency
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: suvidha-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: suvidha-redis
+          property: connectionString
+      # Add CORS allowed origins (Your GitHub Pages URLs)
+      - key: CORS_ORIGIN
+        value: https://siddhpararudra2-debug.github.io
+
+databases:
+  # ==========================================
+  # POSTGRES DATABASE
+  # ==========================================
+  - name: suvidha-db
+    region: singapore
+    plan: free # 90 days free
+    databaseName: suvidha
+    user: suvidha_user
+
+  # ==========================================
+  # REDIS CACHE (For Real-time Sync)
+  # ==========================================
+  - name: suvidha-redis
+    region: singapore
+    plan: free # Free tier
