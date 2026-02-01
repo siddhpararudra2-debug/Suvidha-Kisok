@@ -1,12 +1,10 @@
 ﻿import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import Grid2 from '@mui/material/Grid2';
 import {
     Box,
     Typography,
     Card,
     CardContent,
-    Paper,
     Select,
     MenuItem,
     FormControl,
@@ -28,7 +26,6 @@ import {
     LocalGasStation,
     WaterDrop,
     Download,
-    CalendarMonth,
     Assessment,
 } from '@mui/icons-material';
 
@@ -73,7 +70,6 @@ const generateAnalyticsData = (period: string) => ({
 });
 
 const ReportsAnalytics = () => {
-    const { t } = useTranslation();
     const [period, setPeriod] = useState('month');
     const [data, setData] = useState(generateAnalyticsData('month'));
     const [loading, setLoading] = useState(false);

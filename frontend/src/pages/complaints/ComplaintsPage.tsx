@@ -12,18 +12,11 @@ import {
     Step,
     StepLabel,
     TextField,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
     Radio,
     RadioGroup,
     FormControlLabel,
     Chip,
     Paper,
-    Avatar,
-    LinearProgress,
-    Divider,
     IconButton,
     ImageList,
     ImageListItem,
@@ -36,8 +29,6 @@ import {
     ElectricBolt,
     LocalGasStation,
     WaterDrop,
-    LocationOn,
-    CameraAlt,
     Check,
     Schedule,
     Person,
@@ -138,7 +129,7 @@ const ComplaintsPage = () => {
                     setLocating(false);
                     dispatch(showNotification({ message: 'Location captured successfully', severity: 'success' }));
                 },
-                (error) => {
+                () => {
                     setLocating(false);
                     dispatch(showNotification({ message: 'Could not get location', severity: 'error' }));
                 },

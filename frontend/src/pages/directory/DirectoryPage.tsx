@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
@@ -26,7 +25,6 @@ import {
 } from '@mui/icons-material';
 
 const DirectoryPage = () => {
-    const { t } = useTranslation();
     const [department, setDepartment] = useState('all');
     const [search, setSearch] = useState('');
 

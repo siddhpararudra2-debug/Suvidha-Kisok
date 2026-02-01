@@ -1,7 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
     Box,
@@ -21,7 +20,6 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    Chip,
     IconButton,
 } from '@mui/material';
 import Grid2 from '@mui/material/Grid2';
@@ -43,7 +41,6 @@ import { showNotification } from '../../store/slices/uiSlice';
 import { AppDispatch } from '../../store';
 
 const RegisterPage = () => {
-    const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
 

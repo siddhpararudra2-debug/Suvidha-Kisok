@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import {
     Box,
     Typography,
@@ -13,13 +11,9 @@ import {
     Stepper,
     Step,
     StepLabel,
-    FormControl,
-    FormLabel,
     RadioGroup,
     FormControlLabel,
     Radio,
-    Checkbox,
-    TextField,
     Alert,
     Divider,
     LinearProgress,
@@ -34,7 +28,6 @@ import {
     ArrowForward,
     CheckCircle,
     Cancel,
-    HelpOutline,
 } from '@mui/icons-material';
 
 interface SchemeResult {
@@ -102,8 +95,6 @@ const schemes = [
 ];
 
 const SchemesPage = () => {
-    const { t } = useTranslation();
-    const navigate = useNavigate();
 
     const [showChecker, setShowChecker] = useState(false);
     const [activeStep, setActiveStep] = useState(0);

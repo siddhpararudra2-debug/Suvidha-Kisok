@@ -6,7 +6,6 @@ import {
     CardContent,
     CardActionArea,
     Button,
-    Chip,
     Paper,
     Alert,
 } from '@mui/material';
@@ -19,7 +18,6 @@ import {
     Warning,
     LocalGasStation,
     Security,
-    Info,
 } from '@mui/icons-material';
 
 import { useNavigate } from 'react-router-dom';

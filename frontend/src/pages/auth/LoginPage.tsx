@@ -27,8 +27,6 @@ import {
     Phone,
     Lock,
     ArrowBack,
-    Visibility,
-    VisibilityOff,
 } from '@mui/icons-material';
 import { loginSuccess, loginStart, loginFailure } from '../../store/slices/authSlice';
 import { showNotification } from '../../store/slices/uiSlice';
