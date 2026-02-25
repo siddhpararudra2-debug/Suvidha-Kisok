@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import jsPDF from 'jspdf';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -131,36 +132,98 @@ const PaymentPage = () => {
         // Update bill status in store
         dispatch(updateBillStatus({ billId: billData.billId, status: 'paid' }));
         dispatch(showNotification({ message: 'Payment successful!', severity: 'success' }));
+
+        // SMS simulation
+        setTimeout(() => {
+            dispatch(showNotification({ message: '📱 SMS sent to 98XXXX1234: Payment of ₹' + billData.amount.toLocaleString('en-IN') + ' confirmed. Txn: ' + newReceipt.transactionId, severity: 'info' }));
+        }, 2000);
+
+        // Confetti celebration
+        try {
+            import('canvas-confetti').then((confettiModule) => {
+                const confetti = confettiModule.default;
+                confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                setTimeout(() => confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 } }), 300);
+            });
+        } catch (e) { /* confetti optional */ }
     };
 
     const handleDownloadReceipt = () => {
-        // In production, generate PDF
-        const receiptText = `
-SUVIDHA PAYMENT RECEIPT
-=======================
-Receipt No: ${receipt.receiptNumber}
-Transaction ID: ${receipt.transactionId}
-Date: ${receipt.paidAt}
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
 
-Bill Number: ${receipt.billNumber}
-Consumer ID: ${receipt.consumerId}
-Amount Paid: ₹${receipt.totalPaid}
-Payment Method: ${receipt.paymentMethod}
+        // Header gradient bar
+        doc.setFillColor(26, 115, 232);
+        doc.rect(0, 0, pageWidth, 40, 'F');
+        doc.setFillColor(52, 168, 83);
+        doc.rect(pageWidth / 2, 0, pageWidth / 2, 40, 'F');
 
-Status: ${receipt.status}
-=======================
-Thank you for using SUVIDHA!
-    `;
+        // Title
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22);
+        doc.text('SUVIDHA', 15, 18);
+        doc.setFontSize(10);
+        doc.text('Smart Urban Virtual Interactive Digital Helpdesk Assistant', 15, 26);
+        doc.setFontSize(14);
+        doc.text('PAYMENT RECEIPT', pageWidth - 15, 18, { align: 'right' });
 
-        const blob = new Blob([receiptText], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `SUVIDHA_Receipt_${receipt.receiptNumber}.txt`;
-        a.click();
-        URL.revokeObjectURL(url);
+        // Receipt details
+        doc.setTextColor(0, 0, 0);
+        let y = 55;
+        const addRow = (label: string, value: string) => {
+            doc.setFontSize(10);
+            doc.setTextColor(120, 120, 120);
+            doc.text(label, 20, y);
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.text(value, pageWidth - 20, y, { align: 'right' });
+            y += 12;
+        };
 
-        dispatch(showNotification({ message: 'Receipt downloaded!', severity: 'success' }));
+        addRow('Receipt Number', receipt.receiptNumber);
+        addRow('Transaction ID', receipt.transactionId);
+        addRow('Date & Time', receipt.paidAt);
+
+        // Divider
+        doc.setDrawColor(200, 200, 200);
+        doc.line(20, y, pageWidth - 20, y);
+        y += 10;
+
+        addRow('Bill Number', receipt.billNumber);
+        addRow('Consumer ID', receipt.consumerId);
+        addRow('Service Type', billData.type.charAt(0).toUpperCase() + billData.type.slice(1));
+        addRow('Payment Method', receipt.paymentMethod);
+
+        // Divider
+        doc.line(20, y, pageWidth - 20, y);
+        y += 10;
+
+        // Amount (large)
+        doc.setFontSize(10);
+        doc.setTextColor(120, 120, 120);
+        doc.text('Amount Paid', 20, y);
+        doc.setFontSize(20);
+        doc.setTextColor(52, 168, 83);
+        doc.text(`Rs. ${receipt.totalPaid.toLocaleString('en-IN')}`, pageWidth - 20, y, { align: 'right' });
+        y += 15;
+
+        // Status badge
+        doc.setFillColor(52, 168, 83);
+        doc.roundedRect(pageWidth / 2 - 30, y, 60, 12, 3, 3, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(10);
+        doc.text('PAYMENT SUCCESSFUL', pageWidth / 2, y + 8, { align: 'center' });
+        y += 25;
+
+        // Footer
+        doc.setTextColor(150, 150, 150);
+        doc.setFontSize(8);
+        doc.text('This is a computer-generated receipt. No signature required.', pageWidth / 2, y, { align: 'center' });
+        doc.text('Thank you for using SUVIDHA!', pageWidth / 2, y + 8, { align: 'center' });
+        doc.text('Helpline: 1800-XXX-XXXX | www.suvidha.gov.in', pageWidth / 2, y + 16, { align: 'center' });
+
+        doc.save(`SUVIDHA_Receipt_${receipt.receiptNumber}.pdf`);
+        dispatch(showNotification({ message: 'PDF Receipt downloaded!', severity: 'success' }));
     };
 
     if (paymentComplete && receipt) {

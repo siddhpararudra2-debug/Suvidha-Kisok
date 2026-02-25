@@ -6,6 +6,7 @@ import MainLayout from './components/layout/MainLayout';
 import LoadingScreen from './components/common/LoadingScreen';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import SessionTimeoutProvider from './components/common/SessionTimeoutProvider';
+import VoiceAssistant from './components/common/VoiceAssistant';
 
 // Lazy load pages for better performance
 const WelcomePage = lazy(() => import('./pages/WelcomePage'));
@@ -164,6 +165,7 @@ function App() {
                         {/* Fallback - 404 */}
                         <Route path="*" element={<NotFoundPage />} />
                     </Routes>
+                    <VoiceAssistant />
                 </Suspense>
             </SessionTimeoutProvider>
         </ErrorBoundary>

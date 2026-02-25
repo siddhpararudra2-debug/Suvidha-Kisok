@@ -1,0 +1,25 @@
+{
+    "name": "SUVIDHA Kiosk",
+    "short_name": "SUVIDHA",
+    "description": "Smart Urban Virtual Interactive Digital Helpdesk Assistant - Unified Civic Services Kiosk",
+    "start_url": "/Suvidha-Kisok/",
+    "scope": "/Suvidha-Kisok/",
+    "display": "standalone",
+    "background_color": "#1a73e8",
+    "theme_color": "#1a73e8",
+    "orientation": "any",
+    "categories": [
+        "government",
+        "utilities",
+        "finance"
+    ],
+    "lang": "en-IN",
+    "icons": [
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><circle cx='96' cy='96' r='96' fill='%231a73e8'/><text x='96' y='120' font-size='100' font-family='Arial' fill='white' text-anchor='middle' font-weight='bold'>S</text></svg>",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}

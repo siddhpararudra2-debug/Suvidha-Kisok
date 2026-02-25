@@ -195,6 +195,61 @@ const ElectricityPage = () => {
                 </CardContent>
             </Card>
 
+            {/* Consumption Analytics Chart */}
+            <Card sx={{ mb: 4, borderRadius: 3 }}>
+                <CardContent>
+                    <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>
+                        Consumption Analytics (Last 6 Months)
+                    </Typography>
+                    <Box sx={{ width: '100%', height: 280 }}>
+                        {(() => {
+                            try {
+                                const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip: RechartsTooltip, ResponsiveContainer, Cell } = require('recharts');
+                                const data = [
+                                    { month: 'Sep', units: 180, cost: 2100 },
+                                    { month: 'Oct', units: 195, cost: 2280 },
+                                    { month: 'Nov', units: 210, cost: 2450 },
+                                    { month: 'Dec', units: 260, cost: 3050 },
+                                    { month: 'Jan', units: 245, cost: 2847 },
+                                    { month: 'Feb', units: 220, cost: 2560 },
+                                ];
+                                const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#1a73e8', '#34a853'];
+                                return (
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                                            <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                                            <XAxis dataKey="month" fontSize={12} />
+                                            <YAxis fontSize={12} unit=" kWh" />
+                                            <RechartsTooltip
+                                                formatter={(value: number, name: string) => {
+                                                    if (name === 'units') return [`${value} kWh`, 'Units'];
+                                                    return [`₹${value}`, 'Cost'];
+                                                }}
+                                            />
+                                            <Bar dataKey="units" radius={[8, 8, 0, 0]} barSize={40}>
+                                                {data.map((_entry: any, index: number) => (
+                                                    <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                                                ))}
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                );
+                            } catch {
+                                return (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                                        <Typography color="text.secondary">Chart loading...</Typography>
+                                    </Box>
+                                );
+                            }
+                        })()}
+                    </Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
+                        <Typography variant="caption" color="text.secondary">Average: 218 kWh/month</Typography>
+                        <Chip label="↓ 5.8% vs last month" size="small" color="success" variant="outlined" />
+                    </Box>
+                </CardContent>
+            </Card>
+
             {/* Services Grid */}
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                 All Services
