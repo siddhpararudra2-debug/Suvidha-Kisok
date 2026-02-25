@@ -290,12 +290,13 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                     flexGrow: 1,
                     p: { xs: 1.5, sm: 2, md: 3 },
                     mt: { xs: '56px', md: emergencyAlert ? '120px' : '80px' },
-                    ml: isMobile ? 0 : (sidebarOpen ? 0 : `-${DRAWER_WIDTH}px`),
-                    transition: 'margin 0.3s',
+                    transition: 'margin 0.3s, width 0.3s',
                     backgroundColor: 'background.default',
                     minHeight: { xs: 'calc(100vh - 56px)', md: 'calc(100vh - 80px)' },
-                    width: isMobile ? '100%' : `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : 0}px)`,
-                    overflow: 'hidden',
+                    width: '100%',
+                    maxWidth: '100%',
+                    overflowX: 'hidden',
+                    boxSizing: 'border-box',
                 }}
             >
                 {children}
