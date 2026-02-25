@@ -20,20 +20,25 @@ const app = express();
 const httpServer = createServer(app);
 const io = new SocketServer(httpServer, {
     cors: {
-        origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+        origin: '*',
         methods: ['GET', 'POST'],
     },
 });
 
 // Security middleware
 app.use(helmet());
+const allowedOrigins = [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    process.env.CORS_ORIGIN || 'https://siddhpararudra2-debug.github.io',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:5175',
+].filter((v, i, a) => a.indexOf(v) === i); // deduplicate
+
 app.use(cors({
-    origin: [
-        process.env.FRONTEND_URL || 'http://localhost:3000',
-        'http://localhost:5173',
-        'http://localhost:5174',
-        'http://localhost:5175'
-    ],
+    origin: allowedOrigins,
     credentials: true,
 }));
 
