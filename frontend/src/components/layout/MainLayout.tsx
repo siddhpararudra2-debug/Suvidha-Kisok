@@ -148,38 +148,39 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                 }}
             >
                 {emergencyAlert && <EmergencyBar message={emergencyAlert} />}
-                <Toolbar sx={{ height: 80 }}>
+                <Toolbar sx={{ height: { xs: 56, md: 80 }, minHeight: { xs: 56, md: 80 }, px: { xs: 1, md: 2 } }}>
                     <IconButton
                         edge="start"
                         color="inherit"
                         aria-label="menu"
                         onClick={() => dispatch(toggleSidebar())}
-                        sx={{ mr: 2 }}
+                        sx={{ mr: { xs: 0.5, md: 2 } }}
                     >
                         <MenuIcon />
                     </IconButton>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 2 }, minWidth: 0 }}>
                         <Box
                             sx={{
-                                width: 48,
-                                height: 48,
+                                width: { xs: 36, md: 48 },
+                                height: { xs: 36, md: 48 },
                                 borderRadius: '50%',
                                 background: 'linear-gradient(135deg, #1a73e8 0%, #34a853 100%)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
+                                flexShrink: 0,
                             }}
                         >
-                            <Typography variant="h6" sx={{ color: 'white', fontWeight: 700 }}>
+                            <Typography sx={{ color: 'white', fontWeight: 700, fontSize: { xs: 14, md: 20 } }}>
                                 S
                             </Typography>
                         </Box>
-                        <Box>
-                            <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
+                        <Box sx={{ minWidth: 0 }}>
+                            <Typography sx={{ fontWeight: 700, color: 'primary.main', fontSize: { xs: '0.95rem', md: '1.25rem' }, lineHeight: 1.2 }}>
                                 SUVIDHA
                             </Typography>
-                            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                            <Typography variant="caption" sx={{ color: 'text.secondary', display: { xs: 'none', sm: 'block' }, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                 {t('common.tagline')}
                             </Typography>
                         </Box>
@@ -187,32 +188,34 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
                     <Box sx={{ flexGrow: 1 }} />
 
-                    <LiveStatusBar />
+                    <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+                        <LiveStatusBar />
+                    </Box>
 
                     <IconButton
                         color="inherit"
                         onClick={() => dispatch(toggleAccessibilityPanel())}
-                        sx={{ mx: 1 }}
+                        sx={{ mx: { xs: 0, md: 1 } }}
                         aria-label={t('accessibility.title')}
                     >
                         <Accessibility />
                     </IconButton>
 
                     {user && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, ml: 2 }}>
-                            <Avatar sx={{ bgcolor: 'primary.main' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, md: 2 }, ml: { xs: 0.5, md: 2 } }}>
+                            <Avatar sx={{ bgcolor: 'primary.main', width: { xs: 32, md: 40 }, height: { xs: 32, md: 40 }, fontSize: { xs: 14, md: 20 } }}>
                                 {user.name.charAt(0).toUpperCase()}
                             </Avatar>
-                            <Box>
-                                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                                <Typography variant="body2" sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
                                     {user.name}
                                 </Typography>
                                 {isGuest && (
                                     <Chip label="Guest" size="small" color="warning" />
                                 )}
                             </Box>
-                            <IconButton color="inherit" onClick={handleLogout}>
-                                <Logout />
+                            <IconButton color="inherit" onClick={handleLogout} size="small">
+                                <Logout sx={{ fontSize: { xs: 20, md: 24 } }} />
                             </IconButton>
                         </Box>
                     )}
@@ -232,6 +235,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                         boxSizing: 'border-box',
                         top: isMobile ? 0 : (emergencyAlert ? 120 : 80),
                         height: isMobile ? '100%' : `calc(100% - ${emergencyAlert ? 120 : 80}px)`,
+                        overflowX: 'hidden',
                         borderRight: '1px solid',
                         borderColor: 'divider',
                         zIndex: (theme) => isMobile ? theme.zIndex.drawer + 2 : theme.zIndex.drawer,
@@ -284,13 +288,14 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    p: 3,
-                    mt: emergencyAlert ? '120px' : '80px',
+                    p: { xs: 1.5, sm: 2, md: 3 },
+                    mt: { xs: '56px', md: emergencyAlert ? '120px' : '80px' },
                     ml: isMobile ? 0 : (sidebarOpen ? 0 : `-${DRAWER_WIDTH}px`),
                     transition: 'margin 0.3s',
                     backgroundColor: 'background.default',
-                    minHeight: 'calc(100vh - 80px)',
+                    minHeight: { xs: 'calc(100vh - 56px)', md: 'calc(100vh - 80px)' },
                     width: isMobile ? '100%' : `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : 0}px)`,
+                    overflow: 'hidden',
                 }}
             >
                 {children}

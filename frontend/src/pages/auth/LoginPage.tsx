@@ -11,8 +11,6 @@ import {
     CardContent,
     TextField,
     Button,
-    Tabs,
-    Tab,
     InputAdornment,
     CircularProgress,
     Alert,
@@ -21,10 +19,7 @@ import {
 } from '@mui/material';
 import {
     Fingerprint,
-    Badge,
-    AccountBalanceWallet,
     Person,
-    Phone,
     Lock,
     ArrowBack,
 } from '@mui/icons-material';
@@ -33,32 +28,19 @@ import { showNotification } from '../../store/slices/uiSlice';
 import { AppDispatch } from '../../store';
 import api from '../../utils/api';
 
-interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-}
 
-const TabPanel = ({ children, value, index }: TabPanelProps) => (
-    <div role="tabpanel" hidden={value !== index}>
-        {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
-    </div>
-);
 
 const LoginPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
 
-    const [tabValue, setTabValue] = useState(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showOtp, setShowOtp] = useState(false);
 
     // Form states
     const [aadhaar, setAadhaar] = useState('');
-    const [consumerId, setConsumerId] = useState('');
-    const [mobile, setMobile] = useState('');
     const [otp, setOtp] = useState('');
 
     const formatAadhaar = (value: string) => {
@@ -232,177 +214,82 @@ const LoginPage = () => {
                                 </Alert>
                             )}
 
-                            <Tabs
-                                value={tabValue}
-                                onChange={(_, newValue) => {
-                                    setTabValue(newValue);
-                                    setShowOtp(false);
-                                    setError('');
-                                }}
-                                variant="fullWidth"
-                                sx={{ borderBottom: 1, borderColor: 'divider' }}
-                            >
-                                <Tab
-                                    icon={<Fingerprint />}
-                                    label="Aadhaar"
-                                    sx={{ minHeight: 72 }}
-                                />
-                                <Tab
-                                    icon={<Badge />}
-                                    label="Consumer ID"
-                                    sx={{ minHeight: 72 }}
-                                />
-                                <Tab
-                                    icon={<AccountBalanceWallet />}
-                                    label="DigiLocker"
-                                    sx={{ minHeight: 72 }}
-                                />
-                            </Tabs>
-
-                            {/* Aadhaar Login */}
-                            <TabPanel value={tabValue} index={0}>
-                                {!showOtp ? (
-                                    <>
-                                        <TextField
-                                            fullWidth
-                                            label={t('auth.enterAadhaar')}
-                                            value={aadhaar}
-                                            onChange={handleAadhaarChange}
-                                            placeholder="XXXX XXXX XXXX"
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <Fingerprint color="primary" />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                            sx={{ mb: 3 }}
-                                        />
-                                        <Button
-                                            fullWidth
-                                            variant="contained"
-                                            size="large"
-                                            onClick={handleSendOtp}
-                                            disabled={aadhaar.replace(/\s/g, '').length !== 12 || loading}
-                                            sx={{ minHeight: 56 }}
-                                        >
-                                            {loading ? <CircularProgress size={24} /> : 'Send OTP'}
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Alert severity="info" sx={{ mb: 3 }}>
-                                            {t('auth.otpSent')}
-                                        </Alert>
-                                        <TextField
-                                            fullWidth
-                                            label={t('auth.enterOtp')}
-                                            value={otp}
-                                            onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                                            placeholder="------"
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <Lock color="primary" />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                            sx={{ mb: 2 }}
-                                        />
-                                        <Box sx={{ display: 'flex', gap: 2 }}>
-                                            <Button
-                                                variant="outlined"
-                                                onClick={() => setShowOtp(false)}
-                                                sx={{ flex: 1, minHeight: 48 }}
-                                            >
-                                                {t('common.back')}
-                                            </Button>
-                                            <Button
-                                                variant="contained"
-                                                onClick={handleVerifyOtp}
-                                                disabled={otp.length !== 6 || loading}
-                                                sx={{ flex: 2, minHeight: 48 }}
-                                            >
-                                                {loading ? <CircularProgress size={24} /> : t('auth.verifyOtp')}
-                                            </Button>
-                                        </Box>
-                                        <Button
-                                            fullWidth
-                                            variant="text"
-                                            sx={{ mt: 2 }}
-                                            onClick={handleSendOtp}
-                                        >
-                                            {t('auth.resendOtp')}
-                                        </Button>
-                                    </>
-                                )}
-                            </TabPanel>
-
-                            {/* Consumer ID Login */}
-                            <TabPanel value={tabValue} index={1}>
-                                <TextField
-                                    fullWidth
-                                    label={t('auth.enterConsumerId')}
-                                    value={consumerId}
-                                    onChange={(e) => setConsumerId(e.target.value)}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <Badge color="primary" />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                    sx={{ mb: 2 }}
-                                />
-                                <TextField
-                                    fullWidth
-                                    label={t('auth.enterMobile')}
-                                    value={mobile}
-                                    onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <Phone color="primary" />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                    sx={{ mb: 3 }}
-                                />
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    size="large"
-                                    onClick={handleSendOtp}
-                                    disabled={!consumerId || mobile.length !== 10 || loading}
-                                    sx={{ minHeight: 56 }}
-                                >
-                                    {loading ? <CircularProgress size={24} /> : 'Send OTP'}
-                                </Button>
-                            </TabPanel>
-
-                            {/* DigiLocker Login */}
-                            <TabPanel value={tabValue} index={2}>
-                                <Box sx={{ textAlign: 'center', py: 3 }}>
-                                    <AccountBalanceWallet
-                                        sx={{ fontSize: 64, color: 'primary.main', mb: 2 }}
+                            {/* Aadhaar Login Form - Default and Only Option */}
+                            {!showOtp ? (
+                                <>
+                                    <TextField
+                                        fullWidth
+                                        label={t('auth.enterAadhaar')}
+                                        value={aadhaar}
+                                        onChange={handleAadhaarChange}
+                                        placeholder="XXXX XXXX XXXX"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <Fingerprint color="primary" />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{ mb: 3 }}
                                     />
-                                    <Typography variant="body1" sx={{ mb: 3 }}>
-                                        Login securely using your DigiLocker account
-                                    </Typography>
                                     <Button
                                         fullWidth
                                         variant="contained"
                                         size="large"
+                                        onClick={handleSendOtp}
+                                        disabled={aadhaar.replace(/\s/g, '').length !== 12 || loading}
                                         sx={{ minHeight: 56 }}
-                                        onClick={() => {
-                                            // In real app, redirect to DigiLocker OAuth
-                                            handleVerifyOtp();
-                                        }}
                                     >
-                                        Continue with DigiLocker
+                                        {loading ? <CircularProgress size={24} /> : 'Send OTP'}
                                     </Button>
-                                </Box>
-                            </TabPanel>
+                                </>
+                            ) : (
+                                <>
+                                    <Alert severity="info" sx={{ mb: 3 }}>
+                                        {t('auth.otpSent')}
+                                    </Alert>
+                                    <TextField
+                                        fullWidth
+                                        label={t('auth.enterOtp')}
+                                        value={otp}
+                                        onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                        placeholder="------"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <Lock color="primary" />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{ mb: 2 }}
+                                    />
+                                    <Box sx={{ display: 'flex', gap: 2 }}>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => setShowOtp(false)}
+                                            sx={{ flex: 1, minHeight: 48 }}
+                                        >
+                                            {t('common.back')}
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            onClick={handleVerifyOtp}
+                                            disabled={otp.length !== 6 || loading}
+                                            sx={{ flex: 2, minHeight: 48 }}
+                                        >
+                                            {loading ? <CircularProgress size={24} /> : t('auth.verifyOtp')}
+                                        </Button>
+                                    </Box>
+                                    <Button
+                                        fullWidth
+                                        variant="text"
+                                        sx={{ mt: 2 }}
+                                        onClick={handleSendOtp}
+                                    >
+                                        {t('auth.resendOtp')}
+                                    </Button>
+                                </>
+                            )}
 
                             <Divider sx={{ my: 3 }}>
                                 <Typography variant="body2" color="text.secondary">

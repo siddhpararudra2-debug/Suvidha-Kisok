@@ -115,7 +115,7 @@ const DashboardPage = () => {
                 <Paper
                     elevation={0}
                     sx={{
-                        p: 3,
+                        p: { xs: 2, md: 3 },
                         mb: 4,
                         background: 'linear-gradient(135deg, #1a73e8 0%, #34a853 100%)',
                         borderRadius: 3,
@@ -127,17 +127,17 @@ const DashboardPage = () => {
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                                 <Avatar
                                     sx={{
-                                        width: 64,
-                                        height: 64,
+                                        width: { xs: 48, md: 64 },
+                                        height: { xs: 48, md: 64 },
                                         bgcolor: 'rgba(255,255,255,0.2)',
-                                        fontSize: 28,
+                                        fontSize: { xs: 20, md: 28 },
                                         fontWeight: 700,
                                     }}
                                 >
                                     {user?.name.charAt(0).toUpperCase()}
                                 </Avatar>
                                 <Box>
-                                    <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                                    <Typography sx={{ fontWeight: 700, fontSize: { xs: '1.3rem', sm: '1.6rem', md: '2rem' }, lineHeight: 1.2 }}>
                                         {t('dashboard.welcome', { name: user?.name })}
                                     </Typography>
                                     <Typography variant="body1" sx={{ opacity: 0.9 }}>
@@ -157,7 +157,7 @@ const DashboardPage = () => {
                                 <Typography variant="overline" sx={{ opacity: 0.8 }}>
                                     {t('dashboard.totalDue')}
                                 </Typography>
-                                <Typography variant="h3" sx={{ fontWeight: 700 }}>
+                                <Typography sx={{ fontWeight: 700, fontSize: { xs: '1.8rem', md: '3rem' } }}>
                                     ₹{totalDue.toLocaleString('en-IN')}
                                 </Typography>
                                 <Button

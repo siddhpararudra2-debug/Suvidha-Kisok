@@ -38,7 +38,7 @@ const initialState: UiState = {
     textSize: 'normal',
     contrastMode: 'normal',
     screenReaderMode: false,
-    sidebarOpen: true,
+    sidebarOpen: false,
     showAccessibilityPanel: false,
     sessionTimeoutWarning: false,
     emergencyAlert: null,

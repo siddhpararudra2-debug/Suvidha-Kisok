@@ -4,6 +4,8 @@ import { Suspense, lazy } from 'react';
 import { RootState } from './store';
 import MainLayout from './components/layout/MainLayout';
 import LoadingScreen from './components/common/LoadingScreen';
+import ErrorBoundary from './components/common/ErrorBoundary';
+import SessionTimeoutProvider from './components/common/SessionTimeoutProvider';
 
 // Lazy load pages for better performance
 const WelcomePage = lazy(() => import('./pages/WelcomePage'));
@@ -20,6 +22,7 @@ const DirectoryPage = lazy(() => import('./pages/directory/DirectoryPage'));
 const PaymentPage = lazy(() => import('./pages/payment/PaymentPage'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const ComingSoonPage = lazy(() => import('./pages/ComingSoonPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -43,123 +46,127 @@ function App() {
     document.documentElement.setAttribute('data-contrast', contrastMode);
 
     return (
-        <Suspense fallback={<LoadingScreen />}>
-            <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<WelcomePage />} />
-                <Route path="/login" element={<LoginPage />} />
+        <ErrorBoundary>
+            <SessionTimeoutProvider>
+                <Suspense fallback={<LoadingScreen />}>
+                    <Routes>
+                        {/* Public Routes */}
+                        <Route path="/" element={<WelcomePage />} />
+                        <Route path="/login" element={<LoginPage />} />
 
-                {/* Protected Routes with Layout */}
-                <Route
-                    path="/dashboard"
-                    element={
-                        <ProtectedRoute>
-                            <MainLayout>
-                                <DashboardPage />
-                            </MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/electricity/*"
-                    element={
-                        <ProtectedRoute>
-                            <MainLayout>
-                                <ElectricityPage />
-                            </MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/gas/*"
-                    element={
-                        <ProtectedRoute>
-                            <MainLayout>
-                                <GasPage />
-                            </MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/water/*"
-                    element={
-                        <ProtectedRoute>
-                            <MainLayout>
-                                <WaterPage />
-                            </MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/complaints/*"
-                    element={
-                        <ProtectedRoute>
-                            <MainLayout>
-                                <ComplaintsPage />
-                            </MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/maps"
-                    element={
-                        <ProtectedRoute>
-                            <MainLayout>
-                                <MapExplorerPage />
-                            </MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/schemes/*"
-                    element={
-                        <ProtectedRoute>
-                            <MainLayout>
-                                <SchemesPage />
-                            </MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/directory"
-                    element={
-                        <ProtectedRoute>
-                            <MainLayout>
-                                <DirectoryPage />
-                            </MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/payment"
-                    element={
-                        <ProtectedRoute>
-                            <PaymentPage />
-                        </ProtectedRoute>
-                    }
-                />
+                        {/* Protected Routes with Layout */}
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <DashboardPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/electricity/*"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <ElectricityPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/gas/*"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <GasPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/water/*"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <WaterPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/complaints/*"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <ComplaintsPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/maps"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <MapExplorerPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/schemes/*"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <SchemesPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/directory"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <DirectoryPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/payment"
+                            element={
+                                <ProtectedRoute>
+                                    <PaymentPage />
+                                </ProtectedRoute>
+                            }
+                        />
 
-                <Route
-                    path="/coming-soon"
-                    element={
-                        <ProtectedRoute>
-                            <MainLayout>
-                                <ComingSoonPage />
-                            </MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
+                        <Route
+                            path="/coming-soon"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <ComingSoonPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
 
-                {/* Admin Routes */}
-                <Route path="/admin" element={<AdminDashboard />} />
+                        {/* Admin Routes */}
+                        <Route path="/admin" element={<AdminDashboard />} />
 
-                {/* Registration (Public) */}
-                <Route path="/register" element={<RegisterPage />} />
+                        {/* Registration (Public) */}
+                        <Route path="/register" element={<RegisterPage />} />
 
-                {/* Fallback */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-        </Suspense>
+                        {/* Fallback - 404 */}
+                        <Route path="*" element={<NotFoundPage />} />
+                    </Routes>
+                </Suspense>
+            </SessionTimeoutProvider>
+        </ErrorBoundary>
     );
 }
 
