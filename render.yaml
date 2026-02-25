@@ -19,13 +19,10 @@ services:
         fromDatabase:
           name: suvidha-db
           property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: suvidha-redis
-          property: connectionString
       # Add CORS allowed origins (Your GitHub Pages URLs)
       - key: CORS_ORIGIN
+        value: https://siddhpararudra2-debug.github.io
+      - key: FRONTEND_URL
         value: https://siddhpararudra2-debug.github.io
 
 databases:
@@ -38,9 +35,3 @@ databases:
     databaseName: suvidha
     user: suvidha_user
 
-  # ==========================================
-  # REDIS CACHE (For Real-time Sync)
-  # ==========================================
-  - name: suvidha-redis
-    region: singapore
-    plan: free # Free tier
