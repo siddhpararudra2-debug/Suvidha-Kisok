@@ -29,7 +29,9 @@ const io = new SocketServer(httpServer, {
 app.use(helmet());
 const allowedOrigins = [
     process.env.FRONTEND_URL || 'http://localhost:3000',
-    process.env.CORS_ORIGIN || 'https://siddhpararudra2-debug.github.io',
+    process.env.CORS_ORIGIN || 'https://phoros-code.github.io',
+    'https://phoros-code.github.io',
+    'https://siddhpararudra2-debug.github.io',
     'http://localhost:3000',
     'http://localhost:3001',
     'http://localhost:5173',

@@ -48,17 +48,18 @@ A unified civic services kiosk application for Indian citizens to access Electri
 
 ```bash
 # Clone and install
-git clone https://github.com/siddhpararudra2-debug/Suvidha-Kisok.git
+git clone https://github.com/phoros-code/Suvidha-Kisok.git
 cd hackathon
 npm install
 
 # Run development servers
 npm run dev
 
-# 🔗 Live Links (Demoware)
-- **Consumer Portal:** https://siddhpararudra2-debug.github.io/Suvidha-Kisok/
-- **Admin Portal:** https://siddhpararudra2-debug.github.io/Suvidha-Kisok/admin/
-> **✨ Enhanced Demo:** These links run in **Offline Demo Mode**. Even without a backend, you can Login, Register Complaints, and View Stats using simulated data!
+# 🔗 Live Demo Links
+- **Consumer Portal:** https://phoros-code.github.io/Suvidha-Kisok/
+- **Admin Portal:** https://phoros-code.github.io/Suvidha-Kisok/admin/
+- **Backend API:** https://suvidha-backend-hk0o.onrender.com/
+> **✨ Full Stack Demo:** Login, Pay Bills, Register Complaints, and View Stats with real cloud backend!
 
 # 🔗 Local Links (Real-time Sync)
 - **Consumer Portal:** http://localhost:3000/Suvidha-Kisok/

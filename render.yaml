@@ -21,9 +21,9 @@ services:
           property: connectionString
       # Add CORS allowed origins (Your GitHub Pages URLs)
       - key: CORS_ORIGIN
-        value: https://siddhpararudra2-debug.github.io
+        value: https://phoros-code.github.io
       - key: FRONTEND_URL
-        value: https://siddhpararudra2-debug.github.io
+        value: https://phoros-code.github.io
 
 databases:
   # ==========================================
