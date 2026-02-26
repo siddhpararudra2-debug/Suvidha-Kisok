@@ -113,12 +113,14 @@ const WelcomePage = () => {
                             src={`${import.meta.env.BASE_URL}logo.png`}
                             alt="SUVIDHA"
                             sx={{
-                                width: 100,
-                                height: 100,
+                                width: 110,
+                                height: 110,
                                 borderRadius: '50%',
                                 objectFit: 'cover',
                                 boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
                                 mb: 3,
+                                display: 'block',
+                                mx: 'auto',
                             }}
                         />
                         <Typography

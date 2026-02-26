@@ -222,12 +222,14 @@ const LoginPage = () => {
                             src={`${import.meta.env.BASE_URL}logo.png`}
                             alt="SUVIDHA"
                             sx={{
-                                width: 72,
-                                height: 72,
+                                width: 80,
+                                height: 80,
                                 borderRadius: '50%',
                                 objectFit: 'cover',
                                 boxShadow: '0 8px 32px rgba(26, 115, 232, 0.3)',
                                 mb: 1.5,
+                                display: 'block',
+                                mx: 'auto',
                             }}
                         />
                         <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.main' }}>
