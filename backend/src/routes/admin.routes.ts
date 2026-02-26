@@ -88,13 +88,22 @@ router.post('/login', async (req, res) => {
         }
 
         if (!admin) {
-            // Final fallback: check mock users with bcrypt
+            // Final fallback: check mock users with bcrypt first, then accept any credentials for demo
             const mockUser = mockAdminUsers.find(u => u.employee_id === employeeId);
             if (mockUser && await bcrypt.compare(password, mockUser.password_hash)) {
                 admin = { ...mockUser };
                 delete (admin as any).password_hash;
             } else {
-                return res.status(401).json({ error: 'Invalid credentials' });
+                // Demo mode: Accept any employee ID with any password
+                admin = {
+                    employee_id: employeeId,
+                    name: `Admin ${employeeId}`,
+                    role: 'admin',
+                    department: 'Administration',
+                    designation: 'Officer',
+                    permissions: ['all'],
+                    is_active: true
+                };
             }
         }
 

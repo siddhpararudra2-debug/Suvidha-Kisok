@@ -16,7 +16,7 @@ import ContentManagement from './pages/ContentManagement';
 
 const App: React.FC = () => {
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
       <Routes>
         <Route path="/login" element={<Login />} />
 

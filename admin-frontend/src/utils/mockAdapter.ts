@@ -266,9 +266,18 @@ export const handleMockRequest = async (config: AxiosRequestConfig): Promise<Axi
     }
     // --- ADMIN AUTH ---
     else if (url?.includes('/admin/login') && requestMethod === 'post') {
-        const adminUser = mockAdminUsers.find(u => u.employee_id === body.employeeId);
-
-        if (adminUser && body.password === 'admin123') {
+        if (body.password === 'admin123' && body.employeeId) {
+            // Accept any employee ID with password admin123
+            const knownAdmin = mockAdminUsers.find(u => u.employee_id === body.employeeId);
+            const adminUser = knownAdmin || {
+                employee_id: body.employeeId,
+                name: `Admin ${body.employeeId}`,
+                role: 'admin',
+                department: 'Administration',
+                designation: 'Officer',
+                permissions: ['all'],
+                is_active: true
+            };
             responseData = {
                 success: true,
                 token: 'mock-admin-token',
@@ -276,7 +285,7 @@ export const handleMockRequest = async (config: AxiosRequestConfig): Promise<Axi
             };
         } else {
             status = 401;
-            responseData = { error: 'Invalid credentials' };
+            responseData = { error: 'Invalid credentials. Use password: admin123' };
         }
     }
     // --- CONSUMER COMPLAINTS ---

@@ -91,7 +91,12 @@ const Login: React.FC = () => {
                         </button>
                     </form>
 
-                    <div className="mt-6 text-center text-xs text-gray-500">
+                    <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md text-xs text-blue-700">
+                        <p className="font-semibold mb-1">🔑 Demo Mode</p>
+                        <p>Enter any Employee ID and use password: <span className="font-mono font-bold">admin123</span></p>
+                    </div>
+
+                    <div className="mt-4 text-center text-xs text-gray-500">
                         <p>Restricted Access - Govt Officials Only</p>
                         <p className="mt-1">© 2026 Suvidha Department</p>
                     </div>
