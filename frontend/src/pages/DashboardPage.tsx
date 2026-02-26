@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +13,10 @@ import {
     Avatar,
     Chip,
     Paper,
+    Alert,
+    AlertTitle,
+    Collapse,
+    IconButton,
 } from '@mui/material';
 import Grid2 from '@mui/material/Grid2';
 import {
@@ -24,6 +29,10 @@ import {
     People,
     Schedule,
     ArrowForward,
+    Close,
+    NotificationsActive,
+    Warning,
+    Info,
 } from '@mui/icons-material';
 import { RootState } from '../store';
 
@@ -31,6 +40,39 @@ const DashboardPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { user } = useSelector((state: RootState) => state.auth);
+    const [dismissedAlerts, setDismissedAlerts] = useState<string[]>([]);
+
+    // Proactive Alerts — auto-generated based on user data
+    const proactiveAlerts = [
+        {
+            id: 'bill-overdue',
+            severity: 'error' as const,
+            title: '⚡ Electricity Bill Overdue in 5 days!',
+            message: 'Your electricity bill of ₹2,847 (ELEC-2026-001) is due soon. Pay now to avoid late fees.',
+            action: () => navigate('/electricity'),
+            actionLabel: 'Pay Now',
+        },
+        {
+            id: 'outage-planned',
+            severity: 'warning' as const,
+            title: '🔧 Planned Maintenance — Water Supply',
+            message: 'Ward 5-12: Water supply will be disrupted on Feb 28, 10 AM–4 PM for pipeline maintenance.',
+            action: () => navigate('/maps'),
+            actionLabel: 'View Map',
+        },
+        {
+            id: 'scheme-deadline',
+            severity: 'info' as const,
+            title: '🏛️ PM Surya Ghar — Deadline Mar 15',
+            message: 'Solar panel subsidy scheme application deadline approaching. Check your eligibility now!',
+            action: () => navigate('/schemes'),
+            actionLabel: 'Check Eligibility',
+        },
+    ].filter(a => !dismissedAlerts.includes(a.id));
+
+    const dismissAlert = (id: string) => {
+        setDismissedAlerts(prev => [...prev, id]);
+    };
 
     const serviceCards = [
         {
@@ -179,6 +221,48 @@ const DashboardPage = () => {
                     </Grid2>
                 </Paper>
             </motion.div>
+
+            {/* Proactive Alerts */}
+            {proactiveAlerts.length > 0 && (
+                <Box sx={{ mb: 3, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <NotificationsActive color="primary" sx={{ fontSize: 20 }} />
+                        <Typography variant="subtitle2" color="text.secondary" fontWeight={600}>
+                            Alerts & Notifications
+                        </Typography>
+                    </Box>
+                    {proactiveAlerts.map((alert) => (
+                        <Collapse in key={alert.id}>
+                            <Alert
+                                severity={alert.severity}
+                                action={
+                                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                                        <Button
+                                            color="inherit"
+                                            size="small"
+                                            onClick={alert.action}
+                                            sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}
+                                        >
+                                            {alert.actionLabel}
+                                        </Button>
+                                        <IconButton
+                                            size="small"
+                                            color="inherit"
+                                            onClick={() => dismissAlert(alert.id)}
+                                        >
+                                            <Close fontSize="small" />
+                                        </IconButton>
+                                    </Box>
+                                }
+                                sx={{ borderRadius: 2 }}
+                            >
+                                <AlertTitle sx={{ fontWeight: 700, mb: 0 }}>{alert.title}</AlertTitle>
+                                {alert.message}
+                            </Alert>
+                        </Collapse>
+                    ))}
+                </Box>
+            )}
 
             {/* Outstanding Bills */}
             <motion.div

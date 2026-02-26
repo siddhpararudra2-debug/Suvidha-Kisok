@@ -24,6 +24,11 @@ const PaymentPage = lazy(() => import('./pages/payment/PaymentPage'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const ComingSoonPage = lazy(() => import('./pages/ComingSoonPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const NewConnectionPage = lazy(() => import('./pages/connections/NewConnectionPage'));
+const CommunityPage = lazy(() => import('./pages/community/CommunityPage'));
+const DocumentVaultPage = lazy(() => import('./pages/vault/DocumentVaultPage'));
+const UsageAnalyticsPage = lazy(() => import('./pages/analytics/UsageAnalyticsPage'));
+const ConsentPage = lazy(() => import('./pages/privacy/ConsentPage'));
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -146,11 +151,63 @@ function App() {
                         />
 
                         <Route
+                            path="/connections/new"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <NewConnectionPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/community"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <CommunityPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/vault"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <DocumentVaultPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/analytics"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <UsageAnalyticsPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
                             path="/coming-soon"
                             element={
                                 <ProtectedRoute>
                                     <MainLayout>
                                         <ComingSoonPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+
+                        <Route
+                            path="/privacy"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <ConsentPage />
                                     </MainLayout>
                                 </ProtectedRoute>
                             }

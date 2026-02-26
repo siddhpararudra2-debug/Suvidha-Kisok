@@ -13,7 +13,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'suvidha-secret-key-change-in-produ
 const loginSchema = z.object({
     employeeId: z.string().min(1),
     password: z.string().min(1),
-    otp: z.string().optional() // Make optional for now or handle mock OTP
+    otp: z.string().optional()
 });
 
 const updateComplaintSchema = z.object({
@@ -22,11 +22,40 @@ const updateComplaintSchema = z.object({
     assignedTo: z.string().optional()
 });
 
-// Mock admin users for development when DB is not available
+// ===== In-Memory Audit Log =====
+interface AuditEntry {
+    id: string;
+    timestamp: string;
+    employeeId: string;
+    employeeName: string;
+    action: string;
+    entityType: string;
+    entityId: string;
+    details: string;
+    ip: string;
+}
+const auditLog: AuditEntry[] = [];
+
+function addAuditEntry(entry: Omit<AuditEntry, 'id' | 'timestamp'>) {
+    auditLog.unshift({
+        id: `AUD-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        timestamp: new Date().toISOString(),
+        ...entry,
+    });
+    // Keep last 200 entries
+    if (auditLog.length > 200) auditLog.length = 200;
+}
+
+// ===== Bcrypt-hashed mock admin passwords =====
+// Pre-computed hashes: Admin@123, District@123, admin123
+const HASH_ADMIN = bcrypt.hashSync('Admin@123', 10);
+const HASH_DISTRICT = bcrypt.hashSync('District@123', 10);
+const HASH_ADMIN2 = bcrypt.hashSync('admin123', 10);
+
 const mockAdminUsers = [
-    { employee_id: 'SUVIDHA-ADMIN-001', name: 'Super Admin', role: 'super_admin', department: 'IT', designation: 'System Administrator', permissions: ['all'], is_active: true, password: 'Admin@123' },
-    { employee_id: 'SUVIDHA-DIST-001', name: 'District Collector', role: 'district_officer', department: 'Administration', designation: 'District Collector', permissions: ['complaints', 'reports', 'kiosks'], is_active: true, password: 'District@123' },
-    { employee_id: 'admin', name: 'Admin', role: 'admin', department: 'IT', designation: 'Admin', permissions: ['all'], is_active: true, password: 'admin123' },
+    { employee_id: 'SUVIDHA-ADMIN-001', name: 'Super Admin', role: 'super_admin', department: 'IT', designation: 'System Administrator', permissions: ['all'], is_active: true, password_hash: HASH_ADMIN },
+    { employee_id: 'SUVIDHA-DIST-001', name: 'District Collector', role: 'district_officer', department: 'Administration', designation: 'District Collector', permissions: ['complaints', 'reports', 'kiosks'], is_active: true, password_hash: HASH_DISTRICT },
+    { employee_id: 'admin', name: 'Admin', role: 'admin', department: 'IT', designation: 'Admin', permissions: ['all'], is_active: true, password_hash: HASH_ADMIN2 },
 ];
 
 // Admin Login
@@ -49,21 +78,21 @@ router.post('/login', async (req, res) => {
                 }
             }
         } catch (dbError: any) {
-            // Database not available, use mock users
+            // Database not available, use mock users with bcrypt
             logger.warn('Database not available, using mock login');
-            const mockUser = mockAdminUsers.find(u => u.employee_id === employeeId && u.password === password);
-            if (mockUser) {
+            const mockUser = mockAdminUsers.find(u => u.employee_id === employeeId);
+            if (mockUser && await bcrypt.compare(password, mockUser.password_hash)) {
                 admin = { ...mockUser };
-                delete (admin as any).password;
+                delete (admin as any).password_hash;
             }
         }
 
         if (!admin) {
-            // Final fallback: check mock users if DB didn't find anything
-            const mockUser = mockAdminUsers.find(u => u.employee_id === employeeId && u.password === password);
-            if (mockUser) {
+            // Final fallback: check mock users with bcrypt
+            const mockUser = mockAdminUsers.find(u => u.employee_id === employeeId);
+            if (mockUser && await bcrypt.compare(password, mockUser.password_hash)) {
                 admin = { ...mockUser };
-                delete (admin as any).password;
+                delete (admin as any).password_hash;
             } else {
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
@@ -85,15 +114,24 @@ router.post('/login', async (req, res) => {
             { expiresIn: '30m' }
         );
 
-        // Try to log login (ignore if DB not available)
+        // Audit log: login
+        addAuditEntry({
+            employeeId: admin.employee_id,
+            employeeName: admin.name,
+            action: 'LOGIN',
+            entityType: 'SESSION',
+            entityId: admin.employee_id,
+            details: 'Admin logged in successfully',
+            ip: req.ip || 'unknown',
+        });
+
+        // Try DB audit log too
         try {
             await pool.query(
                 `INSERT INTO admin_audit_logs (employee_id, action, ip_address) VALUES ($1, $2, $3)`,
                 [admin.employee_id, 'LOGIN', req.ip]
             );
-        } catch (logError) {
-            // Ignore logging error
-        }
+        } catch (logError) { /* ignore */ }
 
         // Remove password from response
         delete admin.password_hash;
@@ -125,6 +163,28 @@ const verifyAdmin = (req: any, res: any, next: any) => {
 };
 
 router.use(verifyAdmin);
+
+// ===== RBAC Middleware =====
+function requireRole(...roles: string[]) {
+    return (req: any, res: any, next: any) => {
+        const userRole = req.user?.role;
+        const userPerms = req.user?.permissions || [];
+        if (userPerms.includes('all') || roles.includes(userRole)) {
+            return next();
+        }
+        return res.status(403).json({ error: 'Insufficient permissions', required: roles, your_role: userRole });
+    };
+}
+
+// ===== Audit Log API =====
+router.get('/audit-log', requireRole('super_admin', 'admin'), (req, res) => {
+    const { limit = 50, action } = req.query;
+    let logs = [...auditLog];
+    if (action && action !== 'all') {
+        logs = logs.filter(l => l.action === action);
+    }
+    res.json(logs.slice(0, Number(limit)));
+});
 
 // Dashboard Stats (with fallback to shared mock data)
 router.get('/dashboard/stats', async (req, res) => {
@@ -259,6 +319,17 @@ router.put('/complaints/:id/update', async (req: any, res) => {
             console.log(`✅ Synced update for ${id} to mock data: Status=${status}, Assigned=${assignedTo}`);
         }
 
+        // Audit log: complaint update
+        addAuditEntry({
+            employeeId: employeeId,
+            employeeName: req.user?.role || 'admin',
+            action: 'UPDATE_COMPLAINT',
+            entityType: 'COMPLAINT',
+            entityId: id,
+            details: `Status: ${status || 'unchanged'}, Assigned: ${assignedTo || 'unchanged'}, Comment: ${comment || 'none'}`,
+            ip: req.ip || 'unknown',
+        });
+
         // Try database update
         try {
             const client = await pool.connect();
@@ -357,13 +428,24 @@ router.get('/applications', (req, res) => {
     res.json(apps);
 });
 
-router.patch('/applications/:id', (req, res) => {
+router.patch('/applications/:id', requireRole('super_admin', 'admin', 'dept_admin'), (req: any, res) => {
     const { id } = req.params;
     const app = mockApplications.find(a => a.id === id);
     if (!app) return res.status(404).json({ error: 'Application not found' });
     const { status, priority } = req.body;
     if (status) app.status = status;
     if (priority) app.priority = priority;
+
+    addAuditEntry({
+        employeeId: req.user?.userId || 'unknown',
+        employeeName: req.user?.role || 'admin',
+        action: 'UPDATE_APPLICATION',
+        entityType: 'APPLICATION',
+        entityId: id,
+        details: `Status: ${status || 'unchanged'}, Priority: ${priority || 'unchanged'}`,
+        ip: req.ip || 'unknown',
+    });
+
     res.json({ success: true, application: app });
 });
 
@@ -470,8 +552,20 @@ router.get('/settings', (req, res) => {
     res.json(systemSettings);
 });
 
-router.put('/settings', (req, res) => {
+router.put('/settings', requireRole('super_admin', 'admin'), (req: any, res) => {
+    const oldSettings = { ...systemSettings };
     systemSettings = { ...systemSettings, ...req.body };
+
+    addAuditEntry({
+        employeeId: req.user?.userId || 'unknown',
+        employeeName: req.user?.role || 'admin',
+        action: 'UPDATE_SETTINGS',
+        entityType: 'SETTINGS',
+        entityId: 'system',
+        details: `Changed: ${Object.keys(req.body).join(', ')}`,
+        ip: req.ip || 'unknown',
+    });
+
     res.json({ success: true, settings: systemSettings });
 });
 
