@@ -124,7 +124,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         { path: '/dashboard', icon: <Home />, label: t('common.home') },
         { path: '/electricity', icon: <ElectricBolt />, label: t('services.electricity') },
         { path: '/gas', icon: <LocalGasStation />, label: t('services.gas') },
-        { path: '/water', icon: <WaterDrop />, label: t('services.water') },
+        { path: '/municipal', icon: <WaterDrop />, label: 'Municipal' },
         { path: '/complaints', icon: <ReportProblem />, label: t('services.complaints') },
         { path: '/maps', icon: <Map />, label: t('maps.title') },
         { path: '/schemes', icon: <AccountBalance />, label: 'Schemes' },

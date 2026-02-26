@@ -16,6 +16,7 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const ElectricityPage = lazy(() => import('./pages/electricity/ElectricityPage'));
 const GasPage = lazy(() => import('./pages/gas/GasPage'));
 const WaterPage = lazy(() => import('./pages/water/WaterPage'));
+const MunicipalPage = lazy(() => import('./pages/municipal/MunicipalPage'));
 const ComplaintsPage = lazy(() => import('./pages/complaints/ComplaintsPage'));
 const MapExplorerPage = lazy(() => import('./pages/maps/MapExplorerPage'));
 const SchemesPage = lazy(() => import('./pages/schemes/SchemesPage'));
@@ -96,7 +97,17 @@ function App() {
                             element={
                                 <ProtectedRoute>
                                     <MainLayout>
-                                        <WaterPage />
+                                        <MunicipalPage />
+                                    </MainLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/municipal/*"
+                            element={
+                                <ProtectedRoute>
+                                    <MainLayout>
+                                        <MunicipalPage />
                                     </MainLayout>
                                 </ProtectedRoute>
                             }
