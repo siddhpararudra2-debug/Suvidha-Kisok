@@ -161,21 +161,17 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 2 }, minWidth: 0 }}>
                         <Box
+                            component="img"
+                            src={`${import.meta.env.BASE_URL}logo.png`}
+                            alt="SUVIDHA"
                             sx={{
                                 width: { xs: 36, md: 48 },
                                 height: { xs: 36, md: 48 },
                                 borderRadius: '50%',
-                                background: 'linear-gradient(135deg, #1a73e8 0%, #34a853 100%)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
+                                objectFit: 'cover',
                                 flexShrink: 0,
                             }}
-                        >
-                            <Typography sx={{ color: 'white', fontWeight: 700, fontSize: { xs: 14, md: 20 } }}>
-                                S
-                            </Typography>
-                        </Box>
+                        />
                         <Box sx={{ minWidth: 0 }}>
                             <Typography sx={{ fontWeight: 700, color: 'primary.main', fontSize: { xs: '0.95rem', md: '1.25rem' }, lineHeight: 1.2 }}>
                                 SUVIDHA

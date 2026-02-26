@@ -17,28 +17,17 @@ const LoadingScreen = () => {
             }}
         >
             <Box
+                component="img"
+                src={`${import.meta.env.BASE_URL}logo.png`}
+                alt="SUVIDHA"
                 sx={{
                     width: 120,
                     height: 120,
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #1a73e8 0%, #34a853 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    objectFit: 'cover',
                     boxShadow: '0 8px 32px rgba(26, 115, 232, 0.3)',
                 }}
-            >
-                <Typography
-                    variant="h3"
-                    sx={{
-                        color: 'white',
-                        fontWeight: 700,
-                        fontSize: '2.5rem',
-                    }}
-                >
-                    S
-                </Typography>
-            </Box>
+            />
             <CircularProgress
                 size={48}
                 thickness={4}

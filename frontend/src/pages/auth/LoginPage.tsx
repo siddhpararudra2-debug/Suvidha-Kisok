@@ -218,22 +218,18 @@ const LoginPage = () => {
                 >
                     <Box sx={{ textAlign: 'center', mb: 3 }}>
                         <Box
+                            component="img"
+                            src={`${import.meta.env.BASE_URL}logo.png`}
+                            alt="SUVIDHA"
                             sx={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
                                 width: 72,
                                 height: 72,
                                 borderRadius: '50%',
-                                background: 'linear-gradient(135deg, #1a73e8 0%, #34a853 100%)',
+                                objectFit: 'cover',
                                 boxShadow: '0 8px 32px rgba(26, 115, 232, 0.3)',
                                 mb: 1.5,
                             }}
-                        >
-                            <Typography variant="h3" sx={{ color: 'white', fontWeight: 700, fontSize: 32 }}>
-                                S
-                            </Typography>
-                        </Box>
+                        />
                         <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.main' }}>
                             SUVIDHA
                         </Typography>
