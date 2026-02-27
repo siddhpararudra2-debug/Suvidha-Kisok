@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../redux/store';
 import {
     LayoutDashboard,
     ClipboardList,
@@ -27,6 +29,7 @@ const navItems = [
 
 const Sidebar: React.FC = () => {
     const location = useLocation();
+    const { user } = useSelector((state: RootState) => state.auth);
 
     return (
         <div className="w-64 bg-primary-900 text-white flex flex-col h-screen fixed left-0 top-0 overflow-y-auto">
@@ -63,11 +66,11 @@ const Sidebar: React.FC = () => {
             <div className="p-4 border-t border-primary-800">
                 <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 rounded-full bg-primary-700 flex items-center justify-center">
-                        <span className="font-bold">A</span>
+                        <span className="font-bold">{user?.name?.charAt(0) || 'A'}</span>
                     </div>
                     <div>
-                        <p className="text-sm font-medium">Admin User</p>
-                        <p className="text-xs text-primary-400">Online</p>
+                        <p className="text-sm font-medium">{user?.name || 'Admin User'}</p>
+                        <p className="text-xs text-primary-400">{user?.role || 'Online'}</p>
                     </div>
                 </div>
             </div>
@@ -76,3 +79,4 @@ const Sidebar: React.FC = () => {
 };
 
 export default Sidebar;
+

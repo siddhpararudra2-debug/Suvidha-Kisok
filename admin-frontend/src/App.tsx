@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Layout from './components/layout/Layout';
@@ -16,7 +16,7 @@ import ContentManagement from './pages/ContentManagement';
 
 const App: React.FC = () => {
   return (
-    <Router basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+    <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
 
