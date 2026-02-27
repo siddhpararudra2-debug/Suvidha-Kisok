@@ -35,8 +35,19 @@ jobs:
         run: npm run build
         working-directory: frontend
 
+      - name: Install Admin dependencies
+        run: npm install
+        working-directory: admin-frontend
+
+      - name: Build Admin Portal
+        run: npm run build
+        working-directory: admin-frontend
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
+
+      - name: Merge Admin into Consumer Dist
+        run: cp -r admin-frontend/dist frontend/dist/admin
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
