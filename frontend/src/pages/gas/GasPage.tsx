@@ -43,10 +43,10 @@ const GasPage = () => {
                 }
             })
         },
-        { icon: <Speed />, title: t('gas.meterReading'), path: '/coming-soon', color: '#fbbc04' },
-        { icon: <AddCircle />, title: t('services.newConnection'), path: '/coming-soon', color: '#673ab7' },
-        { icon: <LocalGasStation />, title: t('gas.cngLocator'), path: '/coming-soon', color: '#00bcd4' },
-        { icon: <Security />, title: t('gas.safetyInfo'), path: '/coming-soon', color: '#ff9800' },
+        { icon: <Speed />, title: t('gas.meterReading'), path: '/gas/meter-reading', color: '#fbbc04' },
+        { icon: <AddCircle />, title: t('services.newConnection'), path: '/gas/new-connection', color: '#673ab7' },
+        { icon: <LocalGasStation />, title: t('gas.cngLocator'), path: '/gas/cng-locator', color: '#00bcd4' },
+        { icon: <Security />, title: t('gas.safetyInfo'), path: '/gas/safety', color: '#ff9800' },
     ];
 
     return (

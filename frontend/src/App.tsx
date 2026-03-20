@@ -31,6 +31,19 @@ const DocumentVaultPage = lazy(() => import('./pages/vault/DocumentVaultPage'));
 const UsageAnalyticsPage = lazy(() => import('./pages/analytics/UsageAnalyticsPage'));
 const ConsentPage = lazy(() => import('./pages/privacy/ConsentPage'));
 
+// New Gas Services Pages
+const GasSubmitMeterReading = lazy(() => import('./pages/gas/SubmitMeterReading'));
+const GasNewConnection = lazy(() => import('./pages/gas/NewConnection'));
+const GasCNGStationLocator = lazy(() => import('./pages/gas/CNGStationLocator'));
+const GasSafetyInformation = lazy(() => import('./pages/gas/SafetyInformation'));
+
+// New Electricity Services Pages
+const ElecConsumptionAnalytics = lazy(() => import('./pages/electricity/ConsumptionAnalytics'));
+const ElecNewConnection = lazy(() => import('./pages/electricity/NewConnection'));
+const ElecLoadChange = lazy(() => import('./pages/electricity/LoadChange'));
+const ElecSolarNetMetering = lazy(() => import('./pages/electricity/SolarNetMetering'));
+const ElecPlannedOutages = lazy(() => import('./pages/electricity/PlannedOutages'));
+
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     const { isAuthenticated, isGuest } = useSelector((state: RootState) => state.auth);
@@ -72,26 +85,17 @@ function App() {
                                 </ProtectedRoute>
                             }
                         />
-                        <Route
-                            path="/electricity/*"
-                            element={
-                                <ProtectedRoute>
-                                    <MainLayout>
-                                        <ElectricityPage />
-                                    </MainLayout>
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/gas/*"
-                            element={
-                                <ProtectedRoute>
-                                    <MainLayout>
-                                        <GasPage />
-                                    </MainLayout>
-                                </ProtectedRoute>
-                            }
-                        />
+                        <Route path="/electricity" element={<ProtectedRoute><MainLayout><ElectricityPage /></MainLayout></ProtectedRoute>} />
+                        <Route path="/electricity/analytics" element={<ProtectedRoute><MainLayout><ElecConsumptionAnalytics /></MainLayout></ProtectedRoute>} />
+                        <Route path="/electricity/new-connection" element={<ProtectedRoute><MainLayout><ElecNewConnection /></MainLayout></ProtectedRoute>} />
+                        <Route path="/electricity/load-change" element={<ProtectedRoute><MainLayout><ElecLoadChange /></MainLayout></ProtectedRoute>} />
+                        <Route path="/electricity/solar" element={<ProtectedRoute><MainLayout><ElecSolarNetMetering /></MainLayout></ProtectedRoute>} />
+                        <Route path="/electricity/outages" element={<ProtectedRoute><MainLayout><ElecPlannedOutages /></MainLayout></ProtectedRoute>} />
+                        <Route path="/gas" element={<ProtectedRoute><MainLayout><GasPage /></MainLayout></ProtectedRoute>} />
+                        <Route path="/gas/meter-reading" element={<ProtectedRoute><MainLayout><GasSubmitMeterReading /></MainLayout></ProtectedRoute>} />
+                        <Route path="/gas/new-connection" element={<ProtectedRoute><MainLayout><GasNewConnection /></MainLayout></ProtectedRoute>} />
+                        <Route path="/gas/cng-locator" element={<ProtectedRoute><MainLayout><GasCNGStationLocator /></MainLayout></ProtectedRoute>} />
+                        <Route path="/gas/safety" element={<ProtectedRoute><MainLayout><GasSafetyInformation /></MainLayout></ProtectedRoute>} />
                         <Route
                             path="/water/*"
                             element={

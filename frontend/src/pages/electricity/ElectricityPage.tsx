@@ -45,12 +45,12 @@ const ElectricityPage = () => {
             }),
             color: '#34a853'
         },
-        { icon: <TrendingUp />, title: t('services.consumption'), path: '/coming-soon', color: '#fbbc04' },
-        { icon: <AddCircle />, title: t('services.newConnection'), path: '/coming-soon', color: '#673ab7' },
-        { icon: <Settings />, title: t('electricity.loadChange'), path: '/coming-soon', color: '#00bcd4' },
-        { icon: <WbSunny />, title: t('electricity.solarNetMetering'), path: '/coming-soon', color: '#ff9800' },
+        { icon: <TrendingUp />, title: t('services.consumption'), path: '/electricity/analytics', color: '#fbbc04' },
+        { icon: <AddCircle />, title: t('services.newConnection'), path: '/electricity/new-connection', color: '#673ab7' },
+        { icon: <Settings />, title: t('electricity.loadChange'), path: '/electricity/load-change', color: '#00bcd4' },
+        { icon: <WbSunny />, title: t('electricity.solarNetMetering'), path: '/electricity/solar', color: '#ff9800' },
         { icon: <ReportProblem />, title: t('electricity.reportOutage'), path: '/complaints', color: '#ea4335' },
-        { icon: <Schedule />, title: t('electricity.plannedOutages'), path: '/coming-soon', color: '#9c27b0' },
+        { icon: <Schedule />, title: t('electricity.plannedOutages'), path: '/electricity/outages', color: '#9c27b0' },
     ];
 
     // Mock current bill data

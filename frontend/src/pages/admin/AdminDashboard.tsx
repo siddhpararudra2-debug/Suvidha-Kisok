@@ -142,6 +142,30 @@ const AdminDashboard = () => {
         { id: 'KSK-005', location: 'Thane West', status: 'maintenance', lastPing: '2 hrs ago', transactions: 0, uptime: 98.1 },
     ];
 
+    const citizens = Array.from({ length: 30 }, (_, i) => ({
+        id: `CTZ-${1000 + i}`,
+        name: `Citizen ${i + 1}`,
+        mobile: `+91 98${Math.floor(10000000 + Math.random() * 90000000)}`,
+        city: 'Mumbai',
+        registeredAt: `2026-01-${String((i % 31) + 1).padStart(2, '0')}`
+    }));
+
+    const officials = Array.from({ length: 30 }, (_, i) => ({
+        id: `OFC-${2000 + i}`,
+        name: `Official ${i + 1}`,
+        department: i % 3 === 0 ? 'Electricity' : i % 3 === 1 ? 'Water' : 'Gas',
+        designation: i % 2 === 0 ? 'Senior Engineer' : 'Field Officer',
+        status: i % 5 === 0 ? 'Offline' : 'Active'
+    }));
+
+    const schemes = Array.from({ length: 20 }, (_, i) => ({
+        id: `SCH-${3000 + i}`,
+        title: `Public Welfare Scheme ${i + 1}`,
+        department: i % 3 === 0 ? 'Electricity' : i % 3 === 1 ? 'Water' : 'Gas',
+        beneficiaries: Math.floor(Math.random() * 50000),
+        status: i % 4 === 0 ? 'Pending Renewal' : 'Active'
+    }));
+
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'registered': return 'info';
@@ -282,10 +306,13 @@ const AdminDashboard = () => {
 
             {/* Tabs */}
             <Paper sx={{ borderRadius: 2 }}>
-                <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)} sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)} sx={{ borderBottom: 1, borderColor: 'divider' }} variant="scrollable" scrollButtons="auto">
                     <Tab label="Complaints Management" />
                     <Tab label="Kiosk Status" />
                     <Tab label="Reports" />
+                    <Tab label="Citizens Directory" />
+                    <Tab label="Officials Roster" />
+                    <Tab label="Government Schemes" />
                 </Tabs>
 
                 {/* Complaints Tab */}
@@ -439,6 +466,66 @@ const AdminDashboard = () => {
                 {/* Reports Tab */}
                 <TabPanel value={tabValue} index={2}>
                     <ReportsAnalytics />
+                </TabPanel>
+
+                {/* Citizens Tab */}
+                <TabPanel value={tabValue} index={3}>
+                    <Box sx={{ p: 2 }}>
+                        <Table>
+                            <TableHead><TableRow><TableCell>ID</TableCell><TableCell>Name</TableCell><TableCell>Mobile</TableCell><TableCell>City</TableCell><TableCell>Registered At</TableCell></TableRow></TableHead>
+                            <TableBody>
+                                {citizens.map(c => (
+                                    <TableRow key={c.id}>
+                                        <TableCell>{c.id}</TableCell>
+                                        <TableCell>{c.name}</TableCell>
+                                        <TableCell>{c.mobile}</TableCell>
+                                        <TableCell>{c.city}</TableCell>
+                                        <TableCell>{c.registeredAt}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Box>
+                </TabPanel>
+
+                {/* Officials Tab */}
+                <TabPanel value={tabValue} index={4}>
+                    <Box sx={{ p: 2 }}>
+                        <Table>
+                            <TableHead><TableRow><TableCell>ID</TableCell><TableCell>Name</TableCell><TableCell>Department</TableCell><TableCell>Designation</TableCell><TableCell>Status</TableCell></TableRow></TableHead>
+                            <TableBody>
+                                {officials.map(o => (
+                                    <TableRow key={o.id}>
+                                        <TableCell>{o.id}</TableCell>
+                                        <TableCell>{o.name}</TableCell>
+                                        <TableCell>{o.department}</TableCell>
+                                        <TableCell>{o.designation}</TableCell>
+                                        <TableCell><Chip label={o.status} color={o.status === 'Active' ? 'success' : 'default'} size="small" /></TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Box>
+                </TabPanel>
+
+                {/* Schemes Tab */}
+                <TabPanel value={tabValue} index={5}>
+                     <Box sx={{ p: 2 }}>
+                        <Table>
+                            <TableHead><TableRow><TableCell>ID</TableCell><TableCell>Scheme Title</TableCell><TableCell>Department</TableCell><TableCell>Beneficiaries</TableCell><TableCell>Status</TableCell></TableRow></TableHead>
+                            <TableBody>
+                                {schemes.map(s => (
+                                    <TableRow key={s.id}>
+                                        <TableCell>{s.id}</TableCell>
+                                        <TableCell>{s.title}</TableCell>
+                                        <TableCell>{s.department}</TableCell>
+                                        <TableCell>{s.beneficiaries.toLocaleString()}</TableCell>
+                                        <TableCell><Chip label={s.status} color={s.status === 'Active' ? 'primary' : 'warning'} size="small" /></TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Box>
                 </TabPanel>
             </Paper>
 
