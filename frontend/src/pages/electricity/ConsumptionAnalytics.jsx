@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { getConsumptionAnalytics } from '../../services/electricityService';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+} from 'recharts';
+import jsPDF from 'jspdf';
 
 const ConsumptionAnalytics = ({ consumerId = "MH12345678" }) => {
   const [data, setData] = useState(null);
@@ -22,11 +26,43 @@ const ConsumptionAnalytics = ({ consumerId = "MH12345678" }) => {
     }
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleDownloadPDF = () => {
+    if (!data) return;
+    const doc = new jsPDF();
+    doc.setFontSize(22);
+    doc.text("Consumption Analytics Report", 20, 20);
+    
+    doc.setFontSize(14);
+    doc.text(`Estimated Next Bill: Rs ${data.nextBillPrediction}`, 20, 40);
+    doc.text(`Peak Usage Time: ${data.peakUsageTime}`, 20, 50);
+    doc.text(`Goal Target: ${data.similarHouseholdsTarget} units/mo`, 20, 60);
+
+    doc.text("Monthly Consumption:", 20, 80);
+    let y = 90;
+    data.monthlyConsumption.forEach((item) => {
+        doc.text(`${item.month}: ${item.units} units`, 30, y);
+        y += 10;
+    });
+
+    doc.text("Recommendations:", 20, y + 10);
+    y += 20;
+    data.recommendations.forEach((rec) => {
+        doc.text(`- ${rec}`, 30, y);
+        y += 10;
+    });
+
+    doc.save("Consumption_Report.pdf");
+  };
+
   if (loading) return <div>Loading Analytics...</div>;
   if (!data) return <div>No data available</div>;
 
   return (
-    <div className="p-4 max-w-5xl mx-auto">
+    <div className="p-4 max-w-5xl mx-auto" id="analytics-report">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold">Consumption Analytics</h2>
         <select 
@@ -40,15 +76,15 @@ const ConsumptionAnalytics = ({ consumerId = "MH12345678" }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-white p-4 rounded shadow">
+        <div className="bg-white p-4 rounded shadow print-friendly">
           <h3 className="text-gray-500 font-medium">Estimated Next Bill</h3>
           <p className="text-3xl font-bold text-blue-600">₹{data.nextBillPrediction}</p>
         </div>
-        <div className="bg-white p-4 rounded shadow">
+        <div className="bg-white p-4 rounded shadow print-friendly">
           <h3 className="text-gray-500 font-medium">Peak Usage Time</h3>
           <p className="text-xl font-bold">{data.peakUsageTime}</p>
         </div>
-        <div className="bg-white p-4 rounded shadow">
+        <div className="bg-white p-4 rounded shadow print-friendly">
           <h3 className="text-gray-500 font-medium">Goal Setting</h3>
           <p className="text-xl font-bold">Aim for {data.similarHouseholdsTarget} units/mo</p>
         </div>
@@ -56,18 +92,16 @@ const ConsumptionAnalytics = ({ consumerId = "MH12345678" }) => {
 
       <div className="bg-white p-4 rounded shadow mb-8">
         <h3 className="text-xl font-bold mb-4">Monthly Trends</h3>
-        <div className="flex gap-2 items-end h-[200px]">
-          {data.monthlyConsumption.map((item, idx) => (
-            <div key={idx} className="flex-1 flex flex-col justify-end items-center group relative">
-              <span className="opacity-0 group-hover:opacity-100 absolute -top-8 bg-gray-800 text-white p-1 rounded text-xs transition-opacity">{item.units}</span>
-              <div 
-                style={{ height: `${(item.units / 250) * 100}%` }}
-                className="w-full bg-blue-500 rounded-t hover:bg-blue-600 transition-colors"
-                title={`${item.units} units`}
-              ></div>
-              <span className="text-sm mt-2">{item.month}</span>
-            </div>
-          ))}
+        <div className="h-[300px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data.monthlyConsumption}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip cursor={{ fill: '#f3f4f6' }} />
+              <Bar dataKey="units" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Units (kWh)" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
@@ -80,10 +114,19 @@ const ConsumptionAnalytics = ({ consumerId = "MH12345678" }) => {
         </ul>
       </div>
       
-      <div className="mt-8 flex gap-4">
-        <button className="bg-gray-100 border p-2 rounded hover:bg-gray-200">🖨️ Print Report</button>
-        <button className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">⬇️ Download PDF</button>
+      <div className="mt-8 flex gap-4 no-print">
+        <button onClick={handlePrint} className="bg-gray-100 border p-2 rounded hover:bg-gray-200 cursor-pointer">🖨️ Print Report</button>
+        <button onClick={handleDownloadPDF} className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 cursor-pointer">⬇️ Download PDF</button>
       </div>
+
+      <style>{`
+        @media print {
+          .no-print { display: none !important; }
+          body { background-color: white !important; }
+          #analytics-report { padding: 0 !important; margin: 0 !important; }
+          .print-friendly { break-inside: avoid; border: 1px solid #e5e7eb; margin-bottom: 20px; }
+        }
+      `}</style>
     </div>
   );
 };

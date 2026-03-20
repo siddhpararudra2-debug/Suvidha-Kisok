@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 const api = {
   get: async () => ({
     data: [
-      { id: 1, name: 'MGL CNG Station', address: 'Borivali East', distance: 2.5, isOpen: true, hours: '24x7', cngPrice: 76, facilities: ['Air', 'Washroom'], lat: 19.23, lng: 72.85 },
-      { id: 2, name: 'HP CNG Pump', address: 'Kandivali West', distance: 4.1, isOpen: true, hours: '6 AM - 11 PM', cngPrice: 76, facilities: ['Air'], lat: 19.21, lng: 72.83 }
+      { id: 1, name: 'MGL CNG Station', address: 'Athwa Lines', distance: 2.5, isOpen: true, hours: '24x7', cngPrice: 76, facilities: ['Air', 'Washroom'], lat: 21.17, lng: 72.83 },
+      { id: 2, name: 'HP CNG Pump', address: 'Piplod', distance: 4.1, isOpen: true, hours: '6 AM - 11 PM', cngPrice: 76, facilities: ['Air'], lat: 21.16, lng: 72.77 }
     ]
   })
 };

@@ -28,52 +28,27 @@ const DirectoryPage = () => {
     const [department, setDepartment] = useState('all');
     const [search, setSearch] = useState('');
 
-    const officials = [
-        {
-            id: 1,
-            name: 'Shri Rajesh Kumar',
-            designation: 'Executive Engineer',
-            department: 'Electricity',
-            area: 'Zone A - Andheri, Goregaon',
-            phone: '+91 22 1234 5678',
-            email: 'rajesh.kumar@electricity.gov.in',
-            officeHours: '10:00 AM - 5:00 PM',
-            photo: 'RK',
-        },
-        {
-            id: 2,
-            name: 'Smt. Priya Patel',
-            designation: 'Assistant Engineer',
-            department: 'Water',
-            area: 'Zone B - Bandra, Khar',
-            phone: '+91 22 2345 6789',
-            email: 'priya.patel@water.gov.in',
-            officeHours: '10:00 AM - 5:00 PM',
-            photo: 'PP',
-        },
-        {
-            id: 3,
-            name: 'Shri Amit Shah',
-            designation: 'Area Manager',
-            department: 'Gas',
-            area: 'Surat Region',
-            phone: '+91 22 3456 7890',
-            email: 'amit.shah@gas.gov.in',
-            officeHours: '9:00 AM - 6:00 PM',
-            photo: 'AS',
-        },
-        {
-            id: 4,
-            name: 'Smt. Sunita Joshi',
-            designation: 'Superintendent Engineer',
-            department: 'Electricity',
-            area: 'Surat Circle',
-            phone: '+91 22 4567 8901',
-            email: 'sunita.joshi@electricity.gov.in',
-            officeHours: '10:00 AM - 5:00 PM',
-            photo: 'SJ',
-        },
-    ];
+    const firstNames = ['Rajesh', 'Priya', 'Amit', 'Sunita', 'Sanjay', 'Neha', 'Vikram', 'Anjali', 'Ramesh', 'Pooja', 'Karan', 'Kavita', 'Suresh'];
+    const lastNames = ['Kumar', 'Patel', 'Shah', 'Joshi', 'Mehta', 'Desai', 'Chauhan', 'Bhagat', 'Trivedi', 'Gandhi'];
+    const departments = ['Electricity', 'Water', 'Gas', 'Sanitation', 'Public Works'];
+    const areas = ['Zone A - Adajan, Vesu', 'Zone B - Varachha, Katargam', 'Zone C - Athwa, Piplod', 'Zone D - Udhna, Rander', 'Surat Circle', 'Surat Region'];
+    
+    const officials = Array.from({ length: 30 }, (_, i) => {
+        const fName = firstNames[i % firstNames.length];
+        const lName = lastNames[i % lastNames.length];
+        const dept = departments[i % departments.length];
+        return {
+            id: i + 1,
+            name: `${i % 2 === 0 ? 'Shri' : 'Smt.'} ${fName} ${lName}`,
+            designation: i % 4 === 0 ? 'Executive Engineer' : i % 4 === 1 ? 'Assistant Engineer' : i % 4 === 2 ? 'Superintendent' : 'Area Manager',
+            department: dept,
+            area: areas[i % areas.length],
+            phone: `+91 261 ${Math.floor(2000000 + Math.random() * 8000000)}`,
+            email: `${fName.toLowerCase()}.${lName.toLowerCase()}${i}@${dept.toLowerCase().replace(' ', '')}.surat.gov.in`,
+            officeHours: i % 3 === 0 ? '9:00 AM - 6:00 PM' : '10:00 AM - 5:00 PM',
+            photo: `${fName[0]}${lName[0]}`,
+        };
+    });
 
     const filteredOfficials = officials.filter((official) => {
         const matchesDept = department === 'all' || official.department.toLowerCase() === department;

@@ -28,11 +28,21 @@ export const mockOfficials = Array.from({ length: 30 }, (_, i) => ({
     status: i % 5 === 0 ? 'Offline' : 'Active'
 }));
 
+const schemeNames = [
+    'PM Surya Ghar Muft Bijli Yojana', 'Namo Lakshmi Yojana', 'Namo Shri Scheme', 
+    'Mukhyamantri Mahila Utkarsh Yojana', 'SMC Water Pipeline Scheme', 'Surat Solar Subsidy', 
+    'Vidhya Sahayak Scheme', 'Gujarat Laptop Sahay Yojana', 'PM Awas Yojana (Urban)', 
+    'Ayushman Bharat - PMJAY', 'Atma Nirbhar Gujarat Sahay', 'Maa Vatsalya Yojana',
+    'Gyan Sadhana Scholarship', 'Shala Praveshotsav Drive', 'SMC Property Tax Rebate',
+    'Sanitation Workers Welfare Fund', 'Digital Gujarat Scholarship', 'Nirmal Gujarat Abhiyan',
+    'Suposhit Gujarat Mission', 'Mission Schools of Excellence'
+];
+
 export const mockSchemes = Array.from({ length: 20 }, (_, i) => ({
     id: `SCH-${3000 + i}`,
-    title: `Public Welfare Scheme ${i + 1}`,
-    department: i % 3 === 0 ? 'Electricity' : i % 3 === 1 ? 'Water' : 'Gas',
-    beneficiaries: Math.floor(Math.random() * 50000),
+    title: schemeNames[i],
+    department: i < 5 ? 'Power & Energy' : i < 10 ? 'Education & Health' : 'Municipal Services',
+    beneficiaries: Math.floor(Math.random() * 80000 + 5000),
     status: i % 4 === 0 ? 'Pending Renewal' : 'Active'
 }));
 

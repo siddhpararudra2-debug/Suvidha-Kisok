@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Grid2 from '@mui/material/Grid2';
 import {
     Box,
@@ -56,8 +56,8 @@ const generateAnalyticsData = (period: string) => ({
         { priority: 'Low', count: 346, avgTime: 48.7, slaCompliance: 95 },
     ],
     topLocations: [
-        { area: 'Andheri', complaints: 234, resolved: 212 },
-        { area: 'Borivali', complaints: 198, resolved: 189 },
+        { area: 'Vesu', complaints: 234, resolved: 212 },
+        { area: 'Adajan', complaints: 198, resolved: 189 },
         { area: 'Bandra', complaints: 156, resolved: 145 },
         { area: 'Thane', complaints: 143, resolved: 138 },
         { area: 'Powai', complaints: 112, resolved: 108 },

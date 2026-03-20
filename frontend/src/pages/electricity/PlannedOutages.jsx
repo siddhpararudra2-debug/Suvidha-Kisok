@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react';
 const api = {
   get: async () => ({
     data: [
-      { id: 1, area: 'Borivali West', date: '2026-03-25', time: '10:00 AM - 02:00 PM', reason: 'Transformer Upgrade', affectedConsumers: 250 },
-      { id: 2, area: 'Andheri East', date: '2026-03-28', time: '11:00 AM - 04:00 PM', reason: 'Line Maintenance', affectedConsumers: 150 }
+      { id: 1, area: 'Adajan', date: '2026-03-25', time: '10:00 AM - 02:00 PM', reason: 'Transformer Upgrade', affectedConsumers: 250 },
+      { id: 2, area: 'Vesu', date: '2026-03-28', time: '11:00 AM - 04:00 PM', reason: 'Line Maintenance', affectedConsumers: 150 }
     ]
   })
 };
 
-const PlannedOutages = ({ userLocation = { area: 'Borivali West' } }) => {
+const PlannedOutages = ({ userLocation = { area: 'Adajan' } }) => {
   const [outages, setOutages] = useState([]);
   const [filter, setFilter] = useState({
     dateRange: 'next7days',
@@ -54,8 +54,8 @@ const PlannedOutages = ({ userLocation = { area: 'Borivali West' } }) => {
           onChange={e => setFilter({...filter, area: e.target.value})}
         >
           <option value="all">All Areas</option>
-          <option value="Borivali West">Borivali West</option>
-          <option value="Andheri East">Andheri East</option>
+          <option value="Adajan">Adajan</option>
+          <option value="Vesu">Vesu</option>
         </select>
         
         <select 
