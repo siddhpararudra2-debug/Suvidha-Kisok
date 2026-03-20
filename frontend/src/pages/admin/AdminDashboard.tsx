@@ -85,7 +85,7 @@ const AdminDashboard = () => {
             mobile: '+91 9876543210',
             category: 'electricity',
             subcategory: 'Power Outage',
-            location: 'Andheri West, Mumbai',
+            location: 'Adajan, Surat',
             priority: 'high',
             status: 'in_progress',
             createdAt: '2026-01-27 06:30',
@@ -98,7 +98,7 @@ const AdminDashboard = () => {
             mobile: '+91 9765432109',
             category: 'water',
             subcategory: 'Low Pressure',
-            location: 'Borivali East, Mumbai',
+            location: 'Vesu, Surat',
             priority: 'medium',
             status: 'registered',
             createdAt: '2026-01-27 08:15',
@@ -111,7 +111,7 @@ const AdminDashboard = () => {
             mobile: '+91 9654321098',
             category: 'gas',
             subcategory: 'Gas Leak',
-            location: 'Malad West, Mumbai',
+            location: 'Varachha, Surat',
             priority: 'emergency',
             status: 'assigned',
             createdAt: '2026-01-27 09:00',
@@ -124,7 +124,7 @@ const AdminDashboard = () => {
             mobile: '+91 9543210987',
             category: 'electricity',
             subcategory: 'Meter Problem',
-            location: 'Bandra West, Mumbai',
+            location: 'Piplod, Surat',
             priority: 'low',
             status: 'resolved',
             createdAt: '2026-01-26 14:20',
@@ -135,18 +135,18 @@ const AdminDashboard = () => {
 
     // Mock kiosks data
     const kiosks = [
-        { id: 'KSK-001', location: 'Andheri Station', status: 'online', lastPing: '2 min ago', transactions: 456, uptime: 99.8 },
-        { id: 'KSK-002', location: 'Bandra Terminus', status: 'online', lastPing: '1 min ago', transactions: 389, uptime: 99.5 },
-        { id: 'KSK-003', location: 'CST Main Hall', status: 'offline', lastPing: '45 min ago', transactions: 0, uptime: 95.2 },
-        { id: 'KSK-004', location: 'Dadar East', status: 'online', lastPing: '3 min ago', transactions: 567, uptime: 99.9 },
-        { id: 'KSK-005', location: 'Thane West', status: 'maintenance', lastPing: '2 hrs ago', transactions: 0, uptime: 98.1 },
+        { id: 'KSK-001', location: 'Surat Railway Station', status: 'online', lastPing: '2 min ago', transactions: 456, uptime: 99.8 },
+        { id: 'KSK-002', location: 'VR Mall, Dumas Road', status: 'online', lastPing: '1 min ago', transactions: 389, uptime: 99.5 },
+        { id: 'KSK-003', location: 'SMC Main Office', status: 'offline', lastPing: '45 min ago', transactions: 0, uptime: 95.2 },
+        { id: 'KSK-004', location: 'Adajan Bus Depot', status: 'online', lastPing: '3 min ago', transactions: 567, uptime: 99.9 },
+        { id: 'KSK-005', location: 'Sarthana Nature Park', status: 'maintenance', lastPing: '2 hrs ago', transactions: 0, uptime: 98.1 },
     ];
 
     const citizens = Array.from({ length: 30 }, (_, i) => ({
         id: `CTZ-${1000 + i}`,
         name: `Citizen ${i + 1}`,
         mobile: `+91 98${Math.floor(10000000 + Math.random() * 90000000)}`,
-        city: 'Mumbai',
+        city: 'Surat',
         registeredAt: `2026-01-${String((i % 31) + 1).padStart(2, '0')}`
     }));
 

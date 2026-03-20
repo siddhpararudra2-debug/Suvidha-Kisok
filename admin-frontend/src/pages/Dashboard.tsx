@@ -10,21 +10,29 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const Dashboard: React.FC = () => {
     const [stats, setStats] = useState<any>(null);
+    const [officials, setOfficials] = useState<any[]>([]);
+    const [schemes, setSchemes] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchStats = async () => {
+        const fetchData = async () => {
             try {
-                const response = await api.get('/admin/dashboard/stats');
-                setStats(response.data);
+                const [statsRes, officialsRes, schemesRes] = await Promise.all([
+                    api.get('/admin/dashboard/stats'),
+                    api.get('/admin/officials'),
+                    api.get('/admin/schemes')
+                ]);
+                setStats(statsRes.data);
+                setOfficials(officialsRes.data);
+                setSchemes(schemesRes.data);
             } catch (error) {
-                console.error('Failed to fetch stats');
+                console.error('Failed to fetch dashboard data');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchStats();
+        fetchData();
     }, []);
 
     if (loading) return <div className="p-8">Loading dashboard...</div>;
@@ -151,6 +159,77 @@ const Dashboard: React.FC = () => {
                         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                             <div className="h-full bg-amber-500 w-[87%] rounded-full"></div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Officials and Schemes Tables */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                {/* Officials Table */}
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Officials Roster</h3>
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                <th className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                                <th className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {officials.slice(0, 5).map((official) => (
+                                <tr key={official.id}>
+                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{official.id}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{official.name}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{official.department}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap">
+                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                            official.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                                        }`}>
+                                            {official.status}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <div className="mt-4 text-sm text-blue-600 hover:text-blue-800 cursor-pointer">
+                        View all {officials.length} officials &rarr;
+                    </div>
+                </div>
+
+                {/* Schemes Table */}
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Government Schemes</h3>
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                <th className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Beneficiaries</th>
+                                <th className="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {schemes.slice(0, 5).map((scheme) => (
+                                <tr key={scheme.id}>
+                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{scheme.id}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{scheme.title}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{scheme.beneficiaries.toLocaleString()}</td>
+                                    <td className="px-4 py-3 whitespace-nowrap">
+                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                            scheme.status === 'Active' ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'
+                                        }`}>
+                                            {scheme.status}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <div className="mt-4 text-sm text-blue-600 hover:text-blue-800 cursor-pointer">
+                        View all {schemes.length} schemes &rarr;
                     </div>
                 </div>
             </div>

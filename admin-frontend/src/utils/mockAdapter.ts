@@ -2,93 +2,39 @@
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // ============ MOCK DATA (Copied from Backend) ============
-export const mockCitizens = [
-    {
-        id: 'USR001',
-        aadhaar: '123456789012',
-        name: 'Priya Sharma',
-        mobile: '+91-9876543210',
-        email: 'priya@example.com',
-        aadhaarMasked: 'XXXX-XXXX-9012',
-        address: '14/A, Athwa Lines, Near Parle Point',
-        city: 'Surat',
-        pincode: '395007',
-        created_at: '2025-06-15T10:30:00Z',
-        connections: {
-            electricity: ['ELEC-GJ-123456789'],
-            gas: ['GAS-GJ-987654'],
-            water: ['WAT-GJ-456789'],
-        }
-    },
-    {
-        id: 'USR002',
-        aadhaar: '234567890123',
-        name: 'Rajesh Kumar',
-        mobile: '+91-9876543211',
-        email: 'rajesh@example.com',
-        aadhaarMasked: 'XXXX-XXXX-0123',
-        address: '45/B, Adajan, Near D-Mart',
-        city: 'Surat',
-        pincode: '395009',
-        created_at: '2025-07-20T14:45:00Z',
-        connections: {
-            electricity: ['ELEC-GJ-234567890'],
-            gas: ['GAS-GJ-876543'],
-            water: ['WAT-GJ-345678'],
-        }
-    },
-    {
-        id: 'USR003',
-        aadhaar: '345678901234',
-        name: 'Anjali Patel',
-        mobile: '+91-9876543212',
-        email: 'anjali@example.com',
-        aadhaarMasked: 'XXXX-XXXX-1234',
-        address: '78/C, Vesu, Near VR Mall',
-        city: 'Surat',
-        pincode: '395007',
-        created_at: '2025-08-10T09:15:00Z',
-        connections: {
-            electricity: ['ELEC-GJ-345678901'],
-            gas: [],
-            water: ['WAT-GJ-567890'],
-        }
-    },
-    {
-        id: 'USR004',
-        aadhaar: '456789012345',
-        name: 'Mohammed Khan',
-        mobile: '+91-9876543213',
-        email: 'mohammed@example.com',
-        aadhaarMasked: 'XXXX-XXXX-2345',
-        address: '23/D, Katargam, Near SVNIT',
-        city: 'Surat',
-        pincode: '395004',
-        created_at: '2025-09-05T16:20:00Z',
-        connections: {
-            electricity: ['ELEC-GJ-456789012'],
-            gas: ['GAS-GJ-765432'],
-            water: ['WAT-GJ-678901'],
-        }
-    },
-    {
-        id: 'USR005',
-        aadhaar: '567890123456',
-        name: 'Sneha Reddy',
-        mobile: '+91-9876543214',
-        email: 'sneha@example.com',
-        aadhaarMasked: 'XXXX-XXXX-3456',
-        address: '56/E, Piplod, Near Science Center',
-        city: 'Surat',
-        pincode: '395007',
-        created_at: '2025-10-12T11:00:00Z',
-        connections: {
-            electricity: ['ELEC-GJ-567890123'],
-            gas: ['GAS-GJ-654321'],
-            water: [],
-        }
+export const mockCitizens = Array.from({ length: 30 }, (_, i) => ({
+    id: `USR${String(i + 1).padStart(3, '0')}`,
+    aadhaar: `1234567890${String(i).padStart(2, '0')}`,
+    name: `Citizen ${i + 1}`,
+    mobile: `+91-98${String(Math.floor(10000000 + Math.random() * 90000000))}`,
+    email: `citizen${i + 1}@example.com`,
+    aadhaarMasked: `XXXX-XXXX-${String(i).padStart(4, '0')}`,
+    address: `House ${i + 1}, Adajan/Vesu/Varachha`,
+    city: 'Surat',
+    pincode: '395007',
+    created_at: `2026-01-${String((i % 31) + 1).padStart(2, '0')}T10:30:00Z`,
+    connections: {
+        electricity: i % 2 === 0 ? [`ELEC-GJ-${Math.floor(100000 + Math.random() * 900000)}`] : [],
+        gas: i % 3 === 0 ? [`GAS-GJ-${Math.floor(100000 + Math.random() * 900000)}`] : [],
+        water: ['WAT-GJ-456789'],
     }
-];
+}));
+
+export const mockOfficials = Array.from({ length: 30 }, (_, i) => ({
+    id: `OFC-${2000 + i}`,
+    name: `Official ${i + 1}`,
+    department: i % 3 === 0 ? 'Electricity' : i % 3 === 1 ? 'Water' : 'Gas',
+    designation: i % 2 === 0 ? 'Senior Engineer' : 'Field Officer',
+    status: i % 5 === 0 ? 'Offline' : 'Active'
+}));
+
+export const mockSchemes = Array.from({ length: 20 }, (_, i) => ({
+    id: `SCH-${3000 + i}`,
+    title: `Public Welfare Scheme ${i + 1}`,
+    department: i % 3 === 0 ? 'Electricity' : i % 3 === 1 ? 'Water' : 'Gas',
+    beneficiaries: Math.floor(Math.random() * 50000),
+    status: i % 4 === 0 ? 'Pending Renewal' : 'Active'
+}));
 
 export const mockComplaints = [
     {
@@ -326,6 +272,12 @@ export const handleMockRequest = async (config: AxiosRequestConfig): Promise<Axi
     }
     else if (url?.includes('/admin/kiosks')) {
         responseData = mockKiosks;
+    }
+    else if (url?.includes('/admin/officials')) {
+        responseData = mockOfficials;
+    }
+    else if (url?.includes('/admin/schemes')) {
+        responseData = mockSchemes;
     }
     else {
         // Default 404

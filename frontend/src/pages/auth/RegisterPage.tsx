@@ -56,7 +56,7 @@ const RegisterPage = () => {
         aadhaar: '',
         otp: '',
         address: '',
-        city: 'Mumbai',
+        city: 'Surat',
         pincode: '',
         // Optional existing connections
         electricityId: '',
@@ -306,7 +306,7 @@ const RegisterPage = () => {
                                                     label="City"
                                                     onChange={(e) => setFormData((prev) => ({ ...prev, city: e.target.value }))}
                                                 >
-                                                    <MenuItem value="Mumbai">Mumbai</MenuItem>
+                                                    <MenuItem value="Surat">Surat</MenuItem>
                                                     <MenuItem value="Delhi">Delhi</MenuItem>
                                                     <MenuItem value="Bangalore">Bangalore</MenuItem>
                                                     <MenuItem value="Chennai">Chennai</MenuItem>
