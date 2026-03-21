@@ -16,6 +16,8 @@
         "@mui/icons-material": "^6.4.0",
         "@mui/material": "^6.4.0",
         "@reduxjs/toolkit": "^2.5.0",
+        "@stripe/react-stripe-js": "^5.6.1",
+        "@stripe/stripe-js": "^8.11.0",
         "@types/qrcode": "^1.5.6",
         "axios": "^1.7.9",
         "canvas-confetti": "^1.9.4",

@@ -20,6 +20,7 @@ import {
     DialogContent,
     CircularProgress,
     Alert,
+    Autocomplete,
 } from '@mui/material';
 import {
     Search,
@@ -90,6 +91,25 @@ const MapExplorerPage = () => {
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [detailsOpen, setDetailsOpen] = useState(false);
     const [locating, setLocating] = useState(false);
+    const [inputValue, setInputValue] = useState('');
+
+    const SURAT_LOCATIONS = [
+        { label: 'Surat City Center', lat: 21.1702, lng: 72.8311 },
+        { label: 'Adajan', lat: 21.1959, lng: 72.7933 },
+        { label: 'Vesu', lat: 21.1517, lng: 72.7758 },
+        { label: 'Varachha', lat: 21.2096, lng: 72.8576 },
+        { label: 'Piplod', lat: 21.1611, lng: 72.7725 },
+        { label: 'Katargam', lat: 21.2227, lng: 72.8252 },
+        { label: 'Udhana', lat: 21.1663, lng: 72.8428 },
+        { label: 'Sarthana', lat: 21.2300, lng: 72.8900 },
+        { label: 'Rander', lat: 21.2000, lng: 72.7800 },
+        { label: 'Dindoli', lat: 21.1400, lng: 72.8700 },
+        { label: 'Bhatar', lat: 21.1685, lng: 72.8123 },
+        { label: 'Amroli', lat: 21.2384, lng: 72.8358 },
+        { label: 'Pandesara', lat: 21.1399, lng: 72.8267 },
+        { label: 'Sachin', lat: 21.0827, lng: 72.8456 },
+        { label: 'Puna', lat: 21.1947, lng: 72.8688 },
+    ];
 
     const fetchInfrastructure = async () => {
         setLoading(true);
@@ -152,32 +172,20 @@ const MapExplorerPage = () => {
     };
 
     const handleSearch = async () => {
-        if (!searchQuery.trim()) return;
-
-        // Mock location search as priority/cache
-        const locations: Record<string, [number, number]> = {
-            'surat': [21.1702, 72.8311],
-            'adajan': [21.1959, 72.7933],
-            'vesu': [21.1517, 72.7758],
-            'varachha': [21.2096, 72.8576],
-            'piplod': [21.1611, 72.7725],
-            'katargam': [21.2227, 72.8252],
-            'udhana': [21.1663, 72.8428],
-            'sarthana': [21.2300, 72.8900],
-            'rander': [21.2000, 72.7800],
-            'dindoli': [21.1400, 72.8700],
-        };
-
-        const query = searchQuery.toLowerCase();
-        // Check mock locations first
-        const match = Object.entries(locations).find(([key]) => key.includes(query) || query.includes(key));
+        // Find if selected via autocomplete curated list
+        const match = SURAT_LOCATIONS.find((loc) => 
+            loc.label.toLowerCase() === searchQuery.toLowerCase() || 
+            searchQuery.toLowerCase().includes(loc.label.toLowerCase())
+        );
 
         if (match) {
-            setMapCenter(match[1]);
+            setMapCenter([match.lat, match.lng]);
             setMapZoom(14);
-            dispatch(showNotification({ message: `Found: ${match[0].charAt(0).toUpperCase() + match[0].slice(1)}`, severity: 'success' }));
+            dispatch(showNotification({ message: `Found: ${match.label}`, severity: 'success' }));
             return;
         }
+
+        if (!searchQuery.trim()) return;
 
         // If not found in mock, use OpenStreetMap Nominatim API
         try {
@@ -246,32 +254,60 @@ const MapExplorerPage = () => {
                     maxHeight: { xs: 'none', md: '100%' }
                 }}>
                     <CardContent>
-                        {/* Search */}
-                        <TextField
-                            fullWidth
-                            placeholder={t('maps.search')}
+                        {/* Search Autocomplete */}
+                        <Autocomplete
+                            freeSolo
+                            options={SURAT_LOCATIONS.map((option) => option.label)}
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <Search />
-                                    </InputAdornment>
-                                ),
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            size="small"
-                                            title={t('maps.myLocation')}
-                                            onClick={handleMyLocation}
-                                            disabled={locating}
-                                        >
-                                            {locating ? <CircularProgress size={20} /> : <MyLocation />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
+                            onChange={(_, newValue) => {
+                                setSearchQuery(newValue || '');
+                                if (newValue) {
+                                    const match = SURAT_LOCATIONS.find(loc => loc.label === newValue);
+                                    if (match) {
+                                        setMapCenter([match.lat, match.lng]);
+                                        setMapZoom(14);
+                                        dispatch(showNotification({ message: `Found: ${match.label}`, severity: 'success' }));
+                                    }
+                                }
                             }}
+                            inputValue={inputValue}
+                            onInputChange={(_, newInputValue) => {
+                                setInputValue(newInputValue);
+                                setSearchQuery(newInputValue);
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    placeholder={t('maps.search')}
+                                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        startAdornment: (
+                                            <>
+                                                <InputAdornment position="start" sx={{ pl: 1 }}>
+                                                    <Search />
+                                                </InputAdornment>
+                                                {params.InputProps.startAdornment}
+                                            </>
+                                        ),
+                                        endAdornment: (
+                                            <>
+                                                {params.InputProps.endAdornment}
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        size="small"
+                                                        title={t('maps.myLocation')}
+                                                        onClick={handleMyLocation}
+                                                        disabled={locating}
+                                                    >
+                                                        {locating ? <CircularProgress size={20} /> : <MyLocation />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            </>
+                                        ),
+                                    }}
+                                />
+                            )}
                             sx={{ mb: 3 }}
                         />
 

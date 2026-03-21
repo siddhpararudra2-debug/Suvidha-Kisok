@@ -12,6 +12,7 @@ import complaintRoutes from './routes/complaint.routes.js';
 import infrastructureRoutes from './routes/infrastructure.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import publicRoutes from './routes/public.routes.js';
+import paymentRoutes from './routes/payment.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { logger } from './utils/logger.js';
 
@@ -78,6 +79,7 @@ app.use('/api/complaints', complaintRoutes);
 app.use('/api/infrastructure', infrastructureRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // Socket.io for real-time updates
 io.on('connection', (socket) => {
@@ -118,19 +120,12 @@ app.use((req, res) => {
     res.status(404).json({ error: 'Not found' });
 });
 
-import { initializeDatabase } from './config/database.js';
-
 const PORT = process.env.PORT || 4000;
 
-// Initialize Database then start server
-initializeDatabase().then(() => {
-    httpServer.listen(PORT, () => {
-        logger.info(`SUVIDHA Backend running on port ${PORT}`);
-        console.log(`🚀 Server running at http://localhost:${PORT}`);
-    });
-}).catch(err => {
-    logger.error('Failed to initialize database:', err);
-    process.exit(1);
+// Start server without requiring PostgreSQL
+httpServer.listen(PORT, () => {
+    logger.info(`SUVIDHA Backend running on port ${PORT}`);
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
 
 export { app, io };

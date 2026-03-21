@@ -42,9 +42,9 @@ const WelcomePage = () => {
     };
 
     const emergencyContacts = [
-        { icon: <Phone />, number: '100', label: t('emergency.police'), color: '#1a73e8' },
-        { icon: <LocalFireDepartment />, number: '101', label: t('emergency.fire'), color: '#ea4335' },
-        { icon: <LocalHospital />, number: '102', label: t('emergency.ambulance'), color: '#34a853' },
+        { icon: <Phone />, number: '112', label: 'National Emergency', color: '#1a73e8' },
+        { icon: <LocalHospital />, number: '108', label: 'Ambulance', color: '#ea4335' },
+        { icon: <LocalFireDepartment />, number: '14420', label: 'SMC Helpline', color: '#34a853' },
     ];
 
     const services = [

@@ -37,6 +37,77 @@ import { motion } from 'framer-motion';
 import { showNotification } from '../../store/slices/uiSlice';
 import { updateBillStatus } from '../../store/slices/servicesSlice';
 import { AppDispatch } from '../../store';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import api from '../../utils/api';
+
+const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx'); // Stripe Test Key
+
+const StripeFormContent = ({ amount, onSuccess, onProcessing }: { amount: number, onSuccess: (details: any) => void, onProcessing: (status: boolean) => void }) => {
+    const stripe = useStripe();
+    const elements = useElements();
+    const [error, setError] = useState<string | null>(null);
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        if (!stripe || !elements) return;
+
+        onProcessing(true);
+        setError(null);
+
+        try {
+            const { data } = await api.post('/payment/create-intent', { amount });
+            const clientSecret = data.clientSecret;
+
+            const cardElement = elements.getElement(CardElement);
+            if (!cardElement) throw new Error("Card element not found");
+
+            const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: cardElement,
+                }
+            });
+
+            if (stripeError) {
+                setError(stripeError.message || 'Payment failed');
+                onProcessing(false);
+            } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+                onSuccess({
+                    transactionId: paymentIntent.id,
+                    method: 'CARD', // Keep simple
+                });
+            }
+        } catch (err: any) {
+            setError(err.response?.data?.error || err.message || 'Error processing payment');
+            onProcessing(false);
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <Box sx={{ p: 2.5, border: '1px solid', borderColor: 'divider', borderRadius: 2, mb: 2, bgcolor: 'background.paper' }}>
+                <CardElement options={{
+                    style: {
+                        base: {
+                            fontSize: '16px',
+                            color: '#424770',
+                            fontFamily: 'Inter, sans-serif',
+                            '::placeholder': { color: '#aab7c4' },
+                        },
+                        invalid: { color: '#9e2146' },
+                    },
+                }} />
+            </Box>
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+            <Button type="submit" variant="contained" fullWidth disabled={!stripe} sx={{ mt: 1, minHeight: 56, fontSize: '1.1rem' }}>
+                Pay Securely with Stripe
+            </Button>
+            <Typography variant="caption" display="block" textAlign="center" sx={{ mt: 2, color: 'text.secondary' }}>
+                🔒 Your payment is secured with Stripe's end-to-end encryption
+            </Typography>
+        </form>
+    );
+};
 
 interface PaymentState {
     billId: string;
@@ -65,9 +136,6 @@ const PaymentPage = () => {
 
     const [paymentMethod, setPaymentMethod] = useState('qr');
     const [upiId, setUpiId] = useState('');
-    const [cardNumber, setCardNumber] = useState('');
-    const [cardExpiry, setCardExpiry] = useState('');
-    const [cardCvv, setCardCvv] = useState('');
     const [bank, setBank] = useState('');
     const [processing, setProcessing] = useState(false);
     const [paymentComplete, setPaymentComplete] = useState(false);
@@ -90,36 +158,17 @@ const PaymentPage = () => {
         'Kotak Mahindra Bank',
     ];
 
-    const handlePayment = async () => {
-        // Validate payment details
-        if (paymentMethod === 'upi' && !upiId.includes('@')) {
-            dispatch(showNotification({ message: 'Please enter valid UPI ID', severity: 'error' }));
-            return;
-        }
-        if (paymentMethod === 'card' && cardNumber.length < 16) {
-            dispatch(showNotification({ message: 'Please enter valid card number', severity: 'error' }));
-            return;
-        }
-        if (paymentMethod === 'netbanking' && !bank) {
-            dispatch(showNotification({ message: 'Please select a bank', severity: 'error' }));
-            return;
-        }
-
-        setProcessing(true);
-
-        // Simulate payment processing
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-
+    const handlePaymentSuccess = (details: any = {}) => {
         // Generate receipt
         const newReceipt = {
             receiptNumber: `RCP-${Date.now().toString(36).toUpperCase()}`,
-            transactionId: `TXN${Date.now()}`,
+            transactionId: details.transactionId || `TXN${Date.now()}`,
             billNumber: billData.billNumber,
             consumerId: billData.consumerId,
             amount: billData.amount,
             convenienceFee: 0,
             totalPaid: billData.amount,
-            paymentMethod: paymentMethod.toUpperCase(),
+            paymentMethod: details.method || paymentMethod.toUpperCase(),
             upiId: paymentMethod === 'upi' ? upiId : undefined,
             paidAt: new Date().toLocaleString('en-IN'),
             status: 'SUCCESS',
@@ -133,11 +182,6 @@ const PaymentPage = () => {
         dispatch(updateBillStatus({ billId: billData.billId, status: 'paid' }));
         dispatch(showNotification({ message: 'Payment successful!', severity: 'success' }));
 
-        // SMS simulation
-        setTimeout(() => {
-            dispatch(showNotification({ message: '📱 SMS sent to 98XXXX1234: Payment of ₹' + billData.amount.toLocaleString('en-IN') + ' confirmed. Txn: ' + newReceipt.transactionId, severity: 'info' }));
-        }, 2000);
-
         // Confetti celebration
         try {
             import('canvas-confetti').then((confettiModule) => {
@@ -146,6 +190,26 @@ const PaymentPage = () => {
                 setTimeout(() => confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 } }), 300);
             });
         } catch (e) { /* confetti optional */ }
+    };
+
+    const handlePayment = async () => {
+        if (paymentMethod === 'card') return; // Handled by Stripe
+
+        // Validate payment details
+        if (paymentMethod === 'upi' && !upiId.includes('@')) {
+            dispatch(showNotification({ message: 'Please enter valid UPI ID', severity: 'error' }));
+            return;
+        }
+        if (paymentMethod === 'netbanking' && !bank) {
+            dispatch(showNotification({ message: 'Please select a bank', severity: 'error' }));
+            return;
+        }
+
+        setProcessing(true);
+
+        // Simulate payment processing
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        handlePaymentSuccess();
     };
 
     const handleDownloadReceipt = () => {
@@ -463,43 +527,15 @@ const PaymentPage = () => {
 
                                 {/* Card Inputs */}
                                 {paymentMethod === 'card' && (
-                                    <Grid2 container spacing={2}>
-                                        <Grid2 size={{ xs: 12 }}>
-                                            <TextField
-                                                fullWidth
-                                                label="Card Number"
-                                                value={cardNumber}
-                                                onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, '').slice(0, 16))}
-                                                placeholder="1234 5678 9012 3456"
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <CreditCard color="primary" />
-                                                        </InputAdornment>
-                                                    ),
-                                                }}
+                                    <Box sx={{ mt: 2 }}>
+                                        <Elements stripe={stripePromise}>
+                                            <StripeFormContent 
+                                                amount={billData.amount} 
+                                                onSuccess={handlePaymentSuccess} 
+                                                onProcessing={setProcessing} 
                                             />
-                                        </Grid2>
-                                        <Grid2 size={{ xs: 6 }}>
-                                            <TextField
-                                                fullWidth
-                                                label="Expiry"
-                                                value={cardExpiry}
-                                                onChange={(e) => setCardExpiry(e.target.value)}
-                                                placeholder="MM/YY"
-                                            />
-                                        </Grid2>
-                                        <Grid2 size={{ xs: 6 }}>
-                                            <TextField
-                                                fullWidth
-                                                label="CVV"
-                                                type="password"
-                                                value={cardCvv}
-                                                onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, '').slice(0, 3))}
-                                                placeholder="***"
-                                            />
-                                        </Grid2>
-                                    </Grid2>
+                                        </Elements>
+                                    </Box>
                                 )}
 
                                 {/* Net Banking */}
@@ -580,27 +616,31 @@ const PaymentPage = () => {
                                     </Box>
                                 )}
 
-                                <Button
-                                    variant="contained"
-                                    fullWidth
-                                    size="large"
-                                    onClick={handlePayment}
-                                    disabled={processing}
-                                    sx={{ mt: 3, minHeight: 56 }}
-                                >
-                                    {processing ? (
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                            <CircularProgress size={24} color="inherit" />
-                                            {t('payment.processing')}
-                                        </Box>
-                                    ) : (
-                                        `Pay ₹${billData.amount.toLocaleString('en-IN')}`
-                                    )}
-                                </Button>
+                                {paymentMethod !== 'card' && (
+                                    <>
+                                        <Button
+                                            variant="contained"
+                                            fullWidth
+                                            size="large"
+                                            onClick={handlePayment}
+                                            disabled={processing}
+                                            sx={{ mt: 3, minHeight: 56 }}
+                                        >
+                                            {processing ? (
+                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                                    <CircularProgress size={24} color="inherit" />
+                                                    {t('payment.processing')}
+                                                </Box>
+                                            ) : (
+                                                `Pay ₹${billData.amount.toLocaleString('en-IN')}`
+                                            )}
+                                        </Button>
 
-                                <Typography variant="caption" display="block" textAlign="center" sx={{ mt: 2 }}>
-                                    🔒 Your payment is secured with end-to-end encryption
-                                </Typography>
+                                        <Typography variant="caption" display="block" textAlign="center" sx={{ mt: 2 }}>
+                                            🔒 Your payment is secured with end-to-end encryption
+                                        </Typography>
+                                    </>
+                                )}
                             </CardContent>
                         </Card>
                     </Grid2>
