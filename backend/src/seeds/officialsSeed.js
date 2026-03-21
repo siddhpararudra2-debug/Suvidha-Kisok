@@ -8,16 +8,16 @@ const officialsData = [
     name: "Shri Ramesh Chandra Mishra",
     designation: "Chief Engineer",
     department: "Electricity",
-    jurisdiction: "Maharashtra Circle",
+    jurisdiction: "Gujarat Circle",
     level: 5,
     photo: "/images/officials/off001.jpg",
     contact: {
       office: "+91-22-2654-1234",
       mobile: "+91-9820012345",
-      email: "ce.maharashtra@electricity.gov.in",
+      email: "ce.Gujarat@electricity.gov.in",
       whatsapp: "+91-9820012345"
     },
-    officeAddress: "Electricity Board HQ, Colaba, Mumbai - 400001",
+    officeAddress: "Electricity Board HQ, Colaba, Surat - 400001",
     officeHours: "10:00 AM - 5:00 PM (Mon-Fri)",
     reportingTo: null,
     responsibilities: ["State-level power planning", "Policy implementation", "Major projects approval"],
@@ -28,15 +28,15 @@ const officialsData = [
     name: "Smt. Kavita Sharma",
     designation: "Superintendent Engineer",
     department: "Electricity",
-    jurisdiction: "Mumbai Suburban Division",
+    jurisdiction: "Surat Suburban Division",
     level: 4,
     photo: "/images/officials/off002.jpg",
     contact: {
       office: "+91-22-2654-2345",
       mobile: "+91-9820023456",
-      email: "se.mumbaisuburban@electricity.gov.in"
+      email: "se.Suratsuburban@electricity.gov.in"
     },
-    officeAddress: "SE Office, Andheri East, Mumbai - 400069",
+    officeAddress: "SE Office, Andheri East, Surat - 400069",
     officeHours: "10:00 AM - 5:00 PM (Mon-Fri)",
     reportingTo: "OFF001",
     responsibilities: ["Division-level operations", "Budget management", "Staff supervision"],
@@ -55,7 +55,7 @@ const officialsData = [
       mobile: "+91-9820034567",
       email: "ee.borivali@electricity.gov.in"
     },
-    officeAddress: "EE Office, Borivali West, Mumbai - 400092",
+    officeAddress: "EE Office, Borivali West, Surat - 400092",
     officeHours: "10:00 AM - 5:00 PM (Mon-Sat)",
     reportingTo: "OFF002",
     responsibilities: ["Sub-division operations", "Project execution", "Complaint escalation"],
@@ -144,15 +144,15 @@ const officialsData = [
     name: "Shri Rajendra Prasad",
     designation: "General Manager",
     department: "Gas",
-    jurisdiction: "MGL - Mumbai Region",
+    jurisdiction: "MGL - Surat Region",
     level: 5,
     photo: "/images/officials/off008.jpg",
     contact: {
       office: "+91-22-2654-8888",
       mobile: "+91-9821012345",
-      email: "gm.mumbai@mgl.gov.in"
+      email: "gm.Surat@mgl.gov.in"
     },
-    officeAddress: "MGL Head Office, Bandra Kurla Complex, Mumbai - 400051",
+    officeAddress: "MGL Head Office, Bandra Kurla Complex, Surat - 400051",
     officeHours: "9:30 AM - 6:00 PM (Mon-Fri)",
     reportingTo: null,
     responsibilities: ["Regional operations", "Business development", "Safety compliance"],
@@ -171,7 +171,7 @@ const officialsData = [
       mobile: "+91-9821023456",
       email: "dgm.westsuburbs@mgl.gov.in"
     },
-    officeAddress: "MGL Office, Andheri West, Mumbai - 400053",
+    officeAddress: "MGL Office, Andheri West, Surat - 400053",
     officeHours: "9:30 AM - 6:00 PM (Mon-Sat)",
     reportingTo: "OFF008",
     responsibilities: ["Suburban operations", "Pipeline expansion", "Customer service"],
@@ -190,7 +190,7 @@ const officialsData = [
       mobile: "+91-9821034567",
       email: "am.borivali@mgl.gov.in"
     },
-    officeAddress: "MGL Office, Borivali East, Mumbai - 400066",
+    officeAddress: "MGL Office, Borivali East, Surat - 400066",
     officeHours: "9:00 AM - 6:00 PM (Mon-Sat)",
     reportingTo: "OFF009",
     responsibilities: ["Area operations", "New connections", "Safety inspections"],
@@ -260,7 +260,7 @@ const officialsData = [
     name: "Shri Ashok Kumar",
     designation: "Chief Engineer - Water Supply",
     department: "Water",
-    jurisdiction: "BMC - Greater Mumbai",
+    jurisdiction: "BMC - Greater Surat",
     level: 5,
     photo: "/images/officials/off014.jpg",
     contact: {
@@ -268,7 +268,7 @@ const officialsData = [
       mobile: "+91-9822012345",
       email: "ce.watersupply@mcgm.gov.in"
     },
-    officeAddress: "BMC HQ, Fort, Mumbai - 400001",
+    officeAddress: "BMC HQ, Fort, Surat - 400001",
     officeHours: "10:00 AM - 5:30 PM (Mon-Fri)",
     reportingTo: null,
     responsibilities: ["Water supply planning", "Infrastructure development", "Quality control"],
@@ -287,7 +287,7 @@ const officialsData = [
       mobile: "+91-9822023456",
       email: "se.rward@mcgm.gov.in"
     },
-    officeAddress: "R Ward Office, Borivali East, Mumbai - 400066",
+    officeAddress: "R Ward Office, Borivali East, Surat - 400066",
     officeHours: "10:00 AM - 5:30 PM (Mon-Sat)",
     reportingTo: "OFF014",
     responsibilities: ["Ward water supply", "Maintenance", "Tanker management"],
@@ -306,7 +306,7 @@ const officialsData = [
       mobile: "+91-9822034567",
       email: "ee.rcentral@mcgm.gov.in"
     },
-    officeAddress: "Sub-Ward Office, Dahisar, Mumbai - 400068",
+    officeAddress: "Sub-Ward Office, Dahisar, Surat - 400068",
     officeHours: "10:00 AM - 5:30 PM (Mon-Sat)",
     reportingTo: "OFF015",
     responsibilities: ["Area operations", "Pipeline repairs", "New connections"],
@@ -325,7 +325,7 @@ const officialsData = [
       mobile: "+91-9822045678",
       email: "ae.borivaliwater@mcgm.gov.in"
     },
-    officeAddress: "Local Office, Borivali West, Mumbai - 400092",
+    officeAddress: "Local Office, Borivali West, Surat - 400092",
     officeHours: "9:00 AM - 6:00 PM (Mon-Sat)",
     reportingTo: "OFF016",
     responsibilities: ["Local maintenance", "Complaint resolution", "Meter reading"],
@@ -344,7 +344,7 @@ const officialsData = [
       mobile: "+91-9822056789",
       email: "wo.rward@mcgm.gov.in"
     },
-    officeAddress: "Ward Office, Kandivali, Mumbai - 400067",
+    officeAddress: "Ward Office, Kandivali, Surat - 400067",
     officeHours: "10:00 AM - 5:30 PM (Mon-Sat)",
     reportingTo: "OFF015",
     responsibilities: ["Sanitation management", "Waste collection", "Street cleaning"],

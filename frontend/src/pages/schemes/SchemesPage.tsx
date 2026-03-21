@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -29,73 +29,49 @@ import {
     CheckCircle,
     Cancel,
 } from '@mui/icons-material';
+import api from '../../utils/api';
+
+interface Scheme {
+    id: string;
+    title: string;
+    category: string;
+    eligibility: string;
+    benefits: string;
+    description: string;
+    status: string;
+}
 
 interface SchemeResult {
-    scheme: typeof schemes[0];
+    scheme: Scheme;
     eligible: boolean;
     reason?: string;
 }
 
-const schemes = [
-    {
-        id: 1,
-        title: 'PM Surya Ghar Muft Bijli Yojana',
-        description: 'Provide free electricity to households via rooftop solar setups and subsidies up to ₹78,000.',
-        icon: <WbSunny />,
-        color: '#ff9800',
-        category: 'Solar',
-        eligibility: { ownProperty: true, maxIncome: 1500000 },
-        benefit: 'Up to ₹78,000 subsidy',
-        documents: ['Electricity Bill', 'Property Documents', 'Aadhaar Card'],
-    },
-    {
-        id: 2,
-        title: 'Namo Lakshmi Yojana',
-        description: 'Financial assistance of ₹50,000 for girls studying from Class 9 to 12 in government, aided, and private schools.',
-        icon: <FamilyRestroom />,
-        color: '#673ab7',
-        category: 'Education',
-        eligibility: { maxIncome: 600000 },
-        benefit: '₹50,000 over 4 years',
-        documents: ['School ID', 'Income Certificate', 'Aadhaar Card'],
-    },
-    {
-        id: 3,
-        title: 'Namo Shri Scheme',
-        description: 'Nutritional and financial support of ₹12,000 for pregnant and lactating mothers across specific categories (SC, ST, NFSA).',
-        icon: <ElderlyWoman />,
-        color: '#1a73e8',
-        category: 'Health',
-        eligibility: { hasBPLCard: true },
-        benefit: '₹12,000 assistance',
-        documents: ['BPL Card', 'Medical Records', 'Aadhaar Card'],
-    },
-    {
-        id: 4,
-        title: 'Mukhyamantri Mahila Utkarsh Yojana',
-        description: 'Empowers women by providing interest-free loans of up to ₹1 Lakh to Joint Liability and Earnings Groups.',
-        icon: <Savings />,
-        color: '#34a853',
-        category: 'Finance',
-        eligibility: { ownProperty: false }, // Available to renters/owners alike
-        benefit: '₹1 Lakh loan at 0% interest',
-        documents: ['Bank Statement', 'Aadhaar Card', 'Group Documents'],
-    },
-    {
-        id: 5,
-        title: 'SMC Water & PNG Pipeline Scheme',
-        description: 'Install water meters and domestic Piped Natural Gas (PNG) with 0% EMI and subsidized connection fees in Surat.',
-        icon: <Home />,
-        color: '#ea4335',
-        category: 'Utility',
-        eligibility: { inPNGArea: true, ownProperty: true },
-        benefit: '0% EMI with ₹1500 rebate',
-        documents: ['Property Document', 'Recent Tax Receipt'],
-    },
-];
+const getSchemeIcon = (category: string) => {
+    switch (category.toLowerCase()) {
+        case 'solar': return <WbSunny />;
+        case 'education': return <FamilyRestroom />;
+        case 'health': return <ElderlyWoman />;
+        case 'finance': return <Savings />;
+        case 'utility': return <Home />;
+        default: return <Savings />;
+    }
+};
+
+const getSchemeColor = (category: string) => {
+    switch (category.toLowerCase()) {
+        case 'solar': return '#ff9800';
+        case 'education': return '#673ab7';
+        case 'health': return '#1a73e8';
+        case 'finance': return '#34a853';
+        case 'utility': return '#ea4335';
+        default: return '#5f6368';
+    }
+};
 
 const SchemesPage = () => {
-
+    const [schemes, setSchemes] = useState<Scheme[]>([]);
+    const [loading, setLoading] = useState(true);
     const [showChecker, setShowChecker] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
     const [answers, setAnswers] = useState({
@@ -108,6 +84,22 @@ const SchemesPage = () => {
     });
     const [results, setResults] = useState<SchemeResult[]>([]);
     const [checking, setChecking] = useState(false);
+
+    const fetchSchemes = async () => {
+        setLoading(true);
+        try {
+            const response = await api.get('/public/schemes');
+            setSchemes(response.data);
+        } catch (error) {
+            console.error('Failed to fetch schemes:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchSchemes();
+    }, []);
 
     const questions = [
         {
@@ -173,36 +165,27 @@ const SchemesPage = () => {
                 let eligible = true;
                 let reason = '';
 
-                // Check age for senior citizen scheme
-                if ('minAge' in scheme.eligibility && (scheme.eligibility as any).minAge && answers.age !== '60plus') {
-                    eligible = false;
-                    reason = 'Age requirement not met (60+)';
-                }
-
-                // Check property ownership
-                if (scheme.eligibility.ownProperty && answers.ownProperty !== 'yes') {
-                    eligible = false;
-                    reason = 'Property ownership required';
-                }
-
-                // Check BPL card
-                if (scheme.eligibility.hasBPLCard && answers.hasBPLCard !== 'yes') {
+                const eligStr = (scheme.eligibility || '').toLowerCase();
+                
+                // Simple keyword-based eligibility check
+                if (eligStr.includes('bpl') && answers.hasBPLCard !== 'yes') {
                     eligible = false;
                     reason = 'BPL card required';
-                }
-
-                // Check PNG area
-                if (scheme.eligibility.inPNGArea && answers.inPNGArea !== 'yes') {
+                } else if (eligStr.includes('income') && eligStr.includes('15') && answers.annualIncome === 'above15L') {
                     eligible = false;
-                    reason = 'PNG network not available in area';
-                }
-
-                // Check income for solar scheme
-                if (scheme.eligibility.maxIncome) {
-                    if (answers.annualIncome === 'above15L') {
-                        eligible = false;
-                        reason = 'Income exceeds eligibility limit';
-                    }
+                    reason = 'Income exceeds limit';
+                } else if (eligStr.includes('income') && eligStr.includes('6') && (answers.annualIncome === 'above15L' || answers.annualIncome === '10to15L' || answers.annualIncome === '5to10L')) {
+                    eligible = false;
+                    reason = 'Income exceeds limit (Max 6L)';
+                } else if (eligStr.includes('png') && answers.inPNGArea !== 'yes') {
+                    eligible = false;
+                    reason = 'PNG availability required';
+                } else if (eligStr.includes('60+') && answers.age !== '60plus') {
+                    eligible = false;
+                    reason = 'Age 60+ required';
+                } else if (eligStr.includes('own property') && answers.ownProperty !== 'yes') {
+                    eligible = false;
+                    reason = 'Property ownership required';
                 }
 
                 return { scheme, eligible, reason };
@@ -218,6 +201,7 @@ const SchemesPage = () => {
 
     return (
         <Box>
+            {loading && <LinearProgress sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 2000 }} />}
             {/* Header */}
             <Paper
                 elevation={0}
@@ -366,7 +350,7 @@ const SchemesPage = () => {
                                                         {result.scheme.description}
                                                     </Typography>
                                                     <Chip
-                                                        label={result.scheme.benefit}
+                                                        label={result.scheme.benefits}
                                                         size="small"
                                                         color="success"
                                                         sx={{ mt: 1 }}
@@ -458,11 +442,11 @@ const SchemesPage = () => {
                                                     display: 'flex',
                                                     alignItems: 'center',
                                                     justifyContent: 'center',
-                                                    bgcolor: `${scheme.color}15`,
-                                                    color: scheme.color,
+                                                    bgcolor: `${getSchemeColor(scheme.category)}15`,
+                                                    color: getSchemeColor(scheme.category),
                                                 }}
                                             >
-                                                {scheme.icon}
+                                                {getSchemeIcon(scheme.category)}
                                             </Box>
                                             <Chip label={scheme.category} size="small" variant="outlined" />
                                         </Box>
@@ -479,7 +463,7 @@ const SchemesPage = () => {
                                                     Benefit
                                                 </Typography>
                                                 <Typography variant="body2" color="success.main" sx={{ fontWeight: 600 }}>
-                                                    {scheme.benefit}
+                                                    {scheme.benefits}
                                                 </Typography>
                                             </Box>
                                             <Button size="small" endIcon={<ArrowForward />}>

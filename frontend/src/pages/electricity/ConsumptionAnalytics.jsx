@@ -3,7 +3,7 @@ import { getConsumptionAnalytics } from '../../services/electricityService';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 
 const ConsumptionAnalytics = ({ consumerId = "MH12345678" }) => {
   const [data, setData] = useState(null);

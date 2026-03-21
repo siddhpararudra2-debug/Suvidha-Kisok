@@ -211,8 +211,19 @@ export const mockKiosks = [
 ];
 
 export const mockAdminUsers = [
-    { employee_id: 'SUVIDHA-ADMIN-001', name: 'Super Admin', role: 'super_admin', department: 'IT', designation: 'System Administrator', permissions: ['all'], is_active: true },
     { employee_id: 'admin', name: 'Admin', role: 'admin', department: 'IT', designation: 'Admin', permissions: ['all'], is_active: true }
+];
+
+export const mockOfficials = [
+    { id: 'OFF-001', name: 'Shri Rajesh Patel', designation: 'Executive Engineer', department: 'Electricity', area: 'Adajan Zone', phone: '+91 261 2456789', email: 'rajesh.p@smc.gov.in', status: 'Active' },
+    { id: 'OFF-002', name: 'Smt. Priya Shah', designation: 'Assistant Commissioner', department: 'Water', area: 'Vesu Zone', phone: '+91 261 2456790', email: 'priya.s@smc.gov.in', status: 'Active' },
+    { id: 'OFF-003', name: 'Shri Amit Desai', designation: 'Zonal Chief', department: 'Gas', area: 'Katargam Zone', phone: '+91 261 2456791', email: 'amit.d@smc.gov.in', status: 'Active' }
+];
+
+export const mockSchemes = [
+    { id: 'SCH-001', title: 'PM Surya Ghar Muft Bijli Yojana', category: 'Solar', eligibility: 'Resident of Surat, Annual income < 15L', benefits: '₹78,000 Subsidy', status: 'Active', description: 'Free solar electricity for households.' },
+    { id: 'SCH-002', title: 'Namo Lakshmi Yojana', category: 'Education', eligibility: 'Girls in Class 9-12', benefits: '₹50,000 Support', status: 'Active', description: 'Financial support for female students.' },
+    { id: 'SCH-003', title: 'SMC Water & PNG Pipeline', category: 'Utility', eligibility: 'Surat Property Owners', benefits: '0% EMI Connection', status: 'Active', description: 'Subsidized utility connections.' }
 ];
 
 // ============ MOCK API LOGIC ============
@@ -316,6 +327,25 @@ export const handleMockRequest = async (config: AxiosRequestConfig): Promise<Axi
         responseData = mockCitizens;
     }
     else if (url?.includes('/admin/kiosks')) {
+        responseData = mockKiosks;
+    }
+    // --- PUBLIC DATA ---
+    else if (url?.includes('/public/schemes')) {
+        responseData = mockSchemes;
+    }
+    else if (url?.includes('/public/officials')) {
+        responseData = mockOfficials;
+    }
+    else if (url?.includes('/public/infrastructure')) {
+        const { mockInfrastructure } = require('./mockData');
+        responseData = mockInfrastructure;
+    }
+    else if (url?.includes('/public/announcements')) {
+        responseData = [
+            { id: 'ANN-001', title: 'Surat Infrastructure Update', content: 'New pipeline project starting in Vesu.', type: 'news', status: 'published', author: 'SMC', createdAt: new Date().toISOString() }
+        ];
+    }
+    else if (url?.includes('/public/kiosks')) {
         responseData = mockKiosks;
     }
     else {

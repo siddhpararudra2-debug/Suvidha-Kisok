@@ -36,6 +36,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { RootState, AppDispatch } from '../../store';
 import { setCurrentLocation, showNotification } from '../../store/slices/uiSlice';
+import api from '../../utils/api';
 
 // Fix for default marker icons in React-Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -64,45 +65,18 @@ const electricityIcon = createIcon('#fbbc04');
 const gasIcon = createIcon('#ea4335');
 const waterIcon = createIcon('#1a73e8');
 
-// Mock infrastructure data
-const infrastructureData = {
-    substations: [
-        { id: 'SUB001', name: 'Varachha 66kV Substation', lat: 21.2096, lng: 72.8576, capacity: '2×15 MVA', load: 85, status: 'operational' },
-        { id: 'SUB002', name: 'Adajan 220kV Grid', lat: 21.1959, lng: 72.7933, capacity: '3×50 MVA', load: 72, status: 'operational' },
-        { id: 'SUB003', name: 'Vesu 66kV Substation', lat: 21.1517, lng: 72.7758, capacity: '2×20 MVA', load: 68, status: 'operational' },
-        { id: 'SUB004', name: 'Katargam GIDC Grid', lat: 21.2227, lng: 72.8252, capacity: '2×100 MVA', load: 78, status: 'operational' },
-        { id: 'SUB005', name: 'Udhana 66kV Substation', lat: 21.1663, lng: 72.8428, capacity: '2×25 MVA', load: 65, status: 'operational' },
-    ],
-    cngStations: [
-        { id: 'CNG001', name: 'Gujarat Gas Adajan', lat: 21.1900, lng: 72.7900, operator: 'Gujarat Gas', price: 76.59, hours: '24/7' },
-        { id: 'CNG002', name: 'Gujarat Gas Piplod', lat: 21.1611, lng: 72.7725, operator: 'Gujarat Gas', price: 76.59, hours: '6AM-10PM' },
-        { id: 'CNG003', name: 'Gujarat Gas Varachha', lat: 21.2100, lng: 72.8600, operator: 'Gujarat Gas', price: 76.59, hours: '24/7' },
-    ],
-    waterTanks: [
-        { id: 'WT001', name: 'Sarthana Water Works', lat: 21.2300, lng: 72.8900, capacity: '5 ML', level: 78, status: 'operational' },
-        { id: 'WT002', name: 'Rander Water Tank', lat: 21.2000, lng: 72.7800, capacity: '1350 MLD', level: 85, status: 'operational' },
-        { id: 'WT003', name: 'Dindoli ESR', lat: 21.1400, lng: 72.8700, capacity: '8 ML', level: 62, status: 'operational' },
-    ],
-    outages: [
-        { id: 'OUT001', lat: 21.1800, lng: 72.8100, radius: 500, type: 'electricity', reason: 'Cable fault', eta: '2 hours' },
-        { id: 'OUT002', lat: 21.1600, lng: 72.8300, radius: 300, type: 'water', reason: 'Pipeline repair', eta: '4 hours' },
-        { id: 'OUT003', lat: 21.2200, lng: 72.8400, radius: 200, type: 'gas', reason: 'Maintenance', eta: '3 hours' },
-    ],
-};
-
-// Component to update map view when user location changes
-const MapController = ({ center, zoom }: { center: [number, number]; zoom: number }) => {
-    const map = useMap();
-    useEffect(() => {
-        map.setView(center, zoom);
-    }, [center, zoom, map]);
-    return null;
-};
-
 const MapExplorerPage = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch<AppDispatch>();
     const { currentLocation } = useSelector((state: RootState) => state.ui);
+
+    const [infrastructureData, setInfrastructureData] = useState<any>({
+        substations: [],
+        cngStations: [],
+        waterTanks: [],
+        outages: [],
+    });
+    const [loading, setLoading] = useState(true);
 
     const [layers, setLayers] = useState({
         electricity: true,
@@ -116,6 +90,37 @@ const MapExplorerPage = () => {
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [detailsOpen, setDetailsOpen] = useState(false);
     const [locating, setLocating] = useState(false);
+
+    const fetchInfrastructure = async () => {
+        setLoading(true);
+        try {
+            const response = await api.get('/public/infrastructure');
+            const data = response.data;
+            setInfrastructureData({
+                substations: data.filter((i: any) => i.type === 'substation'),
+                cngStations: data.filter((i: any) => i.type === 'cng_station' || i.type === 'gas_station'),
+                waterTanks: data.filter((i: any) => i.type === 'water_tank' || i.type === 'pump_station'),
+                outages: data.filter((i: any) => i.type === 'outage'),
+            });
+        } catch (error) {
+            console.error('Failed to fetch infrastructure:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchInfrastructure();
+    }, []);
+
+    // Component to update map view when user location changes
+    const MapController = ({ center, zoom }: { center: [number, number]; zoom: number }) => {
+        const map = useMap();
+        useEffect(() => {
+            map.setView(center, zoom);
+        }, [center, zoom, map]);
+        return null;
+    };
 
     const handleLayerChange = (layer: keyof typeof layers) => {
         setLayers((prev) => ({ ...prev, [layer]: !prev[layer] }));
@@ -423,7 +428,7 @@ const MapExplorerPage = () => {
                         {/* Electricity Substations */}
                         {layers.electricity && (
                             <LayerGroup>
-                                {infrastructureData.substations.map((sub) => (
+                                {infrastructureData.substations.map((sub: any) => (
                                     <Marker
                                         key={sub.id}
                                         position={[sub.lat, sub.lng]}
@@ -445,7 +450,7 @@ const MapExplorerPage = () => {
                         {/* CNG Stations */}
                         {layers.gas && (
                             <LayerGroup>
-                                {infrastructureData.cngStations.map((station) => (
+                                {infrastructureData.cngStations.map((station: any) => (
                                     <Marker
                                         key={station.id}
                                         position={[station.lat, station.lng]}
@@ -467,7 +472,7 @@ const MapExplorerPage = () => {
                         {/* Water Infrastructure */}
                         {layers.water && (
                             <LayerGroup>
-                                {infrastructureData.waterTanks.map((tank) => (
+                                {infrastructureData.waterTanks.map((tank: any) => (
                                     <Marker
                                         key={tank.id}
                                         position={[tank.lat, tank.lng]}
@@ -489,7 +494,7 @@ const MapExplorerPage = () => {
                         {/* Outage Zones */}
                         {layers.outages && (
                             <LayerGroup>
-                                {infrastructureData.outages.map((outage) => (
+                                {infrastructureData.outages.map((outage: any) => (
                                     <Circle
                                         key={outage.id}
                                         center={[outage.lat, outage.lng]}

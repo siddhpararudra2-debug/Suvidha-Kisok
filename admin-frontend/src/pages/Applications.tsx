@@ -22,12 +22,13 @@ import {
 import clsx from 'clsx';
 
 interface Application {
-    id: number;
+    id: string;
     user_id: string;
     type: string;
     consumer_id: string;
     provider: string;
     status: string;
+    priority?: string;
     created_at: string;
 }
 
@@ -61,13 +62,8 @@ const Applications: React.FC = () => {
             const response = await api.get('/admin/applications');
             setApplications(response.data);
         } catch (error) {
-            // Mock data for demonstration
-            setApplications([
-                { id: 1, user_id: 'USR001', type: 'electricity', consumer_id: 'ELC-2026-00234', provider: 'State Electricity Board', status: 'pending', created_at: new Date().toISOString() },
-                { id: 2, user_id: 'USR002', type: 'gas', consumer_id: 'GAS-2026-00187', provider: 'City Gas Distribution', status: 'inspection', created_at: new Date(Date.now() - 86400000).toISOString() },
-                { id: 3, user_id: 'USR003', type: 'water', consumer_id: 'WTR-2026-00345', provider: 'Municipal Water Board', status: 'approved', created_at: new Date(Date.now() - 172800000).toISOString() },
-                { id: 4, user_id: 'USR004', type: 'electricity', consumer_id: 'ELC-2026-00235', provider: 'State Electricity Board', status: 'pending', created_at: new Date(Date.now() - 259200000).toISOString() },
-            ]);
+            console.error('Failed to fetch applications:', error);
+            setApplications([]);
         } finally {
             setLoading(false);
         }
@@ -90,9 +86,9 @@ const Applications: React.FC = () => {
         });
     }, [applications, searchTerm, statusFilter, typeFilter]);
 
-    const handleApprove = async (id: number) => {
+    const handleApprove = async (id: string) => {
         try {
-            await api.put(`/admin/applications/${id}/approve`);
+            await api.patch(`/admin/applications/${id}`, { status: 'approved' });
             fetchApplications();
             setShowModal(false);
         } catch (error) {
@@ -100,9 +96,9 @@ const Applications: React.FC = () => {
         }
     };
 
-    const handleReject = async (id: number) => {
+    const handleReject = async (id: string) => {
         try {
-            await api.put(`/admin/applications/${id}/reject`);
+            await api.patch(`/admin/applications/${id}`, { status: 'rejected' });
             fetchApplications();
             setShowModal(false);
         } catch (error) {

@@ -51,12 +51,8 @@ const Citizens: React.FC = () => {
             const response = await api.get('/admin/citizens');
             setCitizens(response.data);
         } catch (error) {
-            // Mock data for demonstration
-            setCitizens([
-                { id: 'USR001', name: 'Rajesh Kumar', mobile: '+91-9876543210', email: 'rajesh@email.com', aadhaar_masked: 'XXXX-XXXX-1234', address: '123 Main Street, Sector 15', city: 'Ahmedabad', pincode: '380015', created_at: new Date().toISOString() },
-                { id: 'USR002', name: 'Priya Sharma', mobile: '+91-9876543211', email: 'priya@email.com', aadhaar_masked: 'XXXX-XXXX-5678', address: '456 Park Avenue, Sector 21', city: 'Ahmedabad', pincode: '380021', created_at: new Date().toISOString() },
-                { id: 'USR003', name: 'Amit Patel', mobile: '+91-9876543212', email: 'amit@email.com', aadhaar_masked: 'XXXX-XXXX-9012', address: '789 Lake View, Sector 8', city: 'Ahmedabad', pincode: '380008', created_at: new Date().toISOString() },
-            ]);
+            console.error('Failed to fetch citizens:', error);
+            setCitizens([]);
         } finally {
             setLoading(false);
         }

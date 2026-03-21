@@ -43,15 +43,8 @@ const Kiosks: React.FC = () => {
             const response = await api.get('/admin/kiosks');
             setKiosks(response.data);
         } catch (error) {
-            // Mock data
-            setKiosks([
-                { id: 'KIOSK001', location: 'Sector 12 Shopping Mall', status: 'online', heartbeat: '2 min ago', txns: 247, uptime: 99.2, software_version: 'v2.1.5' },
-                { id: 'KIOSK002', location: 'Central Bus Station', status: 'online', heartbeat: '1 min ago', txns: 189, uptime: 98.7, software_version: 'v2.1.5' },
-                { id: 'KIOSK003', location: 'Ward Office Sector 7', status: 'offline', heartbeat: '3 hrs ago', txns: 0, uptime: 87.5, software_version: 'v2.1.4' },
-                { id: 'KIOSK004', location: 'Municipal Hospital', status: 'online', heartbeat: '30 sec ago', txns: 156, uptime: 99.8, software_version: 'v2.1.5' },
-                { id: 'KIOSK005', location: 'Railway Station', status: 'online', heartbeat: '1 min ago', txns: 312, uptime: 99.5, software_version: 'v2.1.5' },
-                { id: 'KIOSK006', location: 'IT Park Building A', status: 'online', heartbeat: '45 sec ago', txns: 98, uptime: 99.1, software_version: 'v2.1.5' },
-            ]);
+            console.error('Failed to fetch kiosks:', error);
+            // Optionally set empty or stay as is
         } finally {
             setLoading(false);
         }

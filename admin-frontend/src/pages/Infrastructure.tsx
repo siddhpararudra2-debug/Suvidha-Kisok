@@ -13,6 +13,7 @@ import {
     Activity
 } from 'lucide-react';
 import clsx from 'clsx';
+import api from '../utils/api';
 
 interface Asset {
     id: string;
@@ -27,13 +28,7 @@ interface Asset {
     location: string;
 }
 
-const mockAssets: Asset[] = [
-    { id: 'SUB-001', name: 'Central Substation 33/11 kV', type: 'substation', service: 'electricity', capacity: '2×15 MVA', currentLoad: 72, status: 'operational', lastMaintenance: '2025-12-15', nextMaintenance: '2026-03-15', location: 'Sector 12' },
-    { id: 'TRF-023', name: 'Distribution Transformer #23', type: 'transformer', service: 'electricity', capacity: '630 KVA', currentLoad: 85, status: 'operational', lastMaintenance: '2026-01-10', nextMaintenance: '2026-04-10', location: 'Sector 15' },
-    { id: 'TRF-044', name: 'Distribution Transformer #44', type: 'transformer', service: 'electricity', capacity: '400 KVA', currentLoad: 45, status: 'maintenance', lastMaintenance: '2026-01-28', nextMaintenance: '2026-02-05', location: 'Sector 8' },
-    { id: 'PMP-001', name: 'Main Pump Station A', type: 'pump_station', service: 'water', capacity: '500 KL/hr', currentLoad: 68, status: 'operational', lastMaintenance: '2026-01-05', nextMaintenance: '2026-04-05', location: 'Water Works' },
-    { id: 'GAS-001', name: 'CNG Compressor Station', type: 'gas_station', service: 'gas', capacity: '10000 SCMD', currentLoad: 55, status: 'operational', lastMaintenance: '2025-11-20', nextMaintenance: '2026-02-20', location: 'Industrial Area' },
-];
+// Mock assets are now served from the backend API for Surat-specific locations.
 
 const Infrastructure: React.FC = () => {
     const [assets, setAssets] = useState<Asset[]>([]);
@@ -45,12 +40,20 @@ const Infrastructure: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        setLoading(true);
-        setTimeout(() => {
-            setAssets(mockAssets);
-            setLoading(false);
-        }, 500);
+        fetchAssets();
     }, []);
+
+    const fetchAssets = async () => {
+        setLoading(true);
+        try {
+            const response = await api.get('/admin/infrastructure');
+            setAssets(response.data);
+        } catch (error) {
+            console.error('Failed to fetch infrastructure assets:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const filteredAssets = assets.filter(a => {
         const matchesSearch = searchTerm === '' ||
@@ -100,7 +103,7 @@ const Infrastructure: React.FC = () => {
                     </p>
                 </div>
                 <button
-                    onClick={() => setLoading(true)}
+                    onClick={fetchAssets}
                     className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium text-gray-700"
                 >
                     <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />

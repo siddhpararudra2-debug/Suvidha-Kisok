@@ -13,8 +13,8 @@ const citizensData = [
     address: {
       street: "14/A, MG Road",
       locality: "Borivali West",
-      city: "Mumbai",
-      state: "Maharashtra",
+      city: "Surat",
+      state: "Gujarat",
       pincode: "400092"
     },
     connections: {
@@ -35,8 +35,8 @@ const citizensData = [
     address: {
       street: "45, Nehru Nagar",
       locality: "Andheri East",
-      city: "Mumbai",
-      state: "Maharashtra",
+      city: "Surat",
+      state: "Gujarat",
       pincode: "400069"
     },
     connections: {
@@ -190,7 +190,7 @@ const citizensData = [
       street: "12, Shivaji Nagar",
       locality: "FC Road",
       city: "Pune",
-      state: "Maharashtra",
+      state: "Gujarat",
       pincode: "411005"
     },
     connections: {
@@ -321,8 +321,8 @@ const citizensData = [
     address: {
       street: "34, Vashi",
       locality: "Sector 17",
-      city: "Navi Mumbai",
-      state: "Maharashtra",
+      city: "Surat",
+      state: "Gujarat",
       pincode: "400703"
     },
     connections: {
@@ -586,7 +586,7 @@ const citizensData = [
       street: "78, Kothrud",
       locality: "Near MIT",
       city: "Pune",
-      state: "Maharashtra",
+      state: "Gujarat",
       pincode: "411038"
     },
     connections: {

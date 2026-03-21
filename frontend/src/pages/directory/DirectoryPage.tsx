@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -14,6 +14,7 @@ import {
     Select,
     MenuItem,
     Button,
+    LinearProgress,
 } from '@mui/material';
 import Grid2 from '@mui/material/Grid2';
 import {
@@ -23,38 +24,47 @@ import {
     LocationOn,
     AccessTime,
 } from '@mui/icons-material';
+import api from '../../utils/api';
+
+interface Official {
+    id: string;
+    name: string;
+    designation: string;
+    department: string;
+    area: string;
+    phone: string;
+    email: string;
+    officeHours: string;
+    photo: string;
+}
 
 const DirectoryPage = () => {
     const [department, setDepartment] = useState('all');
     const [search, setSearch] = useState('');
+    const [officials, setOfficials] = useState<Official[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const firstNames = ['Rajesh', 'Priya', 'Amit', 'Sunita', 'Sanjay', 'Neha', 'Vikram', 'Anjali', 'Ramesh', 'Pooja', 'Karan', 'Kavita', 'Suresh'];
-    const lastNames = ['Kumar', 'Patel', 'Shah', 'Joshi', 'Mehta', 'Desai', 'Chauhan', 'Bhagat', 'Trivedi', 'Gandhi'];
-    const departments = ['Electricity', 'Water', 'Gas', 'Sanitation', 'Public Works'];
-    const areas = ['Zone A - Adajan, Vesu', 'Zone B - Varachha, Katargam', 'Zone C - Athwa, Piplod', 'Zone D - Udhna, Rander', 'Surat Circle', 'Surat Region'];
-    
-    const officials = Array.from({ length: 30 }, (_, i) => {
-        const fName = firstNames[i % firstNames.length];
-        const lName = lastNames[i % lastNames.length];
-        const dept = departments[i % departments.length];
-        return {
-            id: i + 1,
-            name: `${i % 2 === 0 ? 'Shri' : 'Smt.'} ${fName} ${lName}`,
-            designation: i % 4 === 0 ? 'Executive Engineer' : i % 4 === 1 ? 'Assistant Engineer' : i % 4 === 2 ? 'Superintendent' : 'Area Manager',
-            department: dept,
-            area: areas[i % areas.length],
-            phone: `+91 261 ${Math.floor(2000000 + Math.random() * 8000000)}`,
-            email: `${fName.toLowerCase()}.${lName.toLowerCase()}${i}@${dept.toLowerCase().replace(' ', '')}.surat.gov.in`,
-            officeHours: i % 3 === 0 ? '9:00 AM - 6:00 PM' : '10:00 AM - 5:00 PM',
-            photo: `${fName[0]}${lName[0]}`,
-        };
-    });
+    const fetchOfficials = async () => {
+        setLoading(true);
+        try {
+            const response = await api.get('/public/officials');
+            setOfficials(response.data);
+        } catch (error) {
+            console.error('Failed to fetch officials:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    const filteredOfficials = officials.filter((official) => {
-        const matchesDept = department === 'all' || official.department.toLowerCase() === department;
-        const matchesSearch = official.name.toLowerCase().includes(search.toLowerCase()) ||
-            official.designation.toLowerCase().includes(search.toLowerCase()) ||
-            official.area.toLowerCase().includes(search.toLowerCase());
+    useEffect(() => {
+        fetchOfficials();
+    }, []);
+
+    const filteredOfficials = (officials || []).filter((official) => {
+        const matchesDept = department === 'all' || official.department?.toLowerCase() === department;
+        const matchesSearch = official.name?.toLowerCase().includes(search.toLowerCase()) ||
+            official.designation?.toLowerCase().includes(search.toLowerCase()) ||
+            official.area?.toLowerCase().includes(search.toLowerCase());
         return matchesDept && matchesSearch;
     });
 
@@ -69,6 +79,7 @@ const DirectoryPage = () => {
 
     return (
         <Box>
+            {loading && <LinearProgress sx={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 2000 }} />}
             {/* Header */}
             <Paper
                 elevation={0}

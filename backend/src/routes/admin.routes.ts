@@ -4,7 +4,21 @@ import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { pool, query } from '../config/database.js';
 import { logger } from '../utils/logger.js';
-import { getAllCitizens, getAllComplaints, getAllKiosks, updateComplaintStatus, mockComplaints } from '../data/mockData.js';
+import { 
+    getAllCitizens, 
+    getAllComplaints, 
+    getAllKiosks, 
+    updateComplaintStatus, 
+    mockComplaints,
+    mockOfficials, 
+    mockSchemes, 
+    mockCitizens, 
+    mockKiosks, 
+    mockInfrastructure,
+    mockApplications,
+    mockAnnouncements,
+    systemSettings
+} from '../data/mockData.js';
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'suvidha-secret-key-change-in-production';
@@ -383,26 +397,14 @@ router.put('/complaints/:id/update', async (req: any, res) => {
     }
 });
 
-// Basic Kiosks - now using shared data
+// Get Kiosks (now using shared data from mockData)
 router.get('/kiosks', async (req, res) => {
-    // Return shared mock data with real-time info
-    res.json(getAllKiosks());
+    res.json(mockKiosks);
 });
 
-// Get all citizens - for admin to monitor all users
+// Get Citizens (now using shared data from mockData)
 router.get('/citizens', async (req, res) => {
-    try {
-        // Try database first
-        const result = await pool.query('SELECT * FROM users ORDER BY created_at DESC');
-        if (result.rows.length > 0) {
-            res.json(result.rows);
-            return;
-        }
-    } catch (dbError) {
-        // Database not available, use mock data
-    }
-    // Return shared mock citizens (includes new registrations)
-    res.json(getAllCitizens());
+    res.json(mockCitizens);
 });
 
 // Get all complaints (with fallback to shared mock data)
@@ -421,14 +423,6 @@ router.get('/all-complaints', async (req, res) => {
 });
 
 // ===== Applications Management =====
-const mockApplications = [
-    { id: 'APP-001', citizenName: 'Rajesh Kumar', type: 'new_connection', service: 'electricity', status: 'pending', submittedAt: '2026-02-20T10:30:00Z', priority: 'medium', address: 'Adajan, Surat' },
-    { id: 'APP-002', citizenName: 'Priya Sharma', type: 'transfer', service: 'water', status: 'approved', submittedAt: '2026-02-19T14:15:00Z', priority: 'low', address: 'Vesu, Surat' },
-    { id: 'APP-003', citizenName: 'Amit Patel', type: 'new_connection', service: 'gas', status: 'under_review', submittedAt: '2026-02-21T09:00:00Z', priority: 'high', address: 'Varachha, Surat' },
-    { id: 'APP-004', citizenName: 'Sunita Devi', type: 'meter_change', service: 'electricity', status: 'pending', submittedAt: '2026-02-22T16:45:00Z', priority: 'medium', address: 'Rander, Surat' },
-    { id: 'APP-005', citizenName: 'Mohammed Ali', type: 'disconnection', service: 'gas', status: 'rejected', submittedAt: '2026-02-18T11:20:00Z', priority: 'low', address: 'Katargam, Surat' },
-];
-
 router.get('/applications', (req, res) => {
     const { status, service } = req.query;
     let apps = [...mockApplications];
@@ -459,14 +453,6 @@ router.patch('/applications/:id', requireRole('super_admin', 'admin', 'dept_admi
 });
 
 // ===== Infrastructure Monitoring =====
-const mockInfrastructure = [
-    { id: 'INF-001', name: 'Adajan Substation', type: 'electricity', status: 'operational', capacity: '85%', lastMaintenance: '2026-01-15', nextMaintenance: '2026-04-15', location: { lat: 21.1959, lng: 72.7933 } },
-    { id: 'INF-002', name: 'Varachha Water Plant', type: 'water', status: 'operational', capacity: '72%', lastMaintenance: '2026-02-01', nextMaintenance: '2026-05-01', location: { lat: 21.2089, lng: 72.8577 } },
-    { id: 'INF-003', name: 'Katargam Gas Station', type: 'gas', status: 'maintenance', capacity: '0%', lastMaintenance: '2026-02-20', nextMaintenance: '2026-02-28', location: { lat: 21.2267, lng: 72.8312 } },
-    { id: 'INF-004', name: 'Udhna Power Grid', type: 'electricity', status: 'operational', capacity: '91%', lastMaintenance: '2026-01-25', nextMaintenance: '2026-04-25', location: { lat: 21.1702, lng: 72.8411 } },
-    { id: 'INF-005', name: 'Vesu Pipeline Hub', type: 'gas', status: 'operational', capacity: '68%', lastMaintenance: '2025-12-10', nextMaintenance: '2026-03-10', location: { lat: 21.1553, lng: 72.7717 } },
-];
-
 router.get('/infrastructure', (req, res) => {
     const { type, status } = req.query;
     let infra = [...mockInfrastructure];
@@ -518,20 +504,14 @@ router.get('/reports', (req, res) => {
 });
 
 // ===== Content Management =====
-let mockContent = [
-    { id: 'CNT-001', title: 'Water Supply Schedule Update', type: 'announcement', status: 'published', author: 'Admin', createdAt: '2026-02-20T10:00:00Z', content: 'Updated water supply timings for ward 5-12.' },
-    { id: 'CNT-002', title: 'Gas Safety Guidelines', type: 'notice', status: 'published', author: 'Safety Dept', createdAt: '2026-02-18T14:30:00Z', content: 'New safety protocols for PNG connections.' },
-    { id: 'CNT-003', title: 'Electricity Rate Revision', type: 'announcement', status: 'draft', author: 'Admin', createdAt: '2026-02-22T09:15:00Z', content: 'Proposed rate changes for domestic consumers.' },
-];
-
 router.get('/content', (req, res) => {
-    res.json(mockContent);
+    res.json(mockAnnouncements);
 });
 
 router.post('/content', (req, res) => {
     const { title, type, content, status } = req.body;
     const newContent = {
-        id: `CNT-${String(mockContent.length + 1).padStart(3, '0')}`,
+        id: `CNT-${String(mockAnnouncements.length + 1).padStart(3, '0')}`,
         title: title || 'Untitled',
         type: type || 'announcement',
         status: status || 'draft',
@@ -539,31 +519,18 @@ router.post('/content', (req, res) => {
         createdAt: new Date().toISOString(),
         content: content || '',
     };
-    mockContent.push(newContent);
+    mockAnnouncements.push(newContent);
     res.status(201).json({ success: true, content: newContent });
 });
 
 // ===== Settings =====
-let systemSettings = {
-    sessionTimeout: 3,
-    maxLoginAttempts: 5,
-    maintenanceMode: false,
-    notificationsEnabled: true,
-    autoAssignComplaints: true,
-    slaWarningDays: 3,
-    slaEscalationDays: 7,
-    defaultLanguage: 'en',
-    kioskIdleTimeout: 180,
-    backupFrequency: 'daily',
-};
-
 router.get('/settings', (req, res) => {
     res.json(systemSettings);
 });
 
 router.put('/settings', requireRole('super_admin', 'admin'), (req: any, res) => {
-    const oldSettings = { ...systemSettings };
-    systemSettings = { ...systemSettings, ...req.body };
+    // Demo update - update in memory for this session
+    Object.assign(systemSettings, req.body);
 
     addAuditEntry({
         employeeId: req.user?.userId || 'unknown',
@@ -607,6 +574,29 @@ router.get('/utility-data', (req, res) => {
         },
     };
     res.json(utilityData);
+});
+
+// ===== Officials, Citizens, Schemes, Kiosks, Applications and Infrastructure =====
+
+
+// Note: Specific GET handlers for citizens, kiosks, etc. are defined above
+// this section ensures availability of core entities through simple endpoints if needed.
+router.get('/officials', (req, res) => {
+    res.json(mockOfficials);
+});
+
+router.get('/schemes', (req, res) => {
+    res.json(mockSchemes);
+});
+
+router.get('/dashboard/stats', (req, res) => {
+    res.json({
+        complaints: { growth: 12, today: 45 },
+        applications: { overdue: 5, pending: 28 },
+        kiosks: { total: 10, online: 8 },
+        revenue: { growth: 8, total: 1245000 },
+        sla: 87
+    });
 });
 
 export default router;

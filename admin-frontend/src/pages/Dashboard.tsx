@@ -130,7 +130,7 @@ const Dashboard: React.FC = () => {
                         <div className="flex gap-4">
                             <div className="mt-1 w-2 h-2 rounded-full bg-red-500 shrink-0 animate-pulse"></div>
                             <div>
-                                <p className="text-sm font-medium text-gray-800">Gas leak reported in Sector 12</p>
+                                <p className="text-sm font-medium text-gray-800">Gas leak reported in Adajan Area</p>
                                 <p className="text-xs text-red-500 font-semibold mt-1">EMERGENCY • 2 min ago</p>
                             </div>
                         </div>

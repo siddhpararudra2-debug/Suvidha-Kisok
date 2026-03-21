@@ -89,7 +89,25 @@ const NewConnectionPage = () => {
         address: '',
         city: 'Surat',
         pincode: '',
+        area: '',
     });
+    
+    // Auto-detect Surat area from Pincode
+    const getSuratAreaFromPincode = (pin: string) => {
+        const areas: Record<string, string> = {
+            '395001': 'Central Surat', '395002': 'Railway Station Area', 
+            '395003': 'Varachha', '395004': 'Katargam', '395006': 'Varachha Road',
+            '395007': 'Athwa', '395008': 'Bhatar', '395009': 'Adajan',
+            '395010': 'Pal', '394210': 'Udhna', '394220': 'Sachin',
+            '394230': 'Pandesara', '394518': 'Hazira',
+        };
+        if (pin.length === 6) {
+            if (areas[pin]) return areas[pin];
+            if (pin.startsWith('395') || pin.startsWith('394')) return 'Surat Suburbs';
+            return 'Invalid (Not a Surat Pincode)';
+        }
+        return '';
+    };
     const [premiseType, setPremiseType] = useState('residential');
     const [documents, setDocuments] = useState<{ name: string; uploaded: boolean }[]>([
         { name: 'Aadhaar Card', uploaded: false },
@@ -127,7 +145,11 @@ const NewConnectionPage = () => {
     const canProceed = () => {
         switch (activeStep) {
             case 0: return selectedService !== '';
-            case 1: return personalDetails.fullName && personalDetails.mobile;
+            case 1: 
+                return personalDetails.fullName && 
+                       personalDetails.mobile && 
+                       personalDetails.pincode.length === 6 &&
+                       !personalDetails.area.includes('Invalid');
             case 2: return connectionType !== '';
             case 3: return documents.filter(d => d.uploaded).length >= 2;
             case 4: return true;
@@ -250,14 +272,27 @@ const NewConnectionPage = () => {
                                         onChange={e => setPersonalDetails({ ...personalDetails, address: e.target.value })} />
                                 </Grid2>
                                 <Grid2 size={{ xs: 12, sm: 6 }}>
-                                    <TextField fullWidth label="City" value={personalDetails.city}
-                                        onChange={e => setPersonalDetails({ ...personalDetails, city: e.target.value })} />
+                                    <TextField fullWidth label="City" value={personalDetails.city} disabled />
                                 </Grid2>
                                 <Grid2 size={{ xs: 12, sm: 6 }}>
                                     <TextField fullWidth label="Pincode" value={personalDetails.pincode}
-                                        onChange={e => setPersonalDetails({ ...personalDetails, pincode: e.target.value })}
-                                        inputProps={{ maxLength: 6 }} />
+                                        onChange={e => {
+                                            const pin = e.target.value.replace(/\D/g, '').slice(0, 6);
+                                            const resolvedArea = getSuratAreaFromPincode(pin);
+                                            setPersonalDetails({ ...personalDetails, pincode: pin, area: resolvedArea });
+                                        }}
+                                        placeholder="Enter Surat Pincode (e.g. 395009)"
+                                        error={personalDetails.pincode.length === 6 && personalDetails.area.includes('Invalid')}
+                                        helperText={personalDetails.pincode.length === 6 ? personalDetails.area : ''}
+                                    />
                                 </Grid2>
+                                {personalDetails.area && !personalDetails.area.includes('Invalid') && (
+                                    <Grid2 size={12}>
+                                        <Alert severity="success" sx={{ borderRadius: 2 }}>
+                                            <strong>Detected Locality:</strong> {personalDetails.area}
+                                        </Alert>
+                                    </Grid2>
+                                )}
                             </Grid2>
                             <Alert severity="info" sx={{ mt: 2, borderRadius: 2 }}>
                                 💡 Tip: Login with DigiLocker to auto-fill your details from government records.

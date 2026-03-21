@@ -11,6 +11,7 @@ import billRoutes from './routes/bill.routes.js';
 import complaintRoutes from './routes/complaint.routes.js';
 import infrastructureRoutes from './routes/infrastructure.routes.js';
 import adminRoutes from './routes/admin.routes.js';
+import publicRoutes from './routes/public.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { logger } from './utils/logger.js';
 
@@ -76,6 +77,7 @@ app.use('/api/bills', billRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/infrastructure', infrastructureRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/public', publicRoutes);
 
 // Socket.io for real-time updates
 io.on('connection', (socket) => {
